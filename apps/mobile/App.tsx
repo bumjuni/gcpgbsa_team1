@@ -11,7 +11,7 @@ import {
   SafeAreaProvider
 } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { ClassListScreen } from './src/screens/ClassListScreen';
+import { ClassRegisterScreen } from './src/screens/ClassRegisterScreen';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -20,7 +20,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ClassListScreen />
+        <ClassRegisterScreen />
       </SafeAreaProvider>
     </NavigationContainer>
   );
