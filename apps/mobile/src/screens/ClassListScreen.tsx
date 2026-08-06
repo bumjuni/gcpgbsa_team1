@@ -1,0 +1,30 @@
+import React from 'react';
+import { View, Text } from 'react-native';
+import { ScreenLayout } from '../components/ScreenLayout';
+import { Button } from '../components/Button';
+
+export const ClassListScreen = ({ navigation }: any) => {
+  return (
+    <ScreenLayout
+      title="내 반 목록"
+      footer={
+        <Button
+          label="반 등록하기"
+          onPress={() => navigation?.navigate('ClassRegister')}
+        />
+      }
+    >
+      <View className="flex-1 justify-center items-center py-xxl">
+        <View className="w-20 h-20 bg-surface-muted rounded-full justify-center items-center mb-md">
+          <Text className="text-2xl text-ink-teriary">☰</Text>
+        </View>
+        <Text className="text-lg font-bold text-ink mb-xs">
+          아직 등록한 반이 없어요
+        </Text>
+        <Text className="text-sm text-ink-teriary text-center">
+          반을 등록하면 수업안을 만들 수 있어요
+        </Text>
+      </View>
+    </ScreenLayout>
+  );
+};
