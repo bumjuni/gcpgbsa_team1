@@ -18,25 +18,14 @@ export const Button = ({
   className = '',
   ...props
 }: ButtonProps) => {
-  const baseStyle = 'w-full py-4 rounded-2xl items-center justify-center active:opacity-80 transition-all';
-
-  const variantStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
-    primary: disabled ? 'bg-blue-300' : 'bg-[#0066ce]',
-    secondary: disabled ? 'bg-gray-100' : 'bg-blue-50',
-    text: 'bg-transparent py-2',
-  };
-
-  const textStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
-    primary: 'text-white font-bold text-base',
-    secondary: 'text-[#0066ce] font-bold text-base',
-    text: 'text-gray-500 font-medium text-sm',
-  };
+  const bgStyle = disabled ? disabledStyles[variant] ?? variantStyles[variant] : variantStyles[variant];
 
   return (
     <Pressable
       onPress={onPress}
       disabled={disabled || loading}
-      className={`${baseStyle} ${variantStyles[variant]} ${className}`}
+      className={`${baseStyle} ${bgStyle} ${className}`}
+
       {...props}
     >
       {loading ? (
@@ -46,4 +35,23 @@ export const Button = ({
       )}
     </Pressable>
   );
+};
+
+const baseStyle = 'w-full py-4 rounded-2xl items-center justify-center active:opacity-80';
+
+const variantStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
+  primary: 'bg-primary',
+  secondary: 'bg-primary-subtle',
+  text: 'bg-transparent py-xs',
+};
+
+const disabledStyles: Partial<Record<NonNullable<ButtonProps['variant']>, string>> = {
+  primary: 'bg-disabled-strong',
+  secondary: 'bg-disabled-muted',
+};
+
+const textStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
+  primary: 'text-white font-bold text-base',
+  secondary: 'text-primary font-bold text-base',
+  text: 'text-text-muted font-medium text-sm',
 };

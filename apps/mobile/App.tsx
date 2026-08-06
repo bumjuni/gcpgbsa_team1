@@ -12,6 +12,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { Button } from './src/components/Button';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -19,9 +20,12 @@ export default function App() {
   return (
     <SafeAreaProvider style={{flex: 1}}>
       <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <Text className="mt-24 text-3xl text-red-500">
-        Hello
-      </Text>
+      <View style={{ flex: 1, padding: 100 }}>
+        <Text>
+          Hello
+        </Text>
+        <Button label='Button'/>
+      </View>
       {/*<AppContent />*/}
     </SafeAreaProvider>
   );
