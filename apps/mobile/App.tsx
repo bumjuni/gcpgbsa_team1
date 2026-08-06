@@ -15,7 +15,7 @@ import {
 import { Button } from './src/components/Button';
 import { Header } from './src/components/Header';
 import { NavigationContainer } from '@react-navigation/native';
-import { ScreenLayout } from './src/screens/ScreenLayout';
+import { ScreenLayout } from './src/components/ScreenLayout';
 import { FormField } from './src/components/FormField';
 import { ConfirmModal } from './src/components/ConfirmModal';
 
