@@ -13,21 +13,23 @@ import {
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
 import { Button } from './src/components/Button';
+import { Header } from './src/components/Header';
+import { NavigationContainer } from '@react-navigation/native';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <SafeAreaProvider style={{flex: 1}}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <View style={{ flex: 1, padding: 100 }}>
-        <Text>
-          Hello
-        </Text>
-        <Button label='Button'/>
-      </View>
-      {/*<AppContent />*/}
-    </SafeAreaProvider>
+    <NavigationContainer>
+      <SafeAreaProvider style={{flex: 1}}>
+        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+        <Header title='test-page'/>
+        <View style={{ flex: 1, padding: 100 }}>
+          <Button label='Button'/>
+        </View>
+        {/*<AppContent />*/}
+        </SafeAreaProvider>
+    </NavigationContainer>
   );
 }
 
