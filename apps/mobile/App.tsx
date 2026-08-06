@@ -16,6 +16,7 @@ import { Button } from './src/components/Button';
 import { Header } from './src/components/Header';
 import { NavigationContainer } from '@react-navigation/native';
 import { ScreenLayout } from './src/screens/ScreenLayout';
+import { FormField } from './src/components/FormField';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -26,7 +27,8 @@ export default function App() {
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <ScreenLayout title='test-page'>
           <View style={{ flex: 1, padding: 100 }}>
-            <Button label='Button'/>
+            <Button label='Button' />
+            <FormField label='test' />
           </View>
           {/*<AppContent />*/}
         </ScreenLayout>
