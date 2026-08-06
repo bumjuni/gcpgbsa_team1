@@ -17,12 +17,14 @@ import { Header } from './src/components/Header';
 import { NavigationContainer } from '@react-navigation/native';
 import { ScreenLayout } from './src/screens/ScreenLayout';
 import { FormField } from './src/components/FormField';
+import { ConfirmModal } from './src/components/ConfirmModal';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
     <NavigationContainer>
+      <ConfirmModal visible title='test' description='test-description' confirmText='OK' cancelText='cancel' onConfirm={() => { }} onCancel={() => { }} />
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <ScreenLayout title='test-page'>
