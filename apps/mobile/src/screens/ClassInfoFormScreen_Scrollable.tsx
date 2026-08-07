@@ -1,9 +1,9 @@
 import React, { useState, useTransition } from 'react';
-import { View, Text, Pressable, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Pressable, TouchableOpacity } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { FormField } from '../components/FormField';
 import { Button } from '../components/Button';
 import { Card } from '../components/card/Card';
+import { FormField } from '../components/form/FormField';
 
 interface ClassInfoFormState {
   name: string;
@@ -132,13 +132,10 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         <Text className="text-label text-primary font-medium mb-md">1단계 · 반 정보</Text>
 
         {/* 반 이름 */}
-        <FormField
-          label="반 이름"
-          required
-          placeholder="예: 화요일 저녁 초급반"
-          value={formData.name}
-          onChangeText={(val) => handleFieldChange('name', val)}
-        />
+        <FormField>
+          <FormField.Label label="반 이름" required />
+          <FormField.TextInput placeholder="예: 화요일 저녁 초급반" />
+        </FormField>
 
         {/* 수업 요일 */}
         <View className="mb-md">
@@ -194,13 +191,10 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </View>
 
         {/* 정원 */}
-        <FormField
-          label="정원"
-          required
-          placeholder="예: 10 (최대 인원)"
-          value={formData.capacity}
-          onChangeText={(val) => handleFieldChange('capacity', val)}
-        />
+        <FormField>
+          <FormField.Label label="정원" required />
+          <FormField.TextInput placeholder="예: 10 (최대 인원)" suffix="명" keyboardType="numeric" />
+        </FormField>
 
         {/* 나이대 */}
         <View className="mb-md">
