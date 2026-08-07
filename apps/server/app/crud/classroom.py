@@ -52,6 +52,19 @@ async def create_student(db: AsyncSession, student_data: dict) -> Student:
     return student
 
 
+async def delete_student(db: AsyncSession, student_id: int) -> Optional[Student]:
+    """수강생 소프트 삭제"""
+    student = await db.get(Student, student_id)
+    if student is None:
+        return None
+
+    student.deleted_at = datetime.now()
+    await db.commit()
+    await db.refresh(student)
+
+    return student
+
+
 # ======================================================================
 # 3. Program (프로그램) CRUD
 # ======================================================================
@@ -68,6 +81,19 @@ async def create_program(db: AsyncSession, program_data: dict) -> Program:
     return program
 
 
+async def delete_program(db: AsyncSession, program_id: int) -> Optional[Program]:
+    """프로그램 소프트 삭제"""
+    program = await db.get(Program, program_id)
+    if program is None:
+        return None
+
+    program.deleted_at = datetime.now()
+    await db.commit()
+    await db.refresh(program)
+
+    return program
+
+
 # ======================================================================
 # 4. ProgramItem (프로그램 아이템) CRUD
 # ======================================================================
@@ -78,6 +104,19 @@ async def create_program_item(db: AsyncSession, program_item_data: dict) -> Prog
         created_at=datetime.now(),
     )
     db.add(program_item)
+    await db.commit()
+    await db.refresh(program_item)
+
+    return program_item
+
+
+async def delete_program_item(db: AsyncSession, program_item_id: int) -> Optional[ProgramItem]:
+    """프로그램 아이템 소프트 삭제"""
+    program_item = await db.get(ProgramItem, program_item_id)
+    if program_item is None:
+        return None
+
+    program_item.deleted_at = datetime.now()
     await db.commit()
     await db.refresh(program_item)
 
