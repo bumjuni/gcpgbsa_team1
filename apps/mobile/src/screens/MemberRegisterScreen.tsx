@@ -1,9 +1,9 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { FormField } from '../components/FormField';
 import { Button } from '../components/Button';
 import { Card } from '../components/card/Card';
+import { FormField } from '../components/form/FormField';
 
 interface MemberFormState {
   name: string;
@@ -64,7 +64,7 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
           <Text className="text-xs text-primary">회원 추가는 반을 만든 뒤에도 할 수 있어요</Text>
         </Card>
 
-        <Card className="border border-surface-hairline rounded-md p-md mb-md">
+        <Card className="border rounded-md p-md mb-md">
           <View className="flex-row items-center justify-between mb-md">
             <Text className="text-base font-bold text-ink">회원 1</Text>
             <Pressable onPress={handleDeleteMember} hitSlop={8}>
@@ -72,43 +72,29 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
             </Pressable>
           </View>
 
-          <View className="flex-row">
-            <View className="flex-1 mr-xs">
-              <FormField
-                label="이름"
-                badgeType="required"
-                placeholder="예: 김수영"
-                value={formData.name}
-                onChangeText={(val) => handleFieldChange('name', val)}
-              />
-            </View>
-            <View className="flex-1 ml-xs">
-              <FormField
-                label="출생년도"
-                badgeType="required"
-                placeholder="예: 1990"
-                keyboardType="number-pad"
-                value={formData.birthYear}
-                onChangeText={(val) => handleFieldChange('birthYear', val)}
-              />
-            </View>
+          <View className="flex-row gap-sm">
+
+
+              <FormField className='flex-auto'>
+                <FormField.Label label="이름"/>
+                <FormField.TextInput placeholder='예: 김수영' />
+              </FormField>
+
+              <FormField className='flex-auto'>
+                <FormField.Label label="출생년도"/>
+                <FormField.TextInput placeholder='1990' keyboardType='numeric'/>
+            </FormField>
+
           </View>
+          <FormField>
+            <FormField.Label label='전화번호'/>
+            <FormField.TextInput placeholder='010-0000-0000' />
+          </FormField>
 
-          <FormField
-            label="전화번호"
-            placeholder="010-0000-0000"
-            keyboardType="phone-pad"
-            value={formData.phone}
-            onChangeText={(val) => handleFieldChange('phone', val)}
-          />
-
-          <FormField
-            label="비고"
-            placeholder="예: 통원치료 중, 자유형 호흡이 잘 안됨"
-            // multiline
-            value={formData.notes}
-            onChangeText={(val) => handleFieldChange('notes', val)}
-          />
+          <FormField>
+            <FormField.Label label='비고'/>
+            <FormField.TextInput placeholder='예: 통원치료 중, 자유형 호흡이 잘 안됨' />
+          </FormField>
 
           <Button
             label={isEntryComplete ? '입력 완료됨' : '입력 완료'}
