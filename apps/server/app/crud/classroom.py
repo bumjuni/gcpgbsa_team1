@@ -1,4 +1,6 @@
 from datetime import datetime
+from typing import Optional
+
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +17,19 @@ async def create_swim_class(db: AsyncSession, class_data: dict) -> SwimClass:
         created_at=datetime.now(),
     )
     db.add(swim_class)
+    await db.commit()
+    await db.refresh(swim_class)
+
+    return swim_class
+
+
+async def delete_swim_class(db: AsyncSession, swim_class_id: int) -> Optional[SwimClass]:
+    """강습 소프트 삭제"""
+    swim_class = await db.get(SwimClass, swim_class_id)
+    if swim_class is None:
+        return None
+
+    swim_class.deleted_at = datetime.now()
     await db.commit()
     await db.refresh(swim_class)
 
