@@ -20,7 +20,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <LessonPlanConfirmScreen /> 
+        <LessonPlanConfirmScreen />
       </SafeAreaProvider>
     </NavigationContainer>
   );
