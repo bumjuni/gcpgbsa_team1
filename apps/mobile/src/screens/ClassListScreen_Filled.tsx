@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/Button';
+import { Card } from '../components/card/Card';
 
 interface TodayClass {
   id: string;
@@ -107,8 +108,9 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
         {TODAY_CLASSES.map((item) => {
           const statusStyle = todayStatusStyles[item.statusType];
           return (
-            <Pressable
+            <Card
               key={item.id}
+              variant='default'
               onPress={() => handleClassPress(item.id)}
               className="border border-surface-hairline rounded-md px-md py-sm mb-md"
             >
@@ -121,26 +123,18 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
               <Text className="text-xs text-ink-teriary">
                 {item.timeLabel} · {item.subLabel}
               </Text>
-            </Pressable>
+            </Card>
           );
         })}
-
-        <Pressable onPress={handleViewReports} className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-sm font-bold text-primary flex-1">
-              아직 안 남긴 주간 리포트가 2건 있어요
-            </Text>
-            <Text className="text-xs font-bold text-primary ml-xs">보기</Text>
-          </View>
-        </Pressable>
 
         <Text className="text-lg font-bold text-ink mb-md">전체 반</Text>
 
         {CLASS_LIST.map((item) => {
           const statusStyle = planStatusStyles[item.planStatusType];
           return (
-            <Pressable
+            <Card
               key={item.id}
+              variant='default'
               onPress={() => handleClassPress(item.id)}
               className="border border-surface-hairline rounded-md px-md py-sm mb-md"
             >
@@ -153,7 +147,7 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
               <Text className="text-xs text-ink-teriary">
                 {item.infoLabel} · {item.nextClassLabel}
               </Text>
-            </Pressable>
+            </Card>
           );
         })}
       </View>

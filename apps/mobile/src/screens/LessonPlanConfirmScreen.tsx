@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/Button';
+import { Card } from '../components/card/Card';
 
 interface LessonSetItem {
   name: string;
@@ -72,7 +73,12 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       }
     >
       <View className="pt-md pb-xl">
-        <View className="bg-surface-muted rounded-md px-md py-lg items-center mb-lg">
+        <Card variant="muted" className="items-center py-6">
+          <Text className="text-caption text-ink-secondary">총 운동량</Text>
+          <Text className="text-metric text-ink my-1">1,000m</Text>
+          <Text className="text-legal text-ink-tertiary">웜업 · 메인 · 쿨다운 거리를 더한 값이에요</Text>
+        </Card>
+        {/*<View className="bg-surface-muted rounded-md px-md py-lg items-center mb-lg">
           <Text className="text-sm text-ink-teriary font-medium mb-xxs">총 운동량</Text>
           <Text className="text-3xl font-bold text-primary mb-xs">
             {totalDistance.toLocaleString()} m
@@ -80,34 +86,46 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
           <Text className="text-xs text-ink-teriary text-center">
             웜업 · 메인 · 콜다운 자유형 다 같이해요
           </Text>
-        </View>
+        </View>*/}
 
         <Text className="text-base font-bold text-ink mb-sm">수업 구성</Text>
 
         {sections.map((section: LessonSection) => (
           <View key={section.title} className="mb-lg">
-            <View className="flex-row items-center justify-between mb-xs">
-              <Text className="text-base font-bold text-ink">{section.title}</Text>
-              <Text className="text-sm font-bold text-ink-teriary">{section.totalDistance}</Text>
-            </View>
 
-            {section.items.map((item, index) => (
-              <View
-                key={`${section.title}-${index}`}
-                className="flex-row items-center justify-between border border-surface-hairline rounded-md px-md py-sm mb-xs"
-              >
-                <View className="flex-1 mr-xs">
-                  <Text className="text-sm font-bold text-ink mb-xxs">{item.name}</Text>
-                  <Text className="text-xs text-ink-teriary">{item.description}</Text>
+            <Card>
+              <Card.Header className="flex-row items-center justify-between mb-xs"
+                title={section.title}
+                rightElement={section.totalDistance}
+              />
+              {section.items.map((item, index) =>
+                <Card.Item
+                  title={item.name}
+                  description={item.description}
+                  rightElement={item.distance}
+                  isLast={(index === section.items.length) ? true : false}
+                />
+              )}
+              {/*{section.items.map((item, index) => (
+                <View
+                  key={`${section.title}-${index}`}
+                  className="flex-row items-center justify-between border border-surface-hairline rounded-md px-md py-sm mb-xs"
+                >
+                  <View className="flex-1 mr-xs">
+                    <Text className="text-sm font-bold text-ink mb-xxs">{item.name}</Text>
+                    <Text className="text-xs text-ink-teriary">{item.description}</Text>
+                  </View>
+                  <View className="items-end">
+                    <Text className="text-sm font-bold text-ink mb-xxs">{item.distance}</Text>
+                    <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
+                      <Text className="text-xs font-medium text-primary">수정</Text>
+                    </Pressable>
+                  </View>
                 </View>
-                <View className="items-end">
-                  <Text className="text-sm font-bold text-ink mb-xxs">{item.distance}</Text>
-                  <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
-                    <Text className="text-xs font-medium text-primary">수정</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ))}
+              ))}*/}
+            </Card>
+
+
           </View>
         ))}
       </View>

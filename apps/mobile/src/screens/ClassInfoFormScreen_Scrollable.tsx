@@ -3,6 +3,7 @@ import { View, Text, Pressable, TextInput } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { FormField } from '../components/FormField';
 import { Button } from '../components/Button';
+import { Card } from '../components/card/Card';
 
 interface ClassInfoFormState {
   name: string;
@@ -236,23 +237,24 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
           {LEVELS.map(({ key, desc }) => {
             const selected = formData.level === key;
             return (
-              <Pressable
+              <Card
                 key={key}
+                variant='default'
                 onPress={() => handleFieldChange('level', key)}
-                className={`flex-row items-center justify-between px-md py-sm rounded-md border mb-xs ${
+                className={`flex-row items-center px-md py-sm rounded-md border mb-xs ${
                   selected ? 'bg-primary-subtle border-primary' : 'bg-surface-muted border-surface-hairline'
                 }`}
               >
-                <View>
-                  <Text className="text-base font-bold text-ink">{key}</Text>
-                  <Text className="text-xs text-ink-teriary">{desc}</Text>
-                </View>
                 <View
                   className={`w-5 h-5 rounded-full border-2 ${
                     selected ? 'border-primary bg-primary' : 'border-surface-hairline'
                   }`}
                 />
-              </Pressable>
+                <View>
+                  <Text className="text-base font-bold text-ink">{key}</Text>
+                  <Text className="text-xs text-ink-teriary">{desc}</Text>
+                </View>
+              </Card>
             );
           })}
         </View>
