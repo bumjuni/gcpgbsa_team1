@@ -119,7 +119,13 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
   return (
     <ScreenLayout title="반 정보 입력" showBackButton>
       <View className="pt-md pb-xl">
-        <Text className="text-sm text-ink-teriary font-medium mb-lg">1단계 · 반 정보</Text>
+
+        {/*progress bar*/}
+        <View className="mb-sm flex-auto flex-row gap-2">
+          <View className="flex-1 h-1 rounded-full bg-primary" />
+          <View className="flex-1 h-1 rounded-full bg-hairline" />
+        </View>
+        <Text className="text-label text-primary font-medium mb-md">1단계 · 반 정보</Text>
 
         <FormField
           label="반 이름"

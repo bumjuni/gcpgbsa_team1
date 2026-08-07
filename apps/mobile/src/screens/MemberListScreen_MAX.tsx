@@ -45,11 +45,13 @@ export const MemberListScreen_MAX = ({ navigation }: any) => {
   return (
     <ScreenLayout title="회원 등록" showBackButton footer={<Button label="반 만들기" onPress={handleCreateClass} />}>
       <View className="pt-md pb-xl">
-        <View className="h-1 rounded-full bg-surface-muted mb-md overflow-hidden">
-          <View className="h-1 w-4/5 rounded-full bg-primary" />
-        </View>
 
-        <Text className="text-sm text-ink-teriary font-medium mb-md">2단계 · 회원 등록</Text>
+        {/*progress bar*/}
+        <View className="mb-sm flex-auto flex-row gap-2">
+          <View className="flex-1 h-1 rounded-full bg-primary" />
+          <View className="flex-1 h-1 rounded-full bg-primary" />
+        </View>
+        <Text className="text-label text-primary font-medium mb-md">2단계 · 회원 등록</Text>
 
         <View className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
           <Text className="text-sm font-bold text-primary mb-xxs">지금 다 몰라도 괜찮아요</Text>
