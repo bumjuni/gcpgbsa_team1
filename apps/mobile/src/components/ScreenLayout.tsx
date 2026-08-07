@@ -38,7 +38,7 @@ export const ScreenLayout = ({
       )}
 
       {footer && (
-        <View className="px-md py-sm border-t border-surface-hairline bg-surface-canvas">
+        <View className="px-md py-sm bg-canvas">
           {footer}
         </View>
       )}
