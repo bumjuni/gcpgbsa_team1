@@ -16,6 +16,7 @@ import { ClassCreateCompleteScreen } from './src/screens/ClassCreateCompleteScre
 import { ClassInfoFormScreen_Scrollable } from './src/screens/ClassInfoFormScreen_Scrollable';
 import { ClassListScreen } from './src/screens/ClassListScreen';
 import { ClassListScreen_Filled } from './src/screens/ClassListScreen_Filled';
+import { MemberRegisterScreen } from './src/screens/MemberRegisterScreen';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -24,7 +25,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ClassListScreen_Filled />
+        <LessonPlanConfirmScreen />
       </SafeAreaProvider>
     </NavigationContainer>
   );

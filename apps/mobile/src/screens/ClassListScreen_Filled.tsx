@@ -96,9 +96,6 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
     navigation?.navigate('ClassDetail', { classId });
   };
 
-  const handleViewReports = () => {
-    navigation?.navigate('WeeklyReport');
-  };
 
   return (
     <ScreenLayout title="내 반 목록" footer={<Button label="반 등록하기" onPress={handleAddClass} />}>
@@ -112,15 +109,14 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
               key={item.id}
               variant='default'
               onPress={() => handleClassPress(item.id)}
-              className="border border-surface-hairline rounded-md px-md py-sm mb-md"
             >
               <View className="flex-row items-center justify-between mb-xxs">
-                <Text className="text-base font-bold text-ink">{item.className}</Text>
+                <Text className="text-title-sm text-ink">{item.className}</Text>
                 <View className={`px-xs py-xxs rounded-sm ${statusStyle.badge}`}>
                   <Text className={`text-[10px] font-bold ${statusStyle.text}`}>{item.statusLabel}</Text>
                 </View>
               </View>
-              <Text className="text-xs text-ink-teriary">
+              <Text className="text-label text-ink-teriary">
                 {item.timeLabel} · {item.subLabel}
               </Text>
             </Card>

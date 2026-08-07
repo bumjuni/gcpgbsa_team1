@@ -3,6 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { FormField } from '../components/FormField';
 import { Button } from '../components/Button';
+import { Card } from '../components/card/Card';
 
 interface MemberFormState {
   name: string;
@@ -58,12 +59,12 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
 
         <Text className="text-sm text-ink-teriary font-medium mb-md">2단계 · 회원 등록</Text>
 
-        <View className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
+        <Card variant='notice' className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
           <Text className="text-sm font-bold text-primary mb-xxs">지금 다 몰라도 괜찮아요</Text>
           <Text className="text-xs text-primary">회원 추가는 반을 만든 뒤에도 할 수 있어요</Text>
-        </View>
+        </Card>
 
-        <View className="border border-surface-hairline rounded-md p-md mb-md">
+        <Card className="border border-surface-hairline rounded-md p-md mb-md">
           <View className="flex-row items-center justify-between mb-md">
             <Text className="text-base font-bold text-ink">회원 1</Text>
             <Pressable onPress={handleDeleteMember} hitSlop={8}>
@@ -95,7 +96,6 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
 
           <FormField
             label="전화번호"
-            badgeType="required"
             placeholder="010-0000-0000"
             keyboardType="phone-pad"
             value={formData.phone}
@@ -104,9 +104,8 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
 
           <FormField
             label="비고"
-            badgeType="optional"
             placeholder="예: 통원치료 중, 자유형 호흡이 잘 안됨"
-            multiline
+            // multiline
             value={formData.notes}
             onChangeText={(val) => handleFieldChange('notes', val)}
           />
@@ -117,7 +116,7 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
             onPress={handleCompleteEntry}
             disabled={isEntryComplete || !isEntryValid}
           />
-        </View>
+        </Card>
       </View>
     </ScreenLayout>
   );
