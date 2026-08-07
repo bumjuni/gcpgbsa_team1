@@ -97,8 +97,6 @@ class Student(Base):
     phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
     birth_year: Mapped[Optional[int]] = mapped_column(Date, nullable=True)  # Date 타입 생년월일로 변경
     # health_note: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    memo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    joined_at: Mapped[date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )
@@ -175,6 +173,7 @@ class Enrollment(Base):
     class_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("swim_class.id"), nullable=False
     )
+    memo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
