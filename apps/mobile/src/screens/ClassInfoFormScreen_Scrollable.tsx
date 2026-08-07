@@ -1,5 +1,5 @@
 import React, { useState, useTransition } from 'react';
-import { View, Text, Pressable, TextInput } from 'react-native';
+import { View, Text, Pressable, TextInput, TouchableOpacity } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { FormField } from '../components/FormField';
 import { Button } from '../components/Button';
@@ -108,6 +108,10 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
     navigation?.navigate('ClassDetailForm', formData);
   };
 
+  const handleOpenLevelDesc = () => {
+
+  }
+
   const isFormValid =
     formData.name.trim().length > 0 &&
     formData.days.length > 0 &&
@@ -120,23 +124,25 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
     <ScreenLayout title="반 정보 입력" showBackButton>
       <View className="pt-md pb-xl">
 
-        {/*progress bar*/}
+        {/* progress bar */}
         <View className="mb-sm flex-auto flex-row gap-2">
           <View className="flex-1 h-1 rounded-full bg-primary" />
           <View className="flex-1 h-1 rounded-full bg-hairline" />
         </View>
         <Text className="text-label text-primary font-medium mb-md">1단계 · 반 정보</Text>
 
+        {/* 반 이름 */}
         <FormField
           label="반 이름"
-          badgeType="required"
-          placeholder="예: 초급반"
+          required
+          placeholder="예: 화요일 저녁 초급반"
           value={formData.name}
           onChangeText={(val) => handleFieldChange('name', val)}
         />
 
+        {/* 수업 요일 */}
         <View className="mb-md">
-          <FieldLabel label="요일" required />
+          <FieldLabel label="수업 요일" required />
           <View className="flex-row justify-between">
             {DAYS.map((day) => {
               const selected = formData.days.includes(day);
@@ -155,8 +161,8 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
           </View>
         </View>
 
+        {/* 시작 시각 */}
         <View className="mb-md">
-          <FieldLabel label="수업 시간대" required />
           <View className="flex-row">
             <View className="flex-1 mr-xs">
               <Text className="mb-xxs">
@@ -187,32 +193,16 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
           </View>
         </View>
 
-        <View className="mb-md">
-          <Text className="mb-xs">
-            <Text className="text-base font-bold text-ink">정원</Text>
-            <Text className="text-xs text-ink-teriary"> · 필수 · 최대 인원</Text>
-          </Text>
-          <View className="h-14 px-md rounded-md border border-surface-hairline bg-surface-muted flex-row items-center justify-between">
-            <TextInput
-              className="flex-1 text-base text-ink"
-              placeholder="예: 10"
-              placeholderTextColor="#8B9198"
-              keyboardType="number-pad"
-              value={formData.capacity}
-              onChangeText={(val) => handleFieldChange('capacity', val)}
-            />
-            <Text className="text-base text-ink-teriary ml-xs">명</Text>
-          </View>
-        </View>
-
+        {/* 정원 */}
         <FormField
-          label="장소"
-          badgeType="optional"
-          placeholder="예: A"
-          value={formData.location}
-          onChangeText={(val) => handleFieldChange('location', val)}
+          label="정원"
+          required
+          placeholder="예: 10 (최대 인원)"
+          value={formData.capacity}
+          onChangeText={(val) => handleFieldChange('capacity', val)}
         />
 
+        {/* 나이대 */}
         <View className="mb-md">
           <FieldLabel label="나이대" />
           <View className="flex-row flex-wrap">
@@ -235,10 +225,13 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
           </View>
         </View>
 
+        {/* 수준 */}
         <View className="mb-md">
           <View className="flex-row items-center justify-between mb-xs">
             <FieldLabel label="수준" required />
-            <Text className="text-xs text-primary font-medium">레벨 별로 안내 보기</Text>
+            <TouchableOpacity onPress={handleOpenLevelDesc()}>
+              <Text className="text-xs text-primary font-medium">레벨 별로 안내 보기</Text>
+            </TouchableOpacity>
           </View>
           {LEVELS.map(({ key, desc }) => {
             const selected = formData.level === key;
@@ -265,8 +258,9 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
           })}
         </View>
 
+        {/* 특성 */}
         <View className="mb-md">
-          <FieldLabel label="특성 목표" required />
+          <FieldLabel label="특성(수업목표)" required />
           <View className="flex-row flex-wrap">
             {GOALS.map((goal) => {
               const selected = formData.goals.includes(goal);
