@@ -46,8 +46,8 @@ const variantStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
 };
 
 const disabledStyles: Partial<Record<NonNullable<ButtonProps['variant']>, string>> = {
-  primary: 'bg-disabled-strong',
-  secondary: 'bg-disabled-muted',
+  primary: 'bg-primary-subtle',
+  secondary: 'bg-hairline',
 };
 
 const textStyles: Record<NonNullable<ButtonProps['variant']>, string> = {
