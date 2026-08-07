@@ -1,7 +1,7 @@
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.classroom import SwimClass
+from models.classroom import SwimClass, Student
 
 
 # ======================================================================
@@ -18,3 +18,19 @@ async def create_swim_class(db: AsyncSession, class_data: dict) -> SwimClass:
     await db.refresh(swim_class)
 
     return swim_class
+
+
+# ======================================================================
+# 2. Student (수강생) CRUD
+# ======================================================================
+async def create_student(db: AsyncSession, student_data: dict) -> Student:
+    """새로운 수강생 생성"""
+    student = Student(
+        **student_data,
+        created_at=datetime.now(),
+    )
+    db.add(student)
+    await db.commit()
+    await db.refresh(student)
+
+    return student
