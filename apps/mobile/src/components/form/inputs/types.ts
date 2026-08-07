@@ -11,3 +11,9 @@ export interface FormFieldChipGroupProps<T> {
   multiple?: boolean;
   variant?: 'circle' | 'pill';
 }
+
+export interface FormFieldCardGroupProps<T> {
+  options: Option<T>[];
+  value: T;
+  onChange: (value: T) => void;
+}

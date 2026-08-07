@@ -70,6 +70,8 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
   const [formData, setFormData] = useState<ClassInfoFormState>(initialFormState);
   const [, startTransition] = useTransition();
   const [days, setDays] = useState<string[]>(['Thu']);
+  const [level, setLevel] = useState<string>('');
+
 
   const handleFieldChange = <K extends keyof ClassInfoFormState>(key: K, value: ClassInfoFormState[K]) => {
     startTransition(() => {
@@ -217,37 +219,28 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </FormField>
 
         {/* 수준 */}
-        <View className="mb-md">
-          <View className="flex-row items-center justify-between mb-xs">
-            <FieldLabel label="수준" required />
-            <TouchableOpacity onPress={handleOpenLevelDesc()}>
-              <Text className="text-xs text-primary font-medium">레벨 별로 안내 보기</Text>
-            </TouchableOpacity>
-          </View>
-          {LEVELS.map(({ key, desc }) => {
-            const selected = formData.level === key;
-            return (
-              <Card
-                key={key}
-                variant='default'
-                onPress={() => handleFieldChange('level', key)}
-                className={`flex-row items-center px-md py-sm rounded-md border mb-xs ${
-                  selected ? 'bg-primary-subtle border-primary' : 'bg-surface-muted border-surface-hairline'
-                }`}
-              >
-                <View
-                  className={`w-5 h-5 rounded-full border-2 ${
-                    selected ? 'border-primary bg-primary' : 'border-surface-hairline'
-                  }`}
-                />
-                <View>
-                  <Text className="text-base font-bold text-ink">{key}</Text>
-                  <Text className="text-xs text-ink-teriary">{desc}</Text>
-                </View>
-              </Card>
-            );
-          })}
-        </View>
+        <FormField>
+          <FormField.Label
+            label="수준"
+            required
+            rightAction={
+              <TouchableOpacity onPress={() => {}}>
+                <Text className="text-primary text-sm font-medium">레벨 설명 보기 ›</Text>
+              </TouchableOpacity>
+            }
+          />
+          <FormField.CardGroup
+            options={[
+              { label: '신규', description: '1개월 미만', value: 'BEGINNER' },
+              { label: '초급', description: '자유형 · 배영 가능', value: 'ELEMENTARY' },
+              { label: '중급', description: '평영 가능', value: 'INTERMEDIATE' },
+              { label: '상급', description: '접영 · 배영 가능', value: 'ADVANCED' },
+              { label: '마스터즈', description: '접영까지 숙달', value: 'MASTER' },
+            ]}
+            value={level}
+            onChange={setLevel}
+          />
+        </FormField>
 
         {/* 특성 */}
         <FormField>

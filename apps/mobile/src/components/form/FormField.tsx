@@ -4,6 +4,7 @@ import { FormFieldLabel } from './FormFieldLabel';
 import { FormFieldHelperText } from './FormFieldHelperText';
 import { FormFieldTextInput } from './inputs/TextInput';
 import { FormFieldChipGroup } from './inputs/ChipGroup';
+import { FormFieldCardGroup } from './inputs/CardGroup';
 
 interface FormFieldRootProps {
   children: ReactNode;
@@ -19,4 +20,5 @@ export const FormField = Object.assign(FormFieldRoot, {
   HelperText: FormFieldHelperText,
   TextInput: FormFieldTextInput,
   ChipGroup: FormFieldChipGroup,
+  CardGroup: FormFieldCardGroup,
 });
