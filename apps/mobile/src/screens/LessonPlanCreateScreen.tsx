@@ -2,6 +2,7 @@ import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable, TextInput } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/Button';
+import { FormField } from '../components/form/FormField';
 
 interface LessonPlanFormState {
   equipment: string[];
@@ -35,6 +36,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
 
   const [formData, setFormData] = useState<LessonPlanFormState>(initialFormState);
   const [, startTransition] = useTransition();
+  const [equipment, setEquipment] = useState<string[]>([]);
 
   const handleFieldChange = <K extends keyof LessonPlanFormState>(key: K, value: LessonPlanFormState[K]) => {
     startTransition(() => {
@@ -69,42 +71,31 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
           </Text>
         </View>
 
-        <View className="mb-md">
-          <FieldLabel label="사용 장비" />
-          <Text className="text-xs text-ink-teriary mb-xs">여러 개 선택할 수 있어요</Text>
-          <View className="flex-row flex-wrap">
-            {EQUIPMENT_OPTIONS.map((item) => {
-              const selected = formData.equipment.includes(item);
-              return (
-                <Pressable
-                  key={item}
-                  onPress={() => toggleEquipment(item)}
-                  className={`px-sm py-xs rounded-full border mr-xs mb-xs ${
-                    selected ? 'bg-primary border-primary' : 'bg-surface-muted border-surface-hairline'
-                  }`}
-                >
-                  <Text className={`text-sm font-medium ${selected ? 'text-white' : 'text-ink'}`}>{item}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+        {/* 사용 장비 */}
+        <FormField>
+          <FormField.Label label='사용 장비' />
+          <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
+          <FormField.ChipGroup
+            variant='pill'
+            multiple
+            options={[
+              { label: '오리발', value: 'PRESCHOOL' },
+              { label: '킥판', value: 'ELEMENTARY' },
+              { label: '패들', value: 'TEEN' },
+              { label: '보드', value: 'ADULT' },
+              { label: '없음', value: 'SENIOR' },
+            ]}
+            value={equipment}
+            onChange={setEquipment}
+            />
+        </FormField>
 
-        <View className="mb-md">
-          <FieldLabel label="요청사항" />
-          <Text className="text-xs text-ink-teriary mb-xs">
-            다루고 싶은 기술이나 전달하고 싶은 점을 자유롭게 적어주세요
-          </Text>
-          <TextInput
-            className="w-full bg-surface-muted border border-surface-hairline rounded-md px-md text-base text-ink h-32 pt-sm pb-sm"
-            placeholder="예: 자유형 자세 교정 위주로 진행해주세요"
-            placeholderTextColor="#8B9198"
-            textAlignVertical="top"
-            multiline
-            value={formData.request}
-            onChangeText={(val) => handleFieldChange('request', val)}
-          />
-        </View>
+        <FormField>
+          <FormField.Label label="요청사항" />
+          <FormField.HelperText type='guide' text='다루고 싶은 기술이나 전달하고 싶은 점을 자유롭게 적어주세요' />
+          <FormField.TextInput multiline placeholder='예: 자유형 자세 교정 위주로 진행해주세요' />
+        </FormField>
+
       </View>
     </ScreenLayout>
   );

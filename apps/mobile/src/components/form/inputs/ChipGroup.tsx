@@ -42,7 +42,7 @@ export const FormFieldChipGroup = <T extends string | number>({
             } ${
               selected
                 ? 'bg-primary-subtle border-primary'
-                : ' border-hairline-border-strong'
+                : 'border-[0.5px] border-hairline-border-strong'
             }`}
           >
             <Text

@@ -19,7 +19,7 @@ export const FormFieldLabel = ({
     <View className={`flex-row items-center justify-between mb-xs ${className}`}>
       <View className="flex-row items-center">
         <Text className="text-base font-bold text-ink mr-xs">{label}</Text>
-        {required && <Badge variant="default" text="· 필수" />}
+        <Badge variant="default" text={required ? "· 필수" : "· 선택"} />
       </View>
       {rightAction && <View>{rightAction}</View>}
     </View>
