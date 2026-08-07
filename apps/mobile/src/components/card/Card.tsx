@@ -2,6 +2,8 @@ import React from 'react';
 import { TouchableOpacity, View } from 'react-native';
 import { CardVariant } from './Card.types';
 import { CARD_CONTAINER_STYLES } from './Card.variants';
+import { CardHeader } from './CardHeader';
+import { CardItem } from './CardItem';
 
 
 interface CardProps {
@@ -11,7 +13,7 @@ interface CardProps {
   className?: string;
 }
 
-export const Card: React.FC<CardProps> = ({
+const CardRoot: React.FC<CardProps> = ({
   variant = 'default',
   onPress,
   children,
@@ -30,3 +32,8 @@ export const Card: React.FC<CardProps> = ({
     </Container>
   );
 };
+
+export const Card = Object.assign(CardRoot, {
+  Header: CardHeader,
+  Item: CardItem,
+});

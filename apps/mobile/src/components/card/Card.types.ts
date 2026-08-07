@@ -8,3 +8,20 @@ export interface CardProps {
   children: ReactNode;
   className?: string;
 }
+
+export interface CardHeaderProps {
+  title: string;
+  variant?: CardVariant;
+  icon?: React.ReactNode;
+  rightElement?: React.ReactNode;
+  className?: string;
+}
+
+export interface CardItemProps {
+  title: string;
+  description?: string;
+  leftElement?: React.ReactNode;
+  rightElement?: React.ReactNode;
+  onPress?: () => void;
+  isLast?: boolean;
+}
