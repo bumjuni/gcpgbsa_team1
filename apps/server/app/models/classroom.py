@@ -149,7 +149,7 @@ class ProgramItem(Base):
     detail: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
     set: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     distance_m: Mapped[int] = mapped_column(Integer, nullable=False)
-    duration_time: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     is_checked: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
