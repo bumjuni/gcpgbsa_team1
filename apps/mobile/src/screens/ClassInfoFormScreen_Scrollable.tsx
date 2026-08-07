@@ -69,6 +69,7 @@ const FieldLabel = ({ label, required = false }: { label: string; required?: boo
 export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
   const [formData, setFormData] = useState<ClassInfoFormState>(initialFormState);
   const [, startTransition] = useTransition();
+  const [days, setDays] = useState<string[]>(['Thu']);
 
   const handleFieldChange = <K extends keyof ClassInfoFormState>(key: K, value: ClassInfoFormState[K]) => {
     startTransition(() => {
@@ -138,25 +139,25 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </FormField>
 
         {/* 수업 요일 */}
-        <View className="mb-md">
-          <FieldLabel label="수업 요일" required />
-          <View className="flex-row justify-between">
-            {DAYS.map((day) => {
-              const selected = formData.days.includes(day);
-              return (
-                <Pressable
-                  key={day}
-                  onPress={() => toggleDay(day)}
-                  className={`w-10 h-10 rounded-full items-center justify-center border ${
-                    selected ? 'bg-primary border-primary' : 'bg-surface-muted border-surface-hairline'
-                  }`}
-                >
-                  <Text className={`text-sm font-bold ${selected ? 'text-white' : 'text-ink'}`}>{day}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+        <FormField>
+          <FormField.Label label='수업 요일' required />
+          <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
+          <FormField.ChipGroup
+            variant='circle'
+            multiple
+            options={[
+              { label: '월', value: 'Mon' },
+              { label: '화', value: 'Tue' },
+              { label: '수', value: 'Wed' },
+              { label: '목', value: 'Thu' },
+              { label: '금', value: 'Fri' },
+              { label: '토', value: 'Sat' },
+              { label: '일', value: 'Sun' },
+            ]}
+            value={days}
+            onChange={setDays}
+            />
+        </FormField>
 
         {/* 시작 시각 */}
         <View className="mb-md">
@@ -197,27 +198,23 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </FormField>
 
         {/* 나이대 */}
-        <View className="mb-md">
-          <FieldLabel label="나이대" />
-          <View className="flex-row flex-wrap">
-            {AGE_GROUPS.map(({ key, desc }) => {
-              const selected = formData.ageGroup === key;
-              return (
-                <Pressable
-                  key={key}
-                  onPress={() => handleFieldChange('ageGroup', key)}
-                  className={`px-sm py-xs rounded-full border mr-xs mb-xs ${
-                    selected ? 'bg-primary border-primary' : 'bg-surface-muted border-surface-hairline'
-                  }`}
-                >
-                  <Text className={`text-sm font-medium ${selected ? 'text-white' : 'text-ink'}`}>
-                    {key} {desc}
-                  </Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+        <FormField>
+          <FormField.Label label='나이대' required />
+          <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
+          <FormField.ChipGroup
+            variant='pill'
+            multiple
+            options={[
+              { label: '어린이 (5-7세)', value: 'PRESCHOOL' },
+              { label: '초등 (8-13세)', value: 'ELEMENTARY' },
+              { label: '청소년 (14-19세)', value: 'TEEN' },
+              { label: '성인 (20-59세)', value: 'ADULT' },
+              { label: '시니어 (60세~)', value: 'SENIOR' },
+            ]}
+            value={days}
+            onChange={setDays}
+            />
+        </FormField>
 
         {/* 수준 */}
         <View className="mb-md">
@@ -253,27 +250,26 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </View>
 
         {/* 특성 */}
-        <View className="mb-md">
-          <FieldLabel label="특성(수업목표)" required />
-          <View className="flex-row flex-wrap">
-            {GOALS.map((goal) => {
-              const selected = formData.goals.includes(goal);
-              return (
-                <Pressable
-                  key={goal}
-                  onPress={() => toggleGoal(goal)}
-                  className={`px-sm py-xs rounded-full border mr-xs mb-xs ${
-                    selected ? 'bg-primary border-primary' : 'bg-surface-muted border-surface-hairline'
-                  }`}
-                >
-                  <Text className={`text-sm font-medium ${selected ? 'text-white' : 'text-ink'}`}>{goal}</Text>
-                </Pressable>
-              );
-            })}
-          </View>
-        </View>
+        <FormField>
+          <FormField.Label label='특성(수업목표)' required />
+          <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
+          <FormField.ChipGroup
+            variant='pill'
+            multiple
+            options={[
+              { label: '완영 목표', value: 'PRESCHOOL' },
+              { label: '자세 교정', value: 'ELEMENTARY' },
+              { label: '체력 증진', value: 'TEEN' },
+              { label: '기초 적응', value: 'ADULT' },
+              { label: '기타', value: 'SENIOR' },
+            ]}
+            value={days}
+            onChange={setDays}
+            />
+        </FormField>
 
         <Button label="다음 · 회원 등록" onPress={handleNext} disabled={!isFormValid} className="mt-md" />
+
       </View>
     </ScreenLayout>
   );

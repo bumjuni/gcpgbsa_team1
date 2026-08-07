@@ -37,7 +37,7 @@ module.exports = {
             DEFAULT: '#16181C',
             'on-primary': '#FFFFFF',
             secondary: '#5A6068',
-            teriary: '#8B9198',
+            tertiary: '#8B9198',
           },
           canvas: {
             DEFAULT: '#FFFFFF',
