@@ -71,7 +71,7 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
   const [, startTransition] = useTransition();
   const [days, setDays] = useState<string[]>(['Thu']);
   const [level, setLevel] = useState<string>('');
-
+  const [startTime, setStartTime] = useState<string | number>('');
 
   const handleFieldChange = <K extends keyof ClassInfoFormState>(key: K, value: ClassInfoFormState[K]) => {
     startTransition(() => {
@@ -162,35 +162,23 @@ export const ClassInfoFormScreen_Scrollable = ({ navigation }: any) => {
         </FormField>
 
         {/* 시작 시각 */}
-        <View className="mb-md">
-          <View className="flex-row">
-            <View className="flex-1 mr-xs">
-              <Text className="mb-xxs">
-                <Text className="text-sm font-semibold text-ink">시작 시각</Text>
-                <Text className="text-xs text-ink-teriary"> · 필수</Text>
-              </Text>
-              <Pressable
-                onPress={handleCycleStartTime}
-                className="h-14 px-md rounded-md border border-surface-hairline bg-surface-muted flex-row items-center justify-between"
-              >
-                <Text className="text-base text-ink">{formData.startTime}</Text>
-                <Text className="text-ink-teriary">⌄</Text>
-              </Pressable>
-            </View>
-            <View className="flex-1 ml-xs">
-              <Text className="mb-xxs">
-                <Text className="text-sm font-semibold text-ink">수업 길이</Text>
-                <Text className="text-xs text-ink-teriary"> · 필수</Text>
-              </Text>
-              <Pressable
-                onPress={handleCycleDuration}
-                className="h-14 px-md rounded-md border border-surface-hairline bg-surface-muted flex-row items-center justify-between"
-              >
-                <Text className="text-base text-ink">{formData.duration}분</Text>
-                <Text className="text-ink-teriary">⌄</Text>
-              </Pressable>
-            </View>
-          </View>
+        <View className='flex-row w-full gap-sm'>
+          <FormField className='flex-auto'>
+            <FormField.Label label="시작 시각" required />
+            <FormField.Select
+              value={startTime}
+              placeholder='오후 7:00'
+              onPress={() => console.log('Open Time Picker Modal')}
+            />
+          </FormField>
+          <FormField className='flex-auto'>
+            <FormField.Label label="수업 길이" required />
+            <FormField.Select
+              value={startTime}
+              placeholder='50분'
+              onPress={() => console.log('Open Time Picker Modal')}
+            />
+          </FormField>
         </View>
 
         {/* 정원 */}

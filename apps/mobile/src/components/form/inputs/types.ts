@@ -17,3 +17,9 @@ export interface FormFieldCardGroupProps<T> {
   value: T;
   onChange: (value: T) => void;
 }
+
+export interface FormFieldSelectProps {
+  value?: string;
+  placeholder?: string;
+  onPress: () => void;
+}
