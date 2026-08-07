@@ -3,6 +3,7 @@ import { View, Text, Pressable, TextInput } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/Button';
 import { FormField } from '../components/form/FormField';
+import { Card } from '../components/card/Card';
 
 interface LessonPlanFormState {
   equipment: string[];
@@ -62,14 +63,18 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   return (
     <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성하기" onPress={handleSubmit} />}>
       <View className="pt-md pb-xl">
-        <View className="bg-surface-muted rounded-md px-md py-sm mb-lg">
-          <Text className="text-base font-bold text-ink mb-xxs">
-            {day} {timeOfDay} {className}
+
+        <Card
+          variant='muted'
+          className='mb-lg'
+        >
+          <View className="flex-row items-center justify-between mb-xxs">
+            <Text className="text-title-sm text-ink">화요일 저녁 초급반</Text>
+          </View>
+          <Text className="text-caption text-ink-secondary mt-1">
+            인원 8명 · 초급
           </Text>
-          <Text className="text-xs text-ink-teriary">
-            인원 {memberCount}명 · {level}
-          </Text>
-        </View>
+        </Card>
 
         {/* 사용 장비 */}
         <FormField>
