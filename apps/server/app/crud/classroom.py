@@ -1,7 +1,6 @@
 from datetime import datetime
 from typing import Optional
 
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.classroom import SwimClass, Student, Program, ProgramItem, Enrollment
@@ -133,10 +132,7 @@ async def create_enrollment(db: AsyncSession, enrollment_data: dict) -> Enrollme
         created_at=datetime.now(),
     )
     db.add(enrollment)
-    try:
-        await db.commit()
-        await db.refresh(enrollment)
-    except IntegrityError:
-        pass
+    await db.commit()
+    await db.refresh(enrollment)
 
     return enrollment
