@@ -1,7 +1,8 @@
 from datetime import datetime
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.classroom import SwimClass, Student, Program, ProgramItem
+from models.classroom import SwimClass, Student, Program, ProgramItem, Enrollment
 
 
 # ======================================================================
@@ -66,3 +67,22 @@ async def create_program_item(db: AsyncSession, program_item_data: dict) -> Prog
     await db.refresh(program_item)
 
     return program_item
+
+
+# ======================================================================
+# 5. Enrollment (수강 신청) CRUD
+# ======================================================================
+async def create_enrollment(db: AsyncSession, enrollment_data: dict) -> Enrollment:
+    """새로운 수강 신청 생성"""
+    enrollment = Enrollment(
+        **enrollment_data,
+        created_at=datetime.now(),
+    )
+    db.add(enrollment)
+    try:
+        await db.commit()
+        await db.refresh(enrollment)
+    except IntegrityError:
+        pass
+
+    return enrollment
