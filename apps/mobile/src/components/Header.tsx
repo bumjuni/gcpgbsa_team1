@@ -26,11 +26,11 @@ export const Header = ({
   };
 
   return (
-    <View className="h-14 px-md flex-row items-center justify-between bg-surface-canvas border-b border-surface-hairline">
+    <View className="h-14 px-md flex-row items-center justify-between bg-canvas border-b border-hairline">
       <View className="flex-row items-center">
         {showBackButton && (
           <Pressable onPress={handleBack} hitSlop={12} className="mr-xs">
-            <Text className="text-xl font-bold text-ink">←</Text>
+            <Text className="text-title-lg font-bold text-ink">←</Text>
           </Pressable>
         )}
         <Text className="text-xl font-bold text-ink">{title}</Text>
