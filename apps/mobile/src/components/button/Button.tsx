@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, Text, ActivityIndicator, PressableProps } from 'react-native';
 import { BUTTON_CONTAINER_STYLES, BUTTON_TEXT_STYLES } from './Button.variants';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'text' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'disabled' | 'text' | 'danger';
 
 interface ButtonProps extends PressableProps {
   label: string;
