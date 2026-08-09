@@ -1,8 +1,8 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable, TextInput } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { FormField } from '../components/FormField';
-import { Button } from '../components/Button';
+import { FormField } from '../components/form/FormField';
+import { Button } from '../components/button/Button';
 
 interface ClassInfoFormState {
   name: string;
