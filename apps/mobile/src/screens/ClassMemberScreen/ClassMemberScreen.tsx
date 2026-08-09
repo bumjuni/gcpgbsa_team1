@@ -32,6 +32,8 @@ export const ClassMemberScreen = ({ navigation }: any) => {
   const [members, setMembers] = useState<Member[]>(initialMembers);
   const [, startTransition] = useTransition();
 
+  const isMemberLimitReached = members.length >= MAX_MEMBERS;
+
   const handleFieldChange = <K extends keyof MemberFormState>(key: K, value: MemberFormState[K]) => {
     startTransition(() => {
       setFormData((prev) => ({ ...prev, [key]: value }));
@@ -77,10 +79,10 @@ export const ClassMemberScreen = ({ navigation }: any) => {
         )}
 
         <Button
-          label={'+ 회원 추가하기'}
-          variant={members.length >= MAX_MEMBERS ? 'disabled' : 'secondary'}
+          label={`+ 회원 추가하기 (${members.length}/${MAX_MEMBERS})`}
+          variant={isMemberLimitReached ? 'disabled' : 'secondary'}
           onPress={() => { }}
-          disabled={members.length>=MAX_MEMBERS}
+          disabled={isMemberLimitReached}
         />
         <Text className='text-label text-ink-tertiary self-center mt-sm'>
           최대 10명까지 등록할 수 있어요
