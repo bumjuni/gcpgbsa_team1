@@ -27,8 +27,9 @@ router = APIRouter(prefix="/classroom", tags=["Classroom"])
 )
 async def get_swim_class(
     swim_class_id: int,
-    service: ClassroomService,
+    service: ClassroomService = Depends(get_classroom_service),
 ) -> SwimClassResponse:
+    print("왜안되지")
     return await service.get_swim_class(swim_class_id)
 
 @router.post(

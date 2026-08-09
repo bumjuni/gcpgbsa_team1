@@ -1,8 +1,8 @@
 from datetime import date, datetime, time
 from typing import List, Optional
 
-from apps.server.app.models.classroom import Base
-from project.gcpgbsa_1.apps.server.app.models.classroom import AgeGroupEnum, LevelEnum, ProgramPhaseEnum, ProgramStatusEnum
+from models.classroom import Base
+from models.classroom import AgeGroupEnum, LevelEnum, ProgramPhaseEnum, ProgramStatusEnum
 from pydantic import BaseModel, ConfigDict, Field
 
 

@@ -7,8 +7,9 @@ from services.classroom import ClassroomService
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_factory() as session:
-        yield session
+    yield None
+    # async with async_session_factory() as session:
+    #     yield session
 
 
 def get_classroom_service(

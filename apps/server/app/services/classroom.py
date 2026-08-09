@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud import classroom as crud_classroom
-from models.classroom import Enrollment, Program, ProgramItem, Student, SwimClass
+from models.classroom import AgeGroupEnum, Enrollment, LevelEnum, Program, ProgramItem, Student, SwimClass
 from schemas.classroom import (
     EnrollmentCreate,
     ProgramCreate,
@@ -11,6 +11,7 @@ from schemas.classroom import (
     SwimClassCreate,
 )
 
+from datetime import datetime, time
 
 class ClassroomService:
 
@@ -21,6 +22,21 @@ class ClassroomService:
     # SwimClass Operations
     # ------------------------------------------------------------------
     async def get_swim_class(self, swim_class_id: int) -> SwimClass:
+        dummy_swim_class_create_data = {
+            "id": 1,
+            "name": "초급 자유형 & 배영반",
+            "capacity": 15,
+            "level": LevelEnum.BEGINNER,
+            "age_groups": AgeGroupEnum.ADULT,
+            "goals": "자유형 50m 완성 및 배영 발차기 습득",
+            "goal_etc": "자유형 호흡 패턴 교정 포함",
+            "duration_min": 50,
+            "start_time": time(9, 0),
+            "days_of_week": "월,수,금",
+            "created_at": datetime.now()
+        }
+        dummy = SwimClass(**dummy_swim_class_create_data)
+        return dummy
         swim_class = await crud_classroom.get_swim_class(
             db=self.db, swim_class_id=swim_class_id
         )
