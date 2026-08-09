@@ -1,7 +1,8 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from models.classroom import SwimClass, Student, Program, ProgramItem, Enrollment
 
@@ -9,6 +10,19 @@ from models.classroom import SwimClass, Student, Program, ProgramItem, Enrollmen
 # ======================================================================
 # 1. SwimClass (강습 클래스) CRUD
 # ======================================================================
+async def get_swim_class(
+        db: AsyncSession, swim_class_id: int
+    ) -> Optional[SwimClass]:
+        """
+        단건 클래스 조회 (Soft Delete 된 데이터는 제외)
+        """
+        query = select(SwimClass).where(
+            SwimClass.id == swim_class_id,
+            SwimClass.deleted_at.is_(None)
+        )
+        result = await db.execute(query)
+        return result.scalar_one_or_none()
+
 async def create_swim_class(db: AsyncSession, class_data: dict) -> SwimClass:
     """새로운 강습 생성"""
     swim_class = SwimClass(

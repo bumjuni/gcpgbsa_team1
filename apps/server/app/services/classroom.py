@@ -20,6 +20,17 @@ class ClassroomService:
     # ------------------------------------------------------------------
     # SwimClass Operations
     # ------------------------------------------------------------------
+    async def get_swim_class(self, swim_class_id: int) -> SwimClass:
+        swim_class = await crud_classroom.get_swim_class(
+            db=self.db, swim_class_id=swim_class_id
+        )
+        if not swim_class:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"SwimClass with ID {swim_class_id} not found.",
+            )
+        return swim_class
+
     async def create_swim_class(self, schema: SwimClassCreate) -> SwimClass:
         return await crud_classroom.create_swim_class(
             db=self.db, class_data=schema.model_dump()

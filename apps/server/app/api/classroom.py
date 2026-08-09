@@ -19,6 +19,18 @@ router = APIRouter(prefix="/classroom", tags=["Classroom"])
 # ----------------------------------------------------------------------
 # 1. SwimClass Endpoints
 # ----------------------------------------------------------------------
+@router.get(
+    "/classes/{swim_class_id}",
+    response_model=SwimClassResponse,
+    status_code=status.HTTP_200_OK,
+    summary="강습 클래스 단건 상세 조회",
+)
+async def get_swim_class(
+    swim_class_id: int,
+    service: ClassroomService,
+) -> SwimClassResponse:
+    return await service.get_swim_class(swim_class_id)
+
 @router.post(
     "/classes",
     response_model=SwimClassResponse,
