@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, View, Text, TouchableWithoutFeedback } from 'react-native';
-import { Button } from './Button';
+import { Button } from './button/Button';
 
 interface ConfirmModalProps {
   visible: boolean;
