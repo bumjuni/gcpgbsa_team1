@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/Button';
+import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
 
 interface TodayClass {

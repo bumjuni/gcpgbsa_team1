@@ -1,7 +1,7 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/Button';
+import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
 
 interface ClassInfoFormState {

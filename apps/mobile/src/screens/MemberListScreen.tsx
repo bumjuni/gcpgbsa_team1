@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/Button';
+import { Button } from '../components/button/Button';
 
 interface Member {
   id: string;

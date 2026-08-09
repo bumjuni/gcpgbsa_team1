@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/Button';
+import { Button } from '../components/button/Button';
 
 export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
   const {

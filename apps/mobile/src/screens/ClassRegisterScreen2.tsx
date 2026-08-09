@@ -2,7 +2,7 @@ import React, { useState, useTransition } from 'react';
 import { View } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { FormField } from '../components/FormField';
-import { Button } from '../components/Button';
+import { Button } from '../components/button/Button';
 import { ConfirmModal } from '../components/ConfirmModal';
 
 interface ClassFormState {
