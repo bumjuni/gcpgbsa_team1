@@ -12,6 +12,6 @@ export const BUTTON_TEXT_STYLES: Record<ButtonVariant, string> = {
   primary: 'text-ink-on-primary text-button',
   secondary: 'text-primary text-button',
   disabled: 'text-ink-secondary',
-  text: 'text-tertiary text-button-sm',
+  text: 'text-ink-secondary text-button-sm',
   danger: 'text-status-danger text-button',
 };

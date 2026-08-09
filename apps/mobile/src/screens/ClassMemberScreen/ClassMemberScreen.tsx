@@ -84,9 +84,11 @@ export const ClassMemberScreen = ({ navigation }: any) => {
           onPress={() => { }}
           disabled={isMemberLimitReached}
         />
-        <Text className='text-label text-ink-tertiary self-center mt-sm'>
-          최대 10명까지 등록할 수 있어요
-        </Text>
+        {isMemberLimitReached &&
+          <Text className='text-label text-ink-tertiary self-center mt-sm'>
+            최대 10명까지 등록할 수 있어요
+          </Text>
+        }
       </View>
     </ScreenLayout>
   );

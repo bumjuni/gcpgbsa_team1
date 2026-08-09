@@ -31,8 +31,7 @@ export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
           <Button
             label="반 목록으로 갈게요"
             onPress={handleGoToClassList}
-            variant="text"
-            className="bg-surface-canvas mb-sm w-3/5"
+            variant='text'
           />
           <Button label="수업안 만들기" onPress={handleCreateLessonPlan} />
         </View>
@@ -42,9 +41,9 @@ export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
         <View className="w-20 h-20 rounded-full bg-primary-subtle items-center justify-center mb-md">
           <Text className="text-3xl font-bold text-primary">✓</Text>
         </View>
-        <Text className="text-lg font-bold text-ink mb-xs text-center">등록을 완료했어요</Text>
-        <Text className="text-sm text-ink-teriary text-center mb-xs">{summaryText}</Text>
-        <Text className="text-sm text-ink-teriary text-center leading-5">
+        <Text className="text-title-lg text-ink text-center">등록을 완료했어요</Text>
+        <Text className="text-body text-ink-secondary text-center my-md">{summaryText}</Text>
+        <Text className="text-caption text-ink-tertiary text-center leading-5">
           이제 이 반에 맞는 수업안을 만들 수 있어요
         </Text>
       </View>

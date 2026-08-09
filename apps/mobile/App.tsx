@@ -22,6 +22,7 @@ import { ClassRegisterScreen } from './src/screens/ClassRegisterScreen';
 import { LessonPlanGeneratingScreen } from './src/screens/LessonPlanGeneratingScreen';
 import { LessonPlanCreateScreen } from './src/screens/LessonPlanCreateScreen';
 import { ClassMemberScreen } from './src/screens/ClassMemberScreen/ClassMemberScreen';
+import { ClassRegisterScreen2 } from './src/screens/ClassRegisterScreen2';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -30,7 +31,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ClassMemberScreen />
+        <ClassCreateCompleteScreen />
       </SafeAreaProvider>
     </NavigationContainer>
   );
