@@ -20,10 +20,34 @@ const initialFormState: MemberFormState = Object.freeze({
   notes: '',
 });
 
+interface Member {
+  id: string;
+  name: string;
+  age: number;
+  level: string;
+}
+
+const MAX_MEMBERS = 10;
+
+const initialMembers: Member[] = [
+  { id: '1', name: '김수영', age: 8, level: '초급' },
+  { id: '2', name: '이도윤', age: 9, level: '초급' },
+  { id: '3', name: '박서준', age: 7, level: '입문' },
+  { id: '4', name: '최유하', age: 10, level: '중급' },
+  { id: '5', name: '정하은', age: 8, level: '초급' },
+  { id: '6', name: '강민준', age: 9, level: '초급' },
+  { id: '7', name: '조서연', age: 6, level: '입문' },
+  { id: '8', name: '윤지호', age: 11, level: '중급' },
+  { id: '9', name: '임채원', age: 8, level: '초급' },
+  { id: '10', name: '한지우', age: 7, level: '초급' },
+];
+
 export const MemberRegisterScreen = ({ navigation }: any) => {
   const [formData, setFormData] = useState<MemberFormState>(initialFormState);
   const [isEntryComplete, setIsEntryComplete] = useState(false);
   const [, startTransition] = useTransition();
+  const [members, setMembers] = useState<Member[]>(initialMembers);
+
 
   const handleFieldChange = <K extends keyof MemberFormState>(key: K, value: MemberFormState[K]) => {
     startTransition(() => {
@@ -68,41 +92,71 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
           <Text className="text-xs text-primary">회원 추가는 반을 만든 뒤에도 할 수 있어요</Text>
         </Card>
 
-        {/* member register form */}
-        <Card className="p-md mb-md">
-          <View className="flex-row items-center justify-between mb-md">
-            <Text className="text-base font-bold text-ink">회원 1</Text>
-            <Badge variant='danger' onPress={handleDeleteMember} text='삭제' />
-          </View>
+        {members.length ? (
+          {/* member list */}
+          {members.map((member, index) => (
+            <Card
+              key={member.id}
+              className="flex-row items-center justify-between border border-surface-hairline rounded-md px-md py-sm mb-md"
+            >
+              {/* 회원정보 */}
+              <View className='align-middle flex-row py-xxs'>
+                <View className="w-xl h-xl rounded-full bg-status-present-subtle items-center justify-center mr-xs">
+                  <Text className="text-sm font-bold text-status-present">✓</Text>
+                </View>
+                <View className='gap-xxs'>
+                  <Text className="text-button-sm">
+                    회원 {index + 1} · {member.name}
+                  </Text>
+                  <Text className="text-label text-ink-secondary">
+                    {member.age}세 · {member.level}
+                    </Text>
+                </View>
+              </View>
 
-          <View className="flex-row gap-sm">
-              <FormField className='flex-auto'>
-                <FormField.Label label="이름"/>
-                <FormField.TextInput placeholder='예: 김수영' />
+              {/* delete button */}
+              <Badge variant='danger' onPress={() => handleDeleteMember(member.id)} text='삭제' />
+            </Card>
+          ))}
+
+        ) : (
+
+          {/* member register form */}
+          <Card className="p-md mb-md">
+            <View className="flex-row items-center justify-between mb-md">
+              <Text className="text-base font-bold text-ink">회원 1</Text>
+              <Badge variant='danger' onPress={handleDeleteMember} text='삭제' />
+            </View>
+
+            <View className="flex-row gap-sm">
+                <FormField className='flex-auto'>
+                  <FormField.Label label="이름"/>
+                  <FormField.TextInput placeholder='예: 김수영' />
+                </FormField>
+
+                <FormField className='flex-auto'>
+                  <FormField.Label label="출생년도"/>
+                  <FormField.TextInput placeholder='1990' keyboardType='numeric'/>
               </FormField>
-
-              <FormField className='flex-auto'>
-                <FormField.Label label="출생년도"/>
-                <FormField.TextInput placeholder='1990' keyboardType='numeric'/>
+            </View>
+            <FormField>
+              <FormField.Label label='전화번호'/>
+              <FormField.TextInput placeholder='010-0000-0000' />
             </FormField>
-          </View>
-          <FormField>
-            <FormField.Label label='전화번호'/>
-            <FormField.TextInput placeholder='010-0000-0000' />
-          </FormField>
 
-          <FormField>
-            <FormField.Label label='비고'/>
-            <FormField.TextInput placeholder='예: 통원치료 중, 자유형 호흡이 잘 안됨' />
-          </FormField>
+            <FormField>
+              <FormField.Label label='비고'/>
+              <FormField.TextInput placeholder='예: 통원치료 중, 자유형 호흡이 잘 안됨' />
+            </FormField>
 
-          <Button
-            label={isEntryComplete ? '입력 완료됨' : '입력 완료'}
-            variant="secondary"
-            onPress={handleCompleteEntry}
-            disabled={isEntryComplete || !isEntryValid}
-          />
-        </Card>
+            <Button
+              label={isEntryComplete ? '입력 완료됨' : '입력 완료'}
+              variant="secondary"
+              onPress={handleCompleteEntry}
+              disabled={isEntryComplete || !isEntryValid}
+            />
+          </Card>
+        )}
       </View>
     </ScreenLayout>
   );

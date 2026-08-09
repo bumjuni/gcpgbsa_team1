@@ -34,16 +34,7 @@ export const MemberListScreen = ({ navigation }: any) => {
   return (
     <ScreenLayout title="회원 등록" showBackButton footer={<Button label="반 만들기" onPress={handleCreateClass} />}>
       <View className="pt-md pb-xl">
-        <View className="h-1 rounded-full bg-surface-muted mb-md overflow-hidden">
-          <View className="h-1 w-4/5 rounded-full bg-primary" />
-        </View>
 
-        <Text className="text-sm text-ink-teriary font-medium mb-md">2단계 · 회원 등록</Text>
-
-        <View className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
-          <Text className="text-sm font-bold text-primary mb-xxs">지금 다 몰라도 괜찮아요</Text>
-          <Text className="text-xs text-primary">회원 추가는 반을 만든 뒤에도 할 수 있어요</Text>
-        </View>
 
         {members.map((member, index) => (
           <View
