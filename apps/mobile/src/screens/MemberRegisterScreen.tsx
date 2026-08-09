@@ -4,6 +4,7 @@ import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
 import { FormField } from '../components/form/FormField';
+import { Badge } from '../components/badge/Badge';
 
 interface MemberFormState {
   name: string;
@@ -53,28 +54,28 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
   return (
     <ScreenLayout title="회원 등록" showBackButton footer={<Button label="반 만들기" onPress={handleCreateClass} />}>
       <View className="pt-md pb-xl">
-        <View className="h-1 rounded-full bg-surface-muted mb-md overflow-hidden">
-          <View className="h-1 w-4/5 rounded-full bg-primary" />
+
+        {/* progress bar */}
+        <View className="mb-sm flex-auto flex-row gap-2">
+          <View className="flex-1 h-1 rounded-full bg-primary" />
+          <View className="flex-1 h-1 rounded-full bg-primary" />
         </View>
+        <Text className="text-label text-primary font-medium mb-md">2단계 · 회원 등록</Text>
 
-        <Text className="text-sm text-ink-teriary font-medium mb-md">2단계 · 회원 등록</Text>
-
+        {/* card */}
         <Card variant='notice' className="bg-primary-subtle rounded-md px-md py-sm mb-lg">
           <Text className="text-sm font-bold text-primary mb-xxs">지금 다 몰라도 괜찮아요</Text>
           <Text className="text-xs text-primary">회원 추가는 반을 만든 뒤에도 할 수 있어요</Text>
         </Card>
 
-        <Card className="border rounded-md p-md mb-md">
+        {/* member register form */}
+        <Card className="p-md mb-md">
           <View className="flex-row items-center justify-between mb-md">
             <Text className="text-base font-bold text-ink">회원 1</Text>
-            <Pressable onPress={handleDeleteMember} hitSlop={8}>
-              <Text className="text-xs font-bold text-status-danger">삭제</Text>
-            </Pressable>
+            <Badge variant='danger' onPress={handleDeleteMember} text='삭제' />
           </View>
 
           <View className="flex-row gap-sm">
-
-
               <FormField className='flex-auto'>
                 <FormField.Label label="이름"/>
                 <FormField.TextInput placeholder='예: 김수영' />
@@ -84,7 +85,6 @@ export const MemberRegisterScreen = ({ navigation }: any) => {
                 <FormField.Label label="출생년도"/>
                 <FormField.TextInput placeholder='1990' keyboardType='numeric'/>
             </FormField>
-
           </View>
           <FormField>
             <FormField.Label label='전화번호'/>

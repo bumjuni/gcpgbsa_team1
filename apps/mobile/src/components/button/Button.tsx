@@ -39,5 +39,3 @@ export const Button = ({
     </Pressable>
   );
 };
-
-const baseStyle = '';

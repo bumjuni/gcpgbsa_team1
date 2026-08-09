@@ -23,7 +23,7 @@ export const Badge: React.FC<BadgeProps> = ({
     <Container
       onPress={onPress}
       activeOpacity={isClickable ? 0.8 : 1}
-      className={`${BADGE_CONTAINER_STYLES[variant]} ${className}`}
+      className={`${BADGE_CONTAINER_STYLES[variant]} ${className} px-sm py-xs rounded-sm`}
     >
       <Text className={`${BADGE_TEXT_STYLES[variant]} text-legal`}>
         {text}
