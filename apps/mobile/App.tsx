@@ -15,6 +15,7 @@ import { ClassCreateCompleteScreen } from './src/screens/ClassCreateCompleteScre
 import { ScreenLayout } from './src/components/ScreenLayout';
 import { FormField } from './src/components/FormField';
 import { ConfirmModal } from './src/components/ConfirmModal';
+import { ClassListScreen } from './src/screens/ClassListScreen';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -23,7 +24,7 @@ export default function App() {
     <NavigationContainer>
       <SafeAreaProvider style={{flex: 1}}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ClassCreateCompleteScreen />
+        <ClassListScreen />
       </SafeAreaProvider>
     </NavigationContainer>
   );

@@ -1,9 +1,26 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
+import { classroomApi, SwimClass } from '../api/classroom';
 
 export const ClassListScreen = ({ navigation }: any) => {
+  const [classes, setClasses] = useState<SwimClass[]>([]);
+
+  const fetchClasses = async () => {
+      try {
+        const data = await classroomApi.getClasses(1);
+        setClasses(data);
+        console.log(classes);
+      } catch (err: any) {
+        console.error(err);
+      }
+    };
+
+    useEffect(() => {
+      fetchClasses();
+    }, []);
+
   return (
     <ScreenLayout
       title="내 반 목록"
