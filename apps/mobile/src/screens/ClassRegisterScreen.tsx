@@ -248,7 +248,11 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             />
         </FormField>
 
-        <Button label="다음 · 회원 등록" onPress={handleNext} disabled={!isFormValid} className="mt-md" />
+        <Button label="다음 · 회원 등록"
+          // disabled={!isFormValid}
+          onPress={() => navigation?.navigate('ClassMember')}
+          className="mt-md"
+        />
 
       </View>
     </ScreenLayout>
