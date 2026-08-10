@@ -21,7 +21,8 @@ class ClassroomService:
     # ------------------------------------------------------------------
     # SwimClass Operations
     # ------------------------------------------------------------------
-    async def get_swim_class(self, swim_class_id: int) -> SwimClass:
+    async def get_swim_class(self, swim_class_id: int) -> list[SwimClass]:
+        res = []
         dummy_swim_class_create_data = {
             "id": 1,
             "name": "초급 자유형 & 배영반",
@@ -35,8 +36,8 @@ class ClassroomService:
             "days_of_week": "월,수,금",
             "created_at": datetime.now()
         }
-        dummy = SwimClass(**dummy_swim_class_create_data)
-        return dummy
+        res.append(SwimClass(**dummy_swim_class_create_data))
+        return res
         swim_class = await crud_classroom.get_swim_class(
             db=self.db, swim_class_id=swim_class_id
         )
