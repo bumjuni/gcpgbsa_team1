@@ -48,6 +48,10 @@ export default function App() {
             name="ClassMember"
             component={ClassMemberScreen}
           />
+          <Stack.Screen
+            name="ClassCreateComplete"
+            component={ClassCreateCompleteScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
