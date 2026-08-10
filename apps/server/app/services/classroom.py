@@ -9,6 +9,7 @@ from schemas.classroom import (
     ProgramItemCreate,
     StudentCreate,
     SwimClassCreate,
+    SwimClassResponse,
 )
 
 from datetime import datetime, time
@@ -21,32 +22,33 @@ class ClassroomService:
     # ------------------------------------------------------------------
     # SwimClass Operations
     # ------------------------------------------------------------------
-    async def get_swim_class(self, swim_class_id: int) -> list[SwimClass]:
-        res = []
-        dummy_swim_class_create_data = {
-            "id": 1,
-            "name": "초급 자유형 & 배영반",
-            "capacity": 15,
-            "level": LevelEnum.BEGINNER,
-            "age_groups": AgeGroupEnum.ADULT,
-            "goals": "자유형 50m 완성 및 배영 발차기 습득",
-            "goal_etc": "자유형 호흡 패턴 교정 포함",
-            "duration_min": 50,
-            "start_time": time(9, 0),
-            "days_of_week": "월,수,금",
-            "created_at": datetime.now()
-        }
-        res.append(SwimClass(**dummy_swim_class_create_data))
-        return res
-        swim_class = await crud_classroom.get_swim_class(
-            db=self.db, swim_class_id=swim_class_id
+    async def get_swim_class(self) -> list[SwimClassResponse]:
+        # res = []
+        # dummy_swim_class_create_data = {
+        #     "id": 1,
+        #     "name": "초급 자유형 & 배영반",
+        #     "student_count": 3,
+        #     "capacity": 15,
+        #     "level": LevelEnum.BEGINNER,
+        #     "age_groups": AgeGroupEnum.ADULT,
+        #     "goals": "자유형 50m 완성 및 배영 발차기 습득",
+        #     "goal_etc": "자유형 호흡 패턴 교정 포함",
+        #     "duration_min": 50,
+        #     "start_time": time(9, 0),
+        #     "days_of_week": "월,수,금",
+        #     "created_at": datetime.now()
+        # }
+        # res.append(SwimClassResponse.model_validate(dummy_swim_class_create_data))
+        # return res
+        swim_class_orm = await crud_classroom.get_swim_class(
+            db=self.db
         )
-        if not swim_class:
+        if not swim_class_orm:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"SwimClass with ID {swim_class_id} not found.",
             )
-        return swim_class
+        return SwimClassResponse.model_validate(swim_class_orm)
 
     async def create_swim_class(self, schema: SwimClassCreate) -> SwimClass:
         return await crud_classroom.create_swim_class(

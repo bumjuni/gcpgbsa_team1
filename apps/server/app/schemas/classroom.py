@@ -25,7 +25,7 @@ class SwimClassCreate(BaseModel):
     days_of_week: str
     status: bool = True
 
-class SwimClassGetResponse(ORMBaseModel):
+class SwimClassResponse(ORMBaseModel):
     name: str
     student_count: int
     capacity: int
@@ -35,7 +35,7 @@ class SwimClassGetResponse(ORMBaseModel):
     days_of_week: str
     status: bool = True # 추후 수업안 여부에 따라 수정
 
-class SwimClassResponse(ORMBaseModel):
+class SwimClassDetailResponse(SwimClassCreate, ORMBaseModel):
     id: int
     created_at: datetime
 
