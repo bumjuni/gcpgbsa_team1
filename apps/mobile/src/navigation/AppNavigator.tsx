@@ -6,6 +6,7 @@ import { ClassListScreen } from '../screens/ClassListScreen';
 import { ClassRegisterScreen } from '../screens/ClassRegisterScreen';
 import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScreen';
 import { ClassCreateCompleteScreen } from '../screens/ClassCreateCompleteScreen';
+import { LevelGuideScreen } from '../screens/LevelGuideScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 
@@ -22,6 +23,7 @@ export const AppNavigator = () => {
       <Stack.Screen name="ClassRegister" component={ClassRegisterScreen} />
       <Stack.Screen name="ClassMember" component={ClassMemberScreen} />
       <Stack.Screen name="ClassCreateComplete" component={ClassCreateCompleteScreen} />
+      <Stack.Screen name="LevelGuide" component={LevelGuideScreen} />
     </Stack.Navigator>
   );
 };

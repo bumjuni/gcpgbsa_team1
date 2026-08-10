@@ -211,7 +211,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             label="수준"
             required
             rightAction={
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => navigation?.navigate('LevelGuide')}>
                 <Text className="text-primary text-sm font-medium">레벨 설명 보기 ›</Text>
               </TouchableOpacity>
             }
