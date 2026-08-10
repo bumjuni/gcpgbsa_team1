@@ -1,14 +1,27 @@
-const Stack = createNativeStackNavigator();
+import React from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavStackParamList } from './types';
 
-export const ApNavigator = () => {
+import { ClassListScreen } from '../screens/ClassListScreen';
+import { ClassRegisterScreen } from '../screens/ClassRegisterScreen';
+import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScreen';
+import { ClassCreateCompleteScreen } from '../screens/ClassCreateCompleteScreen';
+
+const Stack = createNativeStackNavigator<NavStackParamList>();
+
+export const AppNavigator = () => {
   return (
-    <Stack.Navigator>
-      {/* 1. 하단 탭 네비게이터를 스크린으로 등록 */}
-      <Stack.Screen name="MainTab" component={MainTabNavigator} options={{ headerShown: false }} />
-
-      {/* 2. 탭을 가리고 상단으로 띄울 스택 화면들 */}
+    <Stack.Navigator
+      initialRouteName="ClassList"
+      screenOptions={{
+        headerShown: false,
+        contentStyle: { backgroundColor: '#FFFFFF' },
+      }}
+    >
+      <Stack.Screen name="ClassList" component={ClassListScreen} />
       <Stack.Screen name="ClassRegister" component={ClassRegisterScreen} />
-      <Stack.Screen name="ClassDetail" component={ClassDetailScreen} />
+      <Stack.Screen name="ClassMember" component={ClassMemberScreen} />
+      <Stack.Screen name="ClassCreateComplete" component={ClassCreateCompleteScreen} />
     </Stack.Navigator>
   );
 };
