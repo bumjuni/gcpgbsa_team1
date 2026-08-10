@@ -1,3 +1,7 @@
 # 가상환경 및 파이썬 찌꺼기
 venv/
 __pycache__/
+
+# 환경 변수
+.env
+.env.dev
