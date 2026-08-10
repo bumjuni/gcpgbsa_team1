@@ -16,6 +16,7 @@ import { ScreenLayout } from './src/components/ScreenLayout';
 import { FormField } from './src/components/FormField';
 import { ConfirmModal } from './src/components/ConfirmModal';
 import { ClassListScreen } from './src/screens/ClassListScreen';
+import { ClassListScreen_Filled } from './src/screens/ClassListScreen_Filled';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
