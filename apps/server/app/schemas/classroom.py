@@ -1,7 +1,8 @@
 from datetime import date, datetime, time
 from typing import List, Optional
 
-from project.gcpgbsa_1.apps.server.app.models.classroom import AgeGroupEnum, LevelEnum, ProgramPhaseEnum, ProgramStatusEnum
+from models.classroom import Base
+from models.classroom import AgeGroupEnum, LevelEnum, ProgramPhaseEnum, ProgramStatusEnum
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -28,7 +29,18 @@ class SwimClassCreate(BaseModel):
 class SwimClassResponse(SwimClassCreate, ORMBaseModel):
     id: int
     created_at: datetime
-    deleted_at: Optional[datetime] = None
+
+
+# ----------------------------------------------------------------------
+# Student Schemas
+# ----------------------------------------------------------------------
+class StudentCreate(BaseModel):
+    student_id: int
+    name: str = Field(..., max_length=50)
+    phone: str = Field(..., max_length=20)
+    birth_year: int
+    memo: str
+    created_at: datetime
 
 
 # ----------------------------------------------------------------------
@@ -46,8 +58,6 @@ class EnrollmentCreate(BaseModel):
 class EnrollmentResponse(EnrollmentCreate, ORMBaseModel):
     id: int
     created_at: datetime
-    deleted_at: Optional[datetime] = None
-
 
 # ----------------------------------------------------------------------
 # Program & ProgramItem Schemas
@@ -84,7 +94,6 @@ class ProgramResponse(ProgramCreate, ORMBaseModel):
     session_summary: SessionSummary
     program: Program
     created_at: datetime
-    deleted_at: Optional[datetime] = None
 
 
 class ProgramItemCreate(BaseModel):
@@ -101,7 +110,6 @@ class ProgramItemResponse(ProgramItemCreate, ORMBaseModel):
     id: int
     program_id: int
     created_at: datetime
-    deleted_at: Optional[datetime] = None
 
 
 # ----------------------------------------------------------------------
