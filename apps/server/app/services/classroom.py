@@ -9,6 +9,7 @@ from schemas.classroom import (
     ProgramItemCreate,
     StudentCreate,
     SwimClassCreate,
+    SwimClassDetailResponse,
     SwimClassResponse,
 )
 
@@ -40,8 +41,19 @@ class ClassroomService:
         # }
         # res.append(SwimClassResponse.model_validate(dummy_swim_class_create_data))
         # return res
-        swim_class_orm = await crud_classroom.get_swim_class(
+        swim_classes_orm = await crud_classroom.get_swim_classes(
             db=self.db
+        )
+        if not swim_classes_orm:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="SwimClasses not found.",
+            )
+        return [SwimClassResponse.model_validate(item) for item in swim_classes_orm]
+
+    async def get_swim_class_detail(self, swim_class_id: int) -> SwimClassDetailResponse:
+        swim_class_orm = await crud_classroom.get_swim_class_detail(
+            db=self.db, swim_class_id=swim_class_id,
         )
         if not swim_class_orm:
             raise HTTPException(
@@ -49,6 +61,7 @@ class ClassroomService:
                 detail=f"SwimClass with ID {swim_class_id} not found.",
             )
         return SwimClassResponse.model_validate(swim_class_orm)
+
 
     async def create_swim_class(self, schema: SwimClassCreate) -> SwimClass:
         return await crud_classroom.create_swim_class(

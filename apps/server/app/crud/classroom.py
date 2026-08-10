@@ -22,6 +22,7 @@ async def get_swim_classes(
         result = await db.execute(query)
         return result.scalars().all()
 
+
 async def get_swim_class_detail(
         db: AsyncSession, swim_class_id: int
     ) -> Optional[SwimClass]:
@@ -34,6 +35,7 @@ async def get_swim_class_detail(
         )
         result = await db.execute(query)
         return result.scalar_one_or_none()
+
 
 async def create_swim_class(db: AsyncSession, class_data: dict) -> SwimClass:
     """새로운 강습 생성"""
