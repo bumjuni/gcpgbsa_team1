@@ -25,8 +25,17 @@ class SwimClassCreate(BaseModel):
     days_of_week: str
     status: bool = True
 
+class SwimClassGetResponse(ORMBaseModel):
+    name: str
+    student_count: int
+    capacity: int
+    level: LevelEnum
+    age_groups: AgeGroupEnum
+    start_time: time  # time 타입 변경
+    days_of_week: str
+    status: bool = True # 추후 수업안 여부에 따라 수정
 
-class SwimClassResponse(SwimClassCreate, ORMBaseModel):
+class SwimClassResponse(ORMBaseModel):
     id: int
     created_at: datetime
 
@@ -55,8 +64,12 @@ class EnrollmentCreate(BaseModel):
     memo: Optional[str] = None
 
 
-class EnrollmentResponse(EnrollmentCreate, ORMBaseModel):
+class EnrollmentResponse(ORMBaseModel):
     id: int
+    student_id: int
+    class_id: int
+    name: str
+    birth_year: Optional[int] = None
     created_at: datetime
 
 # ----------------------------------------------------------------------
