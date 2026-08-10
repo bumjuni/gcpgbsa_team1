@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -10,7 +10,20 @@ from models.classroom import SwimClass, Student, Program, ProgramItem, Enrollmen
 # ======================================================================
 # 1. SwimClass (강습 클래스) CRUD
 # ======================================================================
-async def get_swim_class(
+async def get_swim_classes(
+        db: AsyncSession
+    ) -> Optional[list[SwimClass]]:
+        """
+        클래스 목록 조회 (Soft Delete 된 데이터는 제외)
+        """
+        query = select(SwimClass).where(
+            SwimClass.deleted_at.is_(None)
+        )
+        result = await db.execute(query)
+        return result.scalars().all()
+
+
+async def get_swim_class_detail(
         db: AsyncSession, swim_class_id: int
     ) -> Optional[SwimClass]:
         """
@@ -22,6 +35,7 @@ async def get_swim_class(
         )
         result = await db.execute(query)
         return result.scalar_one_or_none()
+
 
 async def create_swim_class(db: AsyncSession, class_data: dict) -> SwimClass:
     """새로운 강습 생성"""
@@ -146,6 +160,19 @@ async def create_enrollment(db: AsyncSession, enrollment_data: dict) -> Enrollme
         created_at=datetime.now(),
     )
     db.add(enrollment)
+    await db.commit()
+    await db.refresh(enrollment)
+
+    return enrollment
+
+
+async def delete_enrollment(db: AsyncSession, enrollment_id: int) -> Optional[Enrollment]:
+    """수강 정보 삭제 (soft delete)"""
+    enrollment = await db.get(Enrollment, enrollment_id)
+    if enrollment is None:
+        return None
+
+    enrollment.deleted_at = datetime.now()
     await db.commit()
     await db.refresh(enrollment)
 

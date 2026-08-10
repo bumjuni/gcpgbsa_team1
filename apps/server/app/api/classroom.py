@@ -9,6 +9,7 @@ from schemas.classroom import (
     ProgramItemResponse,
     ProgramResponse,
     SwimClassCreate,
+    SwimClassDetailResponse,
     SwimClassResponse,
 )
 from services.classroom import ClassroomService
@@ -20,21 +21,33 @@ router = APIRouter(prefix="/classroom", tags=["Classroom"])
 # 1. SwimClass Endpoints
 # ----------------------------------------------------------------------
 @router.get(
-    "/classes/{swim_class_id}",
-    response_model=SwimClassResponse,
+    "/classes",
+    response_model=list[SwimClassResponse],
     status_code=status.HTTP_200_OK,
-    summary="강습 클래스 단건 상세 조회",
+    summary="강습 클래스 목록 조회",
 )
-async def get_swim_class(
+async def get_swim_classes(
+    service: ClassroomService = Depends(get_classroom_service),
+) -> list[SwimClassResponse]:
+    return await service.get_swim_class()
+
+
+@router.get(
+    "/class/{swim_class_id}",
+    response_model=list[SwimClassResponse],
+    status_code=status.HTTP_200_OK,
+    summary="단일 강습 클래스 상세정보 조회",
+)
+async def get_swim_class_detail(
     swim_class_id: int,
     service: ClassroomService = Depends(get_classroom_service),
-) -> SwimClassResponse:
-    print("왜안되지")
-    return await service.get_swim_class(swim_class_id)
+) -> SwimClassDetailResponse:
+    return await service.get_swim_class_detail(swim_class_id)
+
 
 @router.post(
-    "/classes",
-    response_model=SwimClassResponse,
+    "/class",
+    response_model=SwimClassDetailResponse,
     status_code=status.HTTP_201_CREATED,
     summary="강습 클래스 생성",
 )
@@ -42,20 +55,19 @@ async def get_swim_class(
 async def create_swim_class(
     schema: SwimClassCreate,
     service: ClassroomService = Depends(get_classroom_service),
-) -> SwimClassResponse:
+) -> SwimClassDetailResponse:
     return await service.create_swim_class(schema)
 
 @router.delete(
     "/classes/{swim_class_id}",
-    response_model=SwimClassResponse,
     status_code=status.HTTP_200_OK,
     summary="강습 클래스 삭제(소프트)",
 )
 async def delete_swim_class(
     swim_class_id: int,
-    service: ClassroomService = Depends(get_classroom_service),
-) -> SwimClassResponse:
-    return await service.delete_swim_class(swim_class_id)
+    service: ClassroomService = Depends(get_classroom_service)):
+    deleted_class = await service.delete_swim_class(swim_class_id)
+    return {"id": deleted_class.id}
 
 
 # ----------------------------------------------------------------------
