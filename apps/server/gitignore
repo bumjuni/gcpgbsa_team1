@@ -1,0 +1,15 @@
+# 가상환경 및 파이썬 찌꺼기
+venv/
+__pycache__/
+
+# 데이터베이스 및 무거운 파일
+chroma_db/
+my_rag_db/
+
+# 설치 파일 및 SDK
+google-cloud-sdk/
+*.tar.gz
+
+# (선택) 용량이 큰 PDF나 영상 폴더가 있다면 아래 주석(#)을 지우고 사용하세요.
+# PDF_Books/
+# YouTube/
