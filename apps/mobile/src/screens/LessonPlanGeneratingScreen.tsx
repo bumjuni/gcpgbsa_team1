@@ -1,7 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, Text } from 'react-native';
 
-export const LessonPlanGeneratingScreen = () => {
+export const LessonPlanGeneratingScreen = ({ navigation }: any) => {
+  // 개선 필요
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      navigation?.navigate('LessonPlanConfirm');
+    }, 2000); // TODO: 임시 타이머. 실제 수업안 생성 API 연동 시 응답 완료 시점으로 교체 필요
+    return () => clearTimeout(timer);
+  }, [navigation]);
+
   return (
     <View className="flex-1 justify-center items-center">
       <View className="w-20 h-20 rounded-full bg-primary-subtle items-center justify-center mb-md">
