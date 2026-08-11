@@ -14,9 +14,9 @@ export const LessonPlanGeneratingScreen = ({ navigation }: any) => {
     <View className="flex-1 justify-center items-center">
       <View className="w-20 h-20 rounded-full bg-primary-subtle items-center justify-center mb-md">
         <View className="flex-row items-center">
+          <View className={`${dotStyle} bg-primary-pressed`} />
           <View className={`${dotStyle} bg-primary`} />
-          <View className={`${dotStyle} bg-white`} />
-          <View className={`${dotStyle} bg-white`} />
+          <View className={`${dotStyle} bg-primary/40`} />
         </View>
       </View>
       <Text className="text-sm text-ink-teriary text-center">
