@@ -3,6 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
+import { Badge } from '../components/badge/Badge';
 
 interface TodayClass {
   id: string;
@@ -92,9 +93,7 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
     navigation?.navigate('ClassRegister');
   };
 
-  const handleClassPress = (classId: string) => {
-    navigation?.navigate('ClassDetail', { classId });
-  };
+
 
 
   return (
@@ -125,27 +124,6 @@ export const ClassListScreen_Filled = ({ navigation }: any) => {
 
         <Text className="text-lg font-bold text-ink mb-md">전체 반</Text>
 
-        {CLASS_LIST.map((item) => {
-          const statusStyle = planStatusStyles[item.planStatusType];
-          return (
-            <Card
-              key={item.id}
-              variant='default'
-              onPress={() => handleClassPress(item.id)}
-              className="border border-surface-hairline rounded-md px-md py-sm mb-md"
-            >
-              <View className="flex-row items-center justify-between mb-xxs">
-                <Text className="text-base font-bold text-ink">{item.className}</Text>
-                <View className={`px-xs py-xxs rounded-sm ${statusStyle.badge}`}>
-                  <Text className={`text-[10px] font-bold ${statusStyle.text}`}>{item.planStatusLabel}</Text>
-                </View>
-              </View>
-              <Text className="text-xs text-ink-teriary">
-                {item.infoLabel} · {item.nextClassLabel}
-              </Text>
-            </Card>
-          );
-        })}
       </View>
     </ScreenLayout>
   );

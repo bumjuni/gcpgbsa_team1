@@ -211,7 +211,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             label="수준"
             required
             rightAction={
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => navigation?.navigate('LevelGuide')}>
                 <Text className="text-primary text-sm font-medium">레벨 설명 보기 ›</Text>
               </TouchableOpacity>
             }
@@ -248,7 +248,11 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             />
         </FormField>
 
-        <Button label="다음 · 회원 등록" onPress={handleNext} disabled={!isFormValid} className="mt-md" />
+        <Button label="다음 · 회원 등록"
+          // disabled={!isFormValid}
+          onPress={() => navigation?.navigate('ClassMember')}
+          className="mt-md"
+        />
 
       </View>
     </ScreenLayout>

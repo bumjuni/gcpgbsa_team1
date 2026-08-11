@@ -11,20 +11,17 @@ import {
   SafeAreaProvider
 } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-import { ClassCreateCompleteScreen } from './src/screens/ClassCreateCompleteScreen';
-import { ScreenLayout } from './src/components/ScreenLayout';
-import { FormField } from './src/components/FormField';
-import { ConfirmModal } from './src/components/ConfirmModal';
+import { AppNavigator } from './src/navigation/AppNavigator';
 
 export default function App() {
   const isDarkMode = useColorScheme() === 'dark';
 
   return (
-    <NavigationContainer>
-      <SafeAreaProvider style={{flex: 1}}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <ClassCreateCompleteScreen />
-      </SafeAreaProvider>
-    </NavigationContainer>
+    <SafeAreaProvider style={{flex: 1, backgroundColor: '#FFFFFF'}}>
+      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

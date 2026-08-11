@@ -56,7 +56,12 @@ export const ClassMemberScreen = ({ navigation }: any) => {
   };
 
   return (
-    <ScreenLayout title="회원 등록" showBackButton footer={<Button label="반 만들기" onPress={handleCreateClass} />}>
+    <ScreenLayout
+      title="회원 등록"
+      showBackButton
+      footer={
+        <Button label="반 만들기" onPress={() => navigation?.navigate('ClassCreateComplete')} />
+      }>
       <View className="pt-md pb-xl">
 
         {/* progress bar */}

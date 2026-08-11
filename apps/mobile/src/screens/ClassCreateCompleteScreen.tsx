@@ -14,10 +14,6 @@ export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
 
   const summaryText = `${day} ${timeOfDay} ${className} · 인원 ${memberCount}명 · ${level}`;
 
-  const handleGoToClassList = () => {
-    navigation?.navigate('ClassList');
-  };
-
   const handleCreateLessonPlan = () => {
     navigation?.navigate('LessonPlanCreate');
   };
@@ -30,7 +26,7 @@ export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
         <View className="items-center">
           <Button
             label="반 목록으로 갈게요"
-            onPress={handleGoToClassList}
+            onPress={() => navigation?.navigate('ClassList')}
             variant='text'
           />
           <Button label="수업안 만들기" onPress={handleCreateLessonPlan} />
