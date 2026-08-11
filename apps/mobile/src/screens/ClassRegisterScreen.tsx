@@ -48,10 +48,10 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '토', value: 'Sat' },
               { label: '일', value: 'Sun' },
             ]}
-            value={values.days}
-            onChange={(val) => setFieldValue('days', val as string[])}
+            value={values.days_of_week}
+            onChange={(val) => setFieldValue('days_of_week', val as string[])}
           />
-          {errors.days && <FormField.HelperText type="error" text={errors.days} />}
+          {errors.days_of_week && <FormField.HelperText type="error" text={errors.days_of_week} />}
         </FormField>
 
         {/* 시작 시각 */}
@@ -71,9 +71,11 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               value={values.endTime}
               onChange={(val) => setFieldValue('endTime', val as string)}
             />
-            {errors.endTime && <FormField.HelperText type="error" text={errors.endTime} />}
           </FormField>
         </View>
+        {errors.startTime && <FormField.HelperText type="error" text={errors.startTime} />}
+        {errors.endTime && <FormField.HelperText type="error" text={errors.endTime} />}
+
 
         {/* 정원 */}
         <FormField>
@@ -138,11 +140,11 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             variant='rounded-square'
             multiple
             options={[
-              { label: '완영 목표', value: 'PRESCHOOL' },
-              { label: '자세 교정', value: 'ELEMENTARY' },
-              { label: '체력 증진', value: 'TEEN' },
-              { label: '기초 적응', value: 'ADULT' },
-              { label: '기타', value: 'SENIOR' },
+              { label: '완영 목표', value: 'COMPLETE_SWIM' },
+              { label: '자세 교정', value: 'POSTURE_CORRECTION' },
+              { label: '체력 증진', value: 'FITNESS_IMPROVEMENT' },
+              { label: '기초 적응', value: 'BASIC_ADAPTATION' },
+              { label: '기타', value: 'ETC' },
             ]}
             value={values.goals}
             onChange={(val) => setFieldValue('goals', val as string[])}

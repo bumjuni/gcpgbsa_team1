@@ -17,4 +17,6 @@ export interface SwimClass {
 // 강습반 상세 정보
 export interface SwimClassDetail extends SwimClass {
   created_at: Date;
+  goal: string;
+  goal_etc: string;
 }

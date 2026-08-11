@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const classFormSchema = z
   .object({
     name: z.string().min(1, '반 이름을 입력해 주세요.'),
-    days: z.array(z.string()).min(1, '수업 요일을 하나 이상 선택해 주세요.'),
+    days_of_week: z.array(z.string()).min(1, '수업 요일을 하나 이상 선택해 주세요.'),
     startTime: z.string({
       required_error: '시작 시각을 선택해 주세요.',
       invalid_type_error: '시작 시각을 선택해 주세요.',
