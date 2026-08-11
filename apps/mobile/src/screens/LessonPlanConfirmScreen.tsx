@@ -18,7 +18,7 @@ interface LessonSection {
 
 const DEFAULT_SECTIONS: LessonSection[] = [
   {
-    title: '웜업',
+    title: 'Pre-Set',
     totalDistance: '200m',
     items: [
       { name: '100m 자유형', description: '천천히 힘 빼고 편하게', distance: '100m' },
@@ -26,7 +26,7 @@ const DEFAULT_SECTIONS: LessonSection[] = [
     ],
   },
   {
-    title: '메인 세트',
+    title: 'Main-Set',
     totalDistance: '700m',
     items: [
       { name: '4×25m 자유형 킥', description: '강도 편한 방식으로 자유롭게 내용', distance: '4×25m' },
@@ -36,7 +36,7 @@ const DEFAULT_SECTIONS: LessonSection[] = [
     ],
   },
   {
-    title: '콜다운',
+    title: 'Post-Set',
     totalDistance: '100m',
     items: [{ name: '100m 자유형', description: '천천히', distance: '100m' }],
   },
@@ -76,7 +76,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
         <Card variant="muted" className="items-center py-6">
           <Text className="text-caption text-ink-secondary">총 운동량</Text>
           <Text className="text-metric text-ink my-1">1,000m</Text>
-          <Text className="text-legal text-ink-tertiary">웜업 · 메인 · 쿨다운 거리를 더한 값이에요</Text>
+          <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
         {/*<View className="bg-surface-muted rounded-md px-md py-lg items-center mb-lg">
           <Text className="text-sm text-ink-teriary font-medium mb-xxs">총 운동량</Text>
@@ -84,7 +84,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
             {totalDistance.toLocaleString()} m
           </Text>
           <Text className="text-xs text-ink-teriary text-center">
-            웜업 · 메인 · 콜다운 자유형 다 같이해요
+            Pre-Set · Main-Set · Post-Set 자유형 다 같이해요
           </Text>
         </View>*/}
 
