@@ -35,7 +35,7 @@ export const FormFieldChipGroup = <T extends string | number>({
           <Pressable
             key={String(opt.value)}
             onPress={() => handlePress(opt.value)}
-            className={`items-center justify-center border transition-all ${
+            className={`items-center justify-center border ${
               isCircle
                 ? 'px-sm py-sm rounded-full'
               : 'px-md py-sm rounded-full self-start'

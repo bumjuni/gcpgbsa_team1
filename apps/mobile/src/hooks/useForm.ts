@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { ZodSchema } from 'zod';
 import { dateToTimeString, timeStringToDate } from '../utils/timeUtils';
 
@@ -18,8 +18,8 @@ export function useForm<T extends Record<string, any>>({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const setFieldValue = useCallback(<K extends keyof T>(field: K, value: T[K]) => {
-    console.log(field, ": ", value);
     setValues((prev) => ({ ...prev, [field]: value }));
+    console.log(field, ": ", value)
     // 입력 발생 시 해당 필드의 에러 메세지 초기화
     setErrors((prev) => ({ ...prev, [field]: undefined }));
   }, []);
