@@ -7,7 +7,7 @@ export const FormFieldChipGroup = <T extends string | number>({
   value,
   onChange,
   multiple = false,
-  variant = 'pill',
+  variant = 'rounded-square',
 }: FormFieldChipGroupProps<T>) => {
   const isSelected = (val: T) => {
     return Array.isArray(value) ? value.includes(val) : value === val;
@@ -38,11 +38,11 @@ export const FormFieldChipGroup = <T extends string | number>({
             className={`items-center justify-center border ${
               isCircle
                 ? 'px-sm py-sm rounded-full'
-              : 'px-md py-sm rounded-full self-start'
+              : 'px-sm py-sm rounded-md self-start'
             } ${
               selected
                 ? 'bg-primary-subtle border-primary'
-                : 'border-[0.5px] border-hairline-border-strong'
+                : 'border-[1px] border-hairline-border-strong'
             }`}
           >
             <Text

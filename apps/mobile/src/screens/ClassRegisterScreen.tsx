@@ -37,7 +37,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField.Label label='수업 요일' required />
           <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
           <FormField.ChipGroup
-            variant='circle'
+            variant='rounded-square'
             multiple
             options={[
               { label: '월', value: 'Mon' },
@@ -60,7 +60,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             <FormField.Label label="시작 시각" required />
             <FormField.Select
               value={values.startTime}
-              onChange={(val) => setFieldValue('startTime', val)}
+              onChange={(val) => setFieldValue('startTime', val as string)}
             />
           </FormField>
 
@@ -69,7 +69,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             <FormField.Label label="종료 시각" required />
             <FormField.Select
               value={values.endTime}
-              onChange={(val) => setFieldValue('endTime', val)}
+              onChange={(val) => setFieldValue('endTime', val as string)}
             />
             {errors.endTime && <FormField.HelperText type="error" text={errors.endTime} />}
           </FormField>
@@ -92,7 +92,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField.Label label='나이대' required />
           <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
           <FormField.ChipGroup
-            variant='pill'
+            variant='rounded-square'
             multiple
             options={[
               { label: '어린이 (5-7세)', value: 'PRESCHOOL' },
@@ -135,7 +135,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField.Label label='특성(수업목표)' required />
           <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
           <FormField.ChipGroup
-            variant='pill'
+            variant='rounded-square'
             multiple
             options={[
               { label: '완영 목표', value: 'PRESCHOOL' },
