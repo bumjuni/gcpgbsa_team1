@@ -54,7 +54,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   };
 
   const handleEditItem = (sectionTitle: string, itemIndex: number) => {
-    navigation?.navigate('LessonPlanCreate', { section: sectionTitle, itemIndex });
+    navigation?.navigate('LessonPlanEditItem', { sectionTitle, itemIndex });
   };
 
   return (
@@ -100,9 +100,17 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
               />
               {section.items.map((item, index) =>
                 <Card.Item
+                  key={`${section.title}-${index}`}
                   title={item.name}
                   description={item.description}
-                  rightElement={item.distance}
+                  rightElement={
+                    <View className="items-end">
+                      <Text className="text-caption-strong text-ink">{item.distance}</Text>
+                      <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
+                        <Text className="text-caption text-primary font-medium">수정</Text>
+                      </Pressable>
+                    </View>
+                  }
                   isLast={(index === section.items.length) ? true : false}
                 />
               )}
