@@ -61,7 +61,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   };
 
   return (
-    <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성하기" onPress={handleSubmit} />}>
+    <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성 시작" onPress={handleSubmit} />}>
       <View className="pt-md pb-xl">
 
         <Card
