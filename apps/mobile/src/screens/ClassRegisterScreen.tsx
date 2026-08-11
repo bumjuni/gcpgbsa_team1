@@ -60,18 +60,18 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
             <FormField.Label label="시작 시각" required />
             <FormField.Select
               value={values.startTime}
-              placeholder='오후 7:00'
-              onPress={() => console.log('Open Time Picker Modal')}
+              onChange={(val) => setFieldValue('startTime', val)}
             />
           </FormField>
+
+          {/* 종료 시각 */}
           <FormField className='flex-auto'>
-            <FormField.Label label="수업 길이" required />
+            <FormField.Label label="종료 시각" required />
             <FormField.Select
-              value={values.durationMin ? `${values.durationMin}분` : ''}
-              placeholder='50분'
-              onPress={() => console.log('Open Time Picker Modal')}
+              value={values.endTime}
+              onChange={(val) => setFieldValue('endTime', val)}
             />
-            {errors.durationMin && <FormField.HelperText type="error" text={errors.durationMin} />}
+            {errors.endTime && <FormField.HelperText type="error" text={errors.endTime} />}
           </FormField>
         </View>
 

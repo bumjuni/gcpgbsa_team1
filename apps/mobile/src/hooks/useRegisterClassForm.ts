@@ -5,7 +5,7 @@ const INITIAL_VALUES: ClassFormValues = {
   name: '',
   days: [],
   startTime: '',
-  durationMin: 50,
+  endTime: '',
   capacity: '',
   ageGroups: [],
   level: '',
@@ -17,6 +17,7 @@ interface UseRegisterClassFormOptions {
 }
 
 export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
+
   const form = useForm<ClassFormValues>({
     initialValues: INITIAL_VALUES,
     schema: classFormSchema,

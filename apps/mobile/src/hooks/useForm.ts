@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import { ZodSchema } from 'zod';
+import { dateToTimeString, timeStringToDate } from '../utils/timeUtils';
 
 interface UseFormProps<T> {
   initialValues: T;
@@ -55,11 +56,19 @@ export function useForm<T extends Record<string, any>>({
     }
   };
 
+  const transferTimeType = (field: keyof T) => ({
+    // picker에게 보여줄 땐 Date로 잠깐 변환
+    dateValue: values[field] ? timeStringToDate(values[field] as string) : undefined,
+    // picker에서 선택 완료되면 다시 string으로 저장
+    onConfirm: (date: Date) => setFieldValue(field, dateToTimeString(date) as T[keyof T]),
+  });
+
   return {
     values,
     errors,
     isSubmitting,
     setFieldValue,
     handleSubmit,
+    transferTimeType
   };
 }
