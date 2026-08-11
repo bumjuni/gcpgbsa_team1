@@ -9,7 +9,7 @@ from .base import ORMBaseModel
 class SwimClassCreate(BaseModel):
     name: str = Field(..., max_length=100)
     capacity: int = Field(..., ge=1)
-    student_count: int
+    # student_count: int
     level: LevelEnum
     age_groups: AgeGroupEnum
     goals: str = Field(..., max_length=200)

@@ -59,8 +59,8 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField className='flex-auto'>
             <FormField.Label label="시작 시각" required />
             <FormField.Select
-              value={values.startTime}
-              onChange={(val) => setFieldValue('startTime', val as string)}
+              value={values.start_time}
+              onChange={(val) => setFieldValue('start_time', val as string)}
             />
           </FormField>
 
@@ -68,13 +68,13 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField className='flex-auto'>
             <FormField.Label label="종료 시각" required />
             <FormField.Select
-              value={values.endTime}
-              onChange={(val) => setFieldValue('endTime', val as string)}
+              value={values.end_time}
+              onChange={(val) => setFieldValue('end_time', val as string)}
             />
           </FormField>
         </View>
-        {errors.startTime && <FormField.HelperText type="error" text={errors.startTime} />}
-        {errors.endTime && <FormField.HelperText type="error" text={errors.endTime} />}
+        {errors.start_time && <FormField.HelperText type="error" text={errors.start_time} />}
+        {errors.end_time && <FormField.HelperText type="error" text={errors.end_time} />}
 
 
         {/* 정원 */}
@@ -103,8 +103,8 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '성인 (20-59세)', value: 'ADULT' },
               { label: '시니어 (60세~)', value: 'SENIOR' },
             ]}
-            value={values.ageGroups}
-            onChange={(val) => setFieldValue('ageGroups', val as string[])}
+            value={values.age_groups}
+            onChange={(val) => setFieldValue('age_groups', val as string[])}
             />
         </FormField>
 

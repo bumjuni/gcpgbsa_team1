@@ -6,10 +6,10 @@ import { formatList } from '../utils/listToString';
 const INITIAL_VALUES: ClassFormValues = {
   name: '',
   days_of_week: [],
-  startTime: '',
-  endTime: '',
+  start_time: '',
+  end_time: '',
   capacity: '',
-  ageGroups: [],
+  age_groups: [],
   level: '',
   goals: [],
 };
@@ -28,7 +28,7 @@ export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
       const parsedData = {
         ...validatedData,
         days_of_week: formatList(validatedData.days_of_week),
-        ageGroups: formatList(validatedData.ageGroups),
+        age_groups: formatList(validatedData.age_groups),
         goals: formatList(validatedData.goals),
       };
       await classroomApi.createClass(parsedData);
