@@ -57,7 +57,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   };
 
   const handleSubmit = () => {
-    navigation?.navigate('LessonPlanComplete', { day, timeOfDay, className, memberCount, level, ...formData });
+    navigation?.navigate('LessonPlanGenerating', { day, timeOfDay, className, memberCount, level, ...formData });
   };
 
   return (
