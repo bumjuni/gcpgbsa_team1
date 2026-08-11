@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from crud import classroom as crud_classroom
+from crud.program import ProgramCrud
 from models.classroom import Program, ProgramItem
 from schemas.classroom import (
     ProgramCreate,
@@ -10,17 +10,17 @@ from schemas.classroom import (
 
 
 class ProgramService:
-    def __init__(self, db: AsyncSession) -> None:
-        self.db = db
+    def __init__(self, crud: ProgramCrud):
+         self.crud = crud
 
     async def create_program(self, schema: ProgramCreate) -> Program:
-        return await crud_classroom.create_program(
-            db=self.db, program_data=schema.model_dump()
+        return await self.crud.create_program(
+            program_data=schema.model_dump()
         )
 
     async def delete_program(self, program_id: int) -> Program:
-        deleted_program = await crud_classroom.delete_program(
-            db=self.db, program_id=program_id
+        deleted_program = await self.crud.delete_program(
+            program_id=program_id
         )
         if not deleted_program:
             raise HTTPException(
@@ -30,13 +30,13 @@ class ProgramService:
         return deleted_program
 
     async def create_program_item(self, schema: ProgramItemCreate) -> ProgramItem:
-        return await crud_classroom.create_program_item(
-            db=self.db, program_item_data=schema.model_dump()
+        return await self.crud.create_program_item(
+            program_item_data=schema.model_dump()
         )
 
     async def delete_program_item(self, program_item_id: int) -> ProgramItem:
-        deleted_item = await crud_classroom.delete_program_item(
-            db=self.db, program_item_id=program_item_id
+        deleted_item = await self.crud.delete_program_item(
+            program_item_id=program_item_id
         )
         if not deleted_item:
             raise HTTPException(

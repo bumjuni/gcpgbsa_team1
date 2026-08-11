@@ -1,17 +1,14 @@
-from fastapi import HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from crud import classroom as crud_classroom
+from crud.enrollment import EnrollmentCrud
 from models.classroom import Enrollment
 from schemas.classroom import (
     EnrollmentCreate,
 )
 
 class EnrollmentService:
-    def __init__(self, db: AsyncSession) -> None:
-        self.db = db
+    def __init__(self, crud: EnrollmentCrud):
+         self.crud = crud
 
     async def create_enrollment(self, schema: EnrollmentCreate) -> Enrollment:
-        return await crud_classroom.create_enrollment(
-            db=self.db, enrollment_data=schema.model_dump()
+        return await self.crud.create(
+            enrollment_data=schema.model_dump()
         )
