@@ -11,7 +11,7 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
 }: FormFieldSelectProps<T>) => {
   const [date, setDate] = useState<Date>(new Date(new Date().setHours(0, 0, 0, 0)))
   const [open, setOpen] = useState<boolean>(false)
-console.log('FormFieldSelect MOUNTED');
+
   return (
     <>
     <Pressable
@@ -40,7 +40,7 @@ console.log('FormFieldSelect MOUNTED');
         onConfirm={(d) => {
           setOpen(false)
           setDate(d)
-          onChange(d as T)
+          onChange(formatTime(d) as T)
         }}
       onCancel={() => {
         setOpen(false)
