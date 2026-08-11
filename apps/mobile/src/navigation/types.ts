@@ -7,4 +7,5 @@ export type NavStackParamList = {
   LessonPlanCreate: undefined;
   LessonPlanGenerating: undefined;
   LessonPlanConfirm: undefined;
+  LessonPlanComplete: undefined;
 };

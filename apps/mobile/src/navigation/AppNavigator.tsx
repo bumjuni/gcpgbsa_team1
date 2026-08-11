@@ -10,6 +10,7 @@ import { LevelGuideScreen } from '../screens/LevelGuideScreen';
 import { LessonPlanCreateScreen } from '../screens/LessonPlanCreateScreen';
 import { LessonPlanGeneratingScreen } from '../screens/LessonPlanGeneratingScreen';
 import { LessonPlanConfirmScreen } from '../screens/LessonPlanConfirmScreen';
+import { LessonPlanCompleteScreen } from '../screens/LessonPlanCompleteScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 
@@ -30,6 +31,7 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanCreate" component={LessonPlanCreateScreen} />
       <Stack.Screen name="LessonPlanGenerating" component={LessonPlanGeneratingScreen} />
       <Stack.Screen name="LessonPlanConfirm" component={LessonPlanConfirmScreen} />
+      <Stack.Screen name="LessonPlanComplete" component={LessonPlanCompleteScreen} />
     </Stack.Navigator>
   );
 };
