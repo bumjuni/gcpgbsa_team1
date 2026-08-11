@@ -31,11 +31,11 @@ class SwimClass(Base):
     age_groups: Mapped[AgeGroupEnum] = mapped_column(
         Enum(AgeGroupEnum, name="age_group_enum"), nullable=False
     )
-    goals: Mapped[str] = mapped_column(String(200), nullable=False)
-    goal_etc: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    start_time: Mapped[time] = mapped_column(Time, nullable=False)  # Time 타입으로 변경
-    days_of_week: Mapped[str] = mapped_column(String, nullable=False)
+    goals: Mapped[str] = mapped_column(String(100), nullable=False)
+    goal_etc: Mapped[Optional[str]] = mapped_column(String(200), nullable=True)
+    start_time: Mapped[time] = mapped_column(Time, nullable=False)
+    end_time: Mapped[time] = mapped_column(Time, nullable=False)
+    days_of_week: Mapped[str] = mapped_column(String(20), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
