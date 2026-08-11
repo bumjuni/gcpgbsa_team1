@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 import os
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from typing import AsyncGenerator
 from sqlalchemy.orm import declarative_base
 import ssl
 
@@ -39,3 +40,10 @@ AsyncSessionLocal = async_sessionmaker(
 
 def async_session_factory():
     return AsyncSessionLocal()
+
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    async with async_session_factory() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
