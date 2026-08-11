@@ -9,7 +9,7 @@ const INITIAL_VALUES: ClassFormValues = {
   capacity: '',
   ageGroups: [],
   level: '',
-  features: [],
+  goals: [],
 };
 
 interface UseRegisterClassFormOptions {

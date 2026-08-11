@@ -1,126 +1,15 @@
-import React, { useState, useTransition } from 'react';
+import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
+import { useRegisterClassForm } from '../hooks/useRegisterClassForm';
 
-interface ClassInfoFormState {
-  name: string;
-  days: string[];
-  startTime: string;
-  duration: number;
-  location: string;
-  ageGroup: string;
-  level: string;
-  goals: string[];
-  capacity: string;
-}
-
-const initialFormState: ClassInfoFormState = Object.freeze({
-  name: '',
-  days: [],
-  startTime: '오전 7:00',
-  duration: 5,
-  location: '',
-  ageGroup: '',
-  level: '',
-  goals: [],
-  capacity: '',
-});
-
-const DAYS = ['월', '화', '수', '목', '금', '토', '일'];
-
-const TIME_OPTIONS = [
-  '오전 6:00', '오전 7:00', '오전 8:00', '오전 9:00', '오전 10:00', '오전 11:00',
-  '오후 12:00', '오후 1:00', '오후 2:00', '오후 3:00', '오후 4:00', '오후 5:00',
-  '오후 6:00', '오후 7:00', '오후 8:00', '오후 9:00',
-];
-
-const DURATION_OPTIONS = Array.from({ length: 16 }, (_, i) => (i + 1) * 5); // 5 ~ 80분, 5분 단위 (임시)
-
-const AGE_GROUPS = [
-  { key: '유아', desc: '(4-7세)' },
-  { key: '초등', desc: '(8-13세)' },
-  { key: '청소년', desc: '(14-19세)' },
-  { key: '성인', desc: '(20-39세)' },
-  { key: '시니어', desc: '(40세~)' },
-];
-
-const LEVELS = [
-  { key: '신규', desc: '등록 첫달' },
-  { key: '초급', desc: '기초 배우기' },
-  { key: '중급', desc: '턴 동작 가능' },
-  { key: '상급', desc: '강습 가능한 수준' },
-  { key: '마스터즈', desc: '경기 준비반' },
-];
-
-const GOALS = ['완영 목표', '자세 교정', '체력 증진', '기초 적용', '기타'];
-
-const FieldLabel = ({ label, required = false }: { label: string; required?: boolean }) => (
-  <View className="flex-row items-center mb-xs">
-    <Text className="text-base font-bold text-ink mr-xs">{label}</Text>
-    <View className={`px-xs py-xxs rounded-sm ${required ? 'bg-status-danger' : 'bg-ink-teriary'}`}>
-      <Text className="text-[10px] font-bold text-ink-on_primary">{required ? '필수' : '선택'}</Text>
-    </View>
-  </View>
-);
 
 export const ClassRegisterScreen = ({ navigation }: any) => {
-  const [formData, setFormData] = useState<ClassInfoFormState>(initialFormState);
-  const [, startTransition] = useTransition();
-  const [days, setDays] = useState<string[]>(['Thu']);
-  const [level, setLevel] = useState<string>('');
-  const [startTime, setStartTime] = useState<string | number>('');
-
-  const handleFieldChange = <K extends keyof ClassInfoFormState>(key: K, value: ClassInfoFormState[K]) => {
-    startTransition(() => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    });
-  };
-
-  const toggleDay = (day: string) => {
-    startTransition(() => {
-      setFormData((prev) => ({
-        ...prev,
-        days: prev.days.includes(day) ? prev.days.filter((d) => d !== day) : [...prev.days, day],
-      }));
-    });
-  };
-
-  const toggleGoal = (goal: string) => {
-    startTransition(() => {
-      setFormData((prev) => ({
-        ...prev,
-        goals: prev.goals.includes(goal) ? prev.goals.filter((g) => g !== goal) : [...prev.goals, goal],
-      }));
-    });
-  };
-
-  const handleCycleStartTime = () => {
-    const nextIndex = (TIME_OPTIONS.indexOf(formData.startTime) + 1) % TIME_OPTIONS.length;
-    handleFieldChange('startTime', TIME_OPTIONS[nextIndex]);
-  };
-
-  const handleCycleDuration = () => {
-    const nextIndex = (DURATION_OPTIONS.indexOf(formData.duration) + 1) % DURATION_OPTIONS.length;
-    handleFieldChange('duration', DURATION_OPTIONS[nextIndex]);
-  };
-
-  const handleNext = () => {
-    navigation?.navigate('ClassDetailForm', formData);
-  };
-
-  const handleOpenLevelDesc = () => {
-
-  }
-
-  const isFormValid =
-    formData.name.trim().length > 0 &&
-    formData.days.length > 0 &&
-    Boolean(formData.startTime) &&
-    formData.level.length > 0 &&
-    formData.goals.length > 0 &&
-    formData.capacity.trim().length > 0;
+  const { values, errors, isSubmitting, setFieldValue, handleSubmit } = useRegisterClassForm({
+    onSuccess: () => navigation?.navigate('ClassMember')
+  });
 
   return (
     <ScreenLayout title="반 정보 입력" showBackButton>
@@ -136,7 +25,11 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
         {/* 반 이름 */}
         <FormField>
           <FormField.Label label="반 이름" required />
-          <FormField.TextInput placeholder="예: 화요일 저녁 초급반" />
+          <FormField.TextInput
+            placeholder="예: 화요일 저녁 초급반"
+            value={values.name}
+            onChangeText={(text) => setFieldValue('name', text)}
+          />
         </FormField>
 
         {/* 수업 요일 */}
@@ -155,9 +48,10 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '토', value: 'Sat' },
               { label: '일', value: 'Sun' },
             ]}
-            value={days}
-            onChange={setDays}
-            />
+            value={values.days}
+            onChange={(val) => setFieldValue('days', val as string[])}
+          />
+          {errors.days && <FormField.HelperText type="error" text={errors.days} />}
         </FormField>
 
         {/* 시작 시각 */}
@@ -165,7 +59,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField className='flex-auto'>
             <FormField.Label label="시작 시각" required />
             <FormField.Select
-              value={startTime}
+              value={values.startTime}
               placeholder='오후 7:00'
               onPress={() => console.log('Open Time Picker Modal')}
             />
@@ -173,17 +67,24 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField className='flex-auto'>
             <FormField.Label label="수업 길이" required />
             <FormField.Select
-              value={startTime}
+              value={values.durationMin ? `${values.durationMin}분` : ''}
               placeholder='50분'
               onPress={() => console.log('Open Time Picker Modal')}
             />
+            {errors.durationMin && <FormField.HelperText type="error" text={errors.durationMin} />}
           </FormField>
         </View>
 
         {/* 정원 */}
         <FormField>
           <FormField.Label label="정원" required />
-          <FormField.TextInput placeholder="예: 10 (최대 인원)" suffix="명" keyboardType="numeric" />
+          <FormField.TextInput
+            placeholder="예: 10 (최대 인원)"
+            suffix="명"
+            keyboardType="numeric"
+            value={String(values.capacity)}
+            onChangeText={(text) => setFieldValue('capacity', text)}
+          />
         </FormField>
 
         {/* 나이대 */}
@@ -200,8 +101,8 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '성인 (20-59세)', value: 'ADULT' },
               { label: '시니어 (60세~)', value: 'SENIOR' },
             ]}
-            value={days}
-            onChange={setDays}
+            value={values.ageGroups}
+            onChange={(val) => setFieldValue('ageGroups', val as string[])}
             />
         </FormField>
 
@@ -224,8 +125,8 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '상급', description: '접영 · 배영 가능', value: 'ADVANCED' },
               { label: '마스터즈', description: '접영까지 숙달', value: 'MASTER' },
             ]}
-            value={level}
-            onChange={setLevel}
+            value={values.level}
+            onChange={(val) => setFieldValue('level', val as string)}
           />
         </FormField>
 
@@ -243,14 +144,14 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '기초 적응', value: 'ADULT' },
               { label: '기타', value: 'SENIOR' },
             ]}
-            value={days}
-            onChange={setDays}
+            value={values.goals}
+            onChange={(val) => setFieldValue('goals', val as string[])}
             />
         </FormField>
 
         <Button label="다음 · 회원 등록"
-          // disabled={!isFormValid}
-          onPress={() => navigation?.navigate('ClassMember')}
+          disabled={isSubmitting}
+          onPress={handleSubmit}
           className="mt-md"
         />
 

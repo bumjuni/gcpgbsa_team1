@@ -3,7 +3,7 @@ import { Text } from 'react-native';
 
 interface FormFieldHelperTextProps {
   text: string;
-  type?: 'info' | 'guide';
+  type?: 'info' | 'guide' | 'error';
   className?: string;
 }
 
