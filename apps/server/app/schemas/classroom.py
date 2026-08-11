@@ -9,24 +9,26 @@ from .base import ORMBaseModel
 class SwimClassCreate(BaseModel):
     name: str = Field(..., max_length=100)
     capacity: int = Field(..., ge=1)
+    student_count: int
     level: LevelEnum
-    age_groups: AgeGroupEnum
+    age_groups: list[AgeGroupEnum]
     goals: str = Field(..., max_length=200)
     goal_etc: Optional[str] = None
-    duration_min: int = Field(..., ge=1)
-    start_time: time  # time 타입 변경
+    start_time: time
+    end_time: time
     days_of_week: str
-    status: bool = True
+    is_active: bool = True
 
 class SwimClassResponse(ORMBaseModel):
     name: str
     student_count: int
     capacity: int
     level: LevelEnum
-    age_groups: AgeGroupEnum
+    age_groups: list[AgeGroupEnum]
     start_time: time  # time 타입 변경
+    end_time: time
     days_of_week: str
-    status: bool = True # 추후 수업안 여부에 따라 수정
+    # is_active: bool = True # 추후 수업안 여부에 따라 수정
 
 class SwimClassDetailResponse(SwimClassCreate, ORMBaseModel):
     id: int
