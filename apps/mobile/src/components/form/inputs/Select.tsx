@@ -4,19 +4,19 @@ import { FormFieldSelectProps } from './types';
 import DatePicker from 'react-native-date-picker'
 import { formatTime } from '../../../utils/timeUtils';
 
-export const FormFieldSelect = <T extends string | number | Date>({
+export const FormFieldSelect = React.memo(<T extends string | number | Date>({
   value,
   placeholder,
   onChange,
 }: FormFieldSelectProps<T>) => {
   const [date, setDate] = useState<Date>(new Date(new Date().setHours(0, 0, 0, 0)))
   const [open, setOpen] = useState<boolean>(false)
-
+console.log('FormFieldSelect MOUNTED');
   return (
     <>
     <Pressable
       onPress={() => setOpen(true)}
-      className="flex-1 border border-hairline-border-strong rounded-md px-md py-sm flex-row align-middle"
+      className="flex-auto border border-hairline-border-strong rounded-md px-md py-sm flex-row align-middle"
       >
         {date &&
           <Text className={`text-base ${date ? 'text-ink' : 'text-ink-tertiary'}`}>
@@ -40,7 +40,7 @@ export const FormFieldSelect = <T extends string | number | Date>({
         onConfirm={(d) => {
           setOpen(false)
           setDate(d)
-          // onChange(val as T)
+          onChange(d as T)
         }}
       onCancel={() => {
         setOpen(false)
@@ -48,4 +48,4 @@ export const FormFieldSelect = <T extends string | number | Date>({
       />
     </>
   );
-};
+});
