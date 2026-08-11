@@ -1,38 +1,27 @@
-from typing import AsyncGenerator
 from fastapi import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.database import async_session_factory
-from services.classroom import ClassroomService
-from services.enrollment import EnrollmentService
-from services.program import ProgramService
-from services.student import StudentService
+from services import ClassroomService, EnrollmentService, ProgramService, StudentService
+from crud import ClassroomCrud, StudentCrud, EnrollmentCrud, ProgramCrud
 
-
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with async_session_factory() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+from services.dependencies import get_classroom_crud, get_enrollment_crud, get_student_crud, get_program_crud
 
 
 def get_classroom_service(
-    db: AsyncSession = Depends(get_db),
+    crud: ClassroomCrud = Depends(get_classroom_crud),
 ) -> ClassroomService:
-    return ClassroomService(db=db)
+    return ClassroomService(crud)
 
 def get_enrollment_service(
-    db: AsyncSession = Depends(get_db),
+    crud: EnrollmentCrud = Depends(get_enrollment_crud),
 ) -> EnrollmentService:
-    return EnrollmentService(db=db)
+    return EnrollmentService(crud)
 
 def get_program_service(
-    db: AsyncSession = Depends(get_db),
+    crud: ProgramCrud = Depends(get_program_crud),
 ) -> ProgramService:
-    return ProgramService(db=db)
+    return ProgramService(crud)
 
 def get_student_service(
-    db: AsyncSession = Depends(get_db),
+    crud: StudentCrud = Depends(get_student_crud),
 ) -> StudentService:
-    return StudentService(db=db)
+    return StudentService(crud)

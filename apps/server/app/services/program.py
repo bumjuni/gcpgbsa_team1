@@ -1,9 +1,8 @@
 from fastapi import HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from crud.program import ProgramCrud
-from models.classroom import Program, ProgramItem
-from schemas.classroom import (
+from models.program import Program, ProgramItem
+from schemas.program import (
     ProgramCreate,
     ProgramItemCreate,
 )

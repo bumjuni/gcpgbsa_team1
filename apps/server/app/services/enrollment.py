@@ -1,6 +1,6 @@
 from crud.enrollment import EnrollmentCrud
-from models.classroom import Enrollment
-from schemas.classroom import (
+from models.enrollment import Enrollment
+from schemas.enrollment import (
     EnrollmentCreate,
 )
 

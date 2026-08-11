@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import List, Optional
+from typing import List, Optional, TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
@@ -13,8 +13,11 @@ from sqlalchemy import (
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base
-from .classroom import SwimClass
-from enums import ProgramPhaseEnum, ProgramStatusEnum
+from .enums import ProgramPhaseEnum, ProgramStatusEnum
+
+
+if TYPE_CHECKING:
+    from .classroom import SwimClass
 
 class Program(Base):
     __tablename__ = "program"

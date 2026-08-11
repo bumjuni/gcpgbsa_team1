@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 from sqlalchemy import (
     Boolean,
@@ -12,8 +12,10 @@ from sqlalchemy import (
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base
 from .student import Student
-from .classroom import SwimClass
 
+
+if TYPE_CHECKING:
+    from .classroom import SwimClass
 
 class Enrollment(Base):
     __tablename__ = "enrollment"

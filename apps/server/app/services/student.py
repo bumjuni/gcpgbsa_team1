@@ -1,8 +1,8 @@
 from fastapi import HTTPException, status
 
 from crud.student import StudentCrud
-from models.classroom import Student
-from schemas.classroom import (
+from models.student import Student
+from schemas.student import (
     StudentCreate,
 )
 

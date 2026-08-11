@@ -15,7 +15,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base
 from .enrollment import Enrollment
 from .program import Program
-from enums import LevelEnum, AgeGroupEnum
+from .enums import LevelEnum, AgeGroupEnum
 
 
 class SwimClass(Base):
