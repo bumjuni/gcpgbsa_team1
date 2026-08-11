@@ -3,4 +3,5 @@ export type NavStackParamList = {
   ClassRegister: undefined;
   ClassMember: undefined;
   ClassCreateComplete: undefined;
+  LevelGuide: undefined;
 };
