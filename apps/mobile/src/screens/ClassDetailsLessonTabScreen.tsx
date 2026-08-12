@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, Pressable } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
@@ -42,6 +42,8 @@ const COMPLETED_WEEKS: CompletedLessonWeek[] = [
 
 export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
   const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
+  const [tabRowWidth, setTabRowWidth] = useState(0);
+  const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
 
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '수업진행') return;
@@ -57,20 +59,44 @@ export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
     navigation?.navigate('ClassDetailsLessonHistory', { classId, lessonId: lesson.id, label: lesson.label });
   };
 
+  const handleTabRowLayout = (e: LayoutChangeEvent) => {
+    setTabRowWidth(e.nativeEvent.layout.width);
+  };
+
+  const handleActiveTabLayout = (e: LayoutChangeEvent) => {
+    setActiveTabLayout({ x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width });
+  };
+
+  const indicatorWidth = tabRowWidth * 0.25;
+  const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
+
   return (
     <ScreenLayout title={className} showBackButton>
-      <View className="flex-row border-b border-hairline mb-lg">
+      <View
+        className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-lg"
+        onLayout={handleTabRowLayout}
+      >
         {TABS.map((tab) => {
           const active = tab === '수업진행';
           return (
-            <Pressable key={tab} onPress={() => handleTabPress(tab)} className="mr-lg pb-sm">
+            <Pressable
+              key={tab}
+              onPress={() => handleTabPress(tab)}
+              onLayout={active ? handleActiveTabLayout : undefined}
+              className="items-center pb-md"
+            >
               <Text className={`text-body-strong ${active ? 'text-primary' : 'text-ink-secondary'}`}>
                 {tab}
               </Text>
-              {active && <View className="h-0.5 bg-primary mt-xs" />}
             </Pressable>
           );
         })}
+        {tabRowWidth > 0 && (
+          <View
+            className="h-1 bg-primary absolute bottom-0"
+            style={{ width: indicatorWidth, left: indicatorLeft }}
+          />
+        )}
       </View>
 
       <View className="pb-xl">
