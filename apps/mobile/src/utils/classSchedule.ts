@@ -108,29 +108,29 @@ export const formatNextClassLabel = (
 /** 섹션① 오늘 카드 뱃지: completed면 종료, 아니면 다음(단, "다음"은 화면에서 1개만 골라 씀) */
 export const getTodayBadge = (
   todayProgramStatus: ProgramStatusType | null
-): { text: string; variant: 'default' | 'primary' | 'muted' } => {
+): { text: string; variant: 'primary-stressed' | 'present' } => {
   return todayProgramStatus === 'COMPLETED'
-    ? { text: '종료', variant: 'muted' }
-    : { text: '다음', variant: 'primary' };
+    ? { text: '종료', variant: 'present' }
+    : { text: '다음', variant: 'primary-stressed' };
 };
 
 
 /** next_program_status -> 전체 반 카드 뱃지 (섹션② 4종) */
 export const getLessonPlanBadge = (
   nextProgramStatus: ProgramStatusType | null
-): { text: string; variant: 'default' | 'primary' | 'muted' } => {
+): { text: string; variant: 'primary' | 'present' | 'muted' } => {
   switch (nextProgramStatus) {
     case 'CONFIRMED':
-      return { text: '수업안 확정됨', variant: 'default' };
+      return { text: '수업안 확정됨', variant: 'present' };
     case 'INPROGRESS':
-      return { text: '수업 진행중', variant: 'default' };
+      return { text: '수업 진행중', variant: 'primary' };
     case 'DRAFT':
-      return { text: '수업안 준비중', variant: 'default' };
+      return { text: '수업안 준비중', variant: 'primary' };
     case 'COMPLETED':
       console.warn('Unexpected completed in next_program_status');
-      return { text: '수업안 없음', variant: 'default' };
+      return { text: '수업안 없음', variant: 'muted' };
     default:
-      return { text: '수업안 없음', variant: 'default' };
+      return { text: '수업안 없음', variant: 'muted' };
   }
 };
 
@@ -148,7 +148,7 @@ export const getNearestUpcomingTodayClassId = (
   todayClasses: SwimClass[]
 ): number | null => {
   const upcoming = todayClasses
-    .filter((item) => item.today_program_status !== 'completed')
+    .filter((item) => item.today_program_status !== 'COMPLETED')
     .sort((a, b) => timeToMinutes(a.start_time) - timeToMinutes(b.start_time));
 
   return upcoming[0]?.id ?? null;

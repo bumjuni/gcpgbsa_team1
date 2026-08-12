@@ -60,7 +60,7 @@ export const ClassListScreen = ({ navigation }: any) => {
         <>
           {todayClasses.length > 0 && (
             <View className="mb-lg">
-              <Text className="text-title-sm text-ink mb-sm">
+              <Text className="text-title-sm text-ink my-md">
                 오늘의 수업 {todayClasses.length}개
               </Text>
               {todayClasses.map((item) => {
@@ -69,7 +69,8 @@ export const ClassListScreen = ({ navigation }: any) => {
                 const badge = getTodayBadge(item.today_program_status);
 
                 // SRS: completed가 아닌 카드는 '다음'이 아니어도 강조 배경 유지
-                const cardBg = isCompleted ? '' : 'bg-primary-subtle';
+                const cardBg = isCompleted ? '' : 'bg-primary-subtle border-primary-subtle';
+                const captionBg = isCompleted ? 'text-caption text-ink-secondary' : 'text-primary text-caption-strong';
 
                 // 뱃지 텍스트는 completed(종료) 또는 highlighted(다음)일 때만 노출
                 const showBadge = isCompleted || isHighlighted;
@@ -79,17 +80,17 @@ export const ClassListScreen = ({ navigation }: any) => {
                     key={item.id}
                     variant="default"
                     onPress={() => handleClassPress(item.id)}
-                    className={`px-md py-sm mb-md ${cardBg}`}
+                    className={`px-md py-md mb-md ${cardBg}`}
                   >
                     <View className="flex-row items-center justify-between">
                       {/* 오늘의 수업: 제목+뱃지 inline, 우측 끝 chevron */}
                       <View className="flex-row items-center flex-shrink">
-                        <Text className="text-title-sm text-ink mr-xs">{item.name}</Text>
+                        <Text className="text-title-md text-ink mr-xs">{item.name}</Text>
                         {showBadge && <Badge variant={badge.variant} text={badge.text} />}
                       </View>
                       <Text className="text-ink-tertiary">{'>'}</Text>
                     </View>
-                    <Text className="text-xs text-ink-secondary mt-xxs">
+                    <Text className={`mt-xs ${captionBg}`}>
                       {formatTime(item.start_time)} · {renderStudentCount(item)} ·{' '}
                       {getTodayClassPlanText(item.today_program_status)}
                     </Text>
@@ -100,7 +101,7 @@ export const ClassListScreen = ({ navigation }: any) => {
           )}
 
           <View>
-            <Text className="text-title-sm text-ink mb-sm">전체 반</Text>
+            <Text className="text-title-md text-ink mb-sm">전체 반</Text>
             {classes.map((item: SwimClass) => {
               const planBadge = getLessonPlanBadge(item.next_program_status);
               return (
@@ -111,14 +112,14 @@ export const ClassListScreen = ({ navigation }: any) => {
                   className="px-md py-sm mb-md"
                 >
                   {/* 전체 반: 제목 좌측, 뱃지 우측 끝 정렬, chevron 없음 */}
-                  <View className="flex-row items-center justify-between mb-xxs">
-                    <Text className="text-title-sm text-ink">{item.name}</Text>
-                    <Badge variant={planBadge.variant} text={planBadge.text} />
+                  <View className="flex-row items-center justify-between">
+                    <Text className="text-button-sm text-ink">{item.name}</Text>
+                    <Badge variant={planBadge.variant} text={planBadge.text}/>
                   </View>
-                  <Text className="text-xs text-ink-secondary mb-xxs">
+                  <Text className="text-label text-ink-secondary">
                     {renderStudentCount(item)} · {LEVEL_LABEL[item.level]}
                   </Text>
-                  <Text className="text-xs text-ink-tertiary">
+                  <Text className="text-legal text-ink-tertiary mt-xs">
                     {formatNextClassLabel(
                       item.days_of_week,
                       item.start_time,
