@@ -19,8 +19,8 @@ const DEFAULT_SECTIONS: LessonSection[] = [
   {
     title: 'Pre-Set',
     items: [
-      { name: '100m 자유형', description: '천천히 힘 빼고 편하게', distance: '100m' },
-      { name: '100m 배영', description: '편하게', distance: '100m' },
+      { name: '1×100m 자유형', description: '천천히 힘 빼고 편하게', distance: '100m' },
+      { name: '1×100m 배영', description: '편하게', distance: '100m' },
     ],
   },
   {
@@ -34,7 +34,7 @@ const DEFAULT_SECTIONS: LessonSection[] = [
   },
   {
     title: 'Post-Set',
-    items: [{ name: '100m 자유형', description: '천천히', distance: '100m' }],
+    items: [{ name: '1×100m 자유형', description: '천천히', distance: '100m' }],
   },
 ];
 

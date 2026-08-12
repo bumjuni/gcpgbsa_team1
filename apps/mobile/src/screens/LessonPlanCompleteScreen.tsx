@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 interface LessonSetItem {
   name: string;
@@ -46,6 +47,7 @@ export const LessonPlanCompleteScreen = ({ navigation, route }: any) => {
   } = route?.params ?? {};
 
   const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
+  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
   const [, startTransition] = useTransition();
 
   const toggleItem = (key: string) => {
@@ -55,53 +57,70 @@ export const LessonPlanCompleteScreen = ({ navigation, route }: any) => {
   };
 
   const handleFinishClass = () => {
+    setIsFinishModalOpen(true);
+  };
+
+  const handleConfirmFinish = () => {
+    setIsFinishModalOpen(false);
     navigation?.navigate('ClassList');
   };
 
   return (
-    <ScreenLayout
-      title="수업 진행"
-      showBackButton
-      footer={<Button label="수업 종료하기" onPress={handleFinishClass} />}
-    >
-      <View className="pt-md pb-xl">
-        <Text className="text-base font-bold text-ink mb-xxs">
-          {date} {time} · 총 {totalDistance.toLocaleString()}m
-        </Text>
-        <Text className="text-caption text-ink-tertiary mb-lg">
-          *실제로 진행한 수업에 체크하시면 돼요
-        </Text>
+    <>
+      <ScreenLayout
+        title="수업 진행"
+        showBackButton
+        footer={<Button label="수업 종료하기" onPress={handleFinishClass} />}
+      >
+        <View className="pt-md pb-xl">
+          <Text className="text-base font-bold text-ink mb-xxs">
+            {date} {time} · 총 {totalDistance.toLocaleString()}m
+          </Text>
+          <Text className="text-caption text-ink-tertiary mb-lg">
+            *실제로 진행한 수업에 체크하시면 돼요
+          </Text>
 
-        {sections.map((section: LessonSection) => (
-          <View key={section.title} className="mb-lg">
-            <Card>
-              <Card.Header title={section.title} />
-              {section.items.map((item, index) => {
-                const key = `${section.title}-${index}`;
-                const checked = Boolean(checkedItems[key]);
-                return (
-                  <Card.Item
-                    key={key}
-                    title={item.name}
-                    description={item.description}
-                    isLast={index === section.items.length - 1}
-                    onPress={() => toggleItem(key)}
-                    leftElement={
-                      <View
-                        className={`w-6 h-6 rounded-sm border items-center justify-center ${
-                          checked ? 'bg-primary border-primary' : 'border-hairline-border-strong'
-                        }`}
-                      >
-                        {checked && <Text className="text-white text-xs font-bold">✓</Text>}
-                      </View>
-                    }
-                  />
-                );
-              })}
-            </Card>
-          </View>
-        ))}
-      </View>
-    </ScreenLayout>
+          {sections.map((section: LessonSection) => (
+            <View key={section.title} className="mb-lg">
+              <Card>
+                <Card.Header title={section.title} />
+                {section.items.map((item, index) => {
+                  const key = `${section.title}-${index}`;
+                  const checked = Boolean(checkedItems[key]);
+                  return (
+                    <Card.Item
+                      key={key}
+                      title={item.name}
+                      description={item.description}
+                      isLast={index === section.items.length - 1}
+                      onPress={() => toggleItem(key)}
+                      leftElement={
+                        <View
+                          className={`w-6 h-6 rounded-sm border items-center justify-center ${
+                            checked ? 'bg-primary border-primary' : 'border-hairline-border-strong'
+                          }`}
+                        >
+                          {checked && <Text className="text-white text-xs font-bold">✓</Text>}
+                        </View>
+                      }
+                    />
+                  );
+                })}
+              </Card>
+            </View>
+          ))}
+        </View>
+      </ScreenLayout>
+
+      <ConfirmModal
+        visible={isFinishModalOpen}
+        title="수업이 끝나셨나요?"
+        description="종료하면 오늘 수업 내용이 확정돼요. 확정 후에는 출석을 바꿀 수 없어요."
+        confirmText="종료하기"
+        cancelText="아직 안끝났어요"
+        onConfirm={handleConfirmFinish}
+        onCancel={() => setIsFinishModalOpen(false)}
+      />
+    </>
   );
 };
