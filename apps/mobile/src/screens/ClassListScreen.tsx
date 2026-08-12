@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { classroomApi } from '../api/classroom';
-import { SwimClass } from '../api/types';
+import { SwimClass } from '../types/classroom';
 import { Card } from '../components/card/Card';
 import { Badge } from '../components/badge/Badge';
 import { LEVEL_LABEL } from '../constants/classLabels';

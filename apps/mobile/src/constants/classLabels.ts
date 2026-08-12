@@ -1,5 +1,5 @@
 // constants/classLabels.ts
-import { LevelType, AgeGroupType } from '../api/types';
+import { LevelType, AgeGroupType } from '../types/classroom';
 
 export const LEVEL_LABEL: Record<LevelType, string> = {
   BEGINNER: '신규',
