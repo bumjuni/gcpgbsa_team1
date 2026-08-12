@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
+import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
@@ -39,7 +39,7 @@ export const ClassDetailsLessonTabEmptyScreen = ({ navigation, route }: any) => 
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={className} showBackButton>
+    <ScreenLayout title={className} showBackButton scrollable={false}>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-lg"
         onLayout={handleTabRowLayout}
@@ -67,19 +67,22 @@ export const ClassDetailsLessonTabEmptyScreen = ({ navigation, route }: any) => 
         )}
       </View>
 
-      <View className="pb-xl">
+      <View className="pb-lg">
         <Text className="text-base font-bold text-ink mb-sm">진행 예정 수업</Text>
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{scheduleLabel}</Text>
           <Text className="text-caption text-ink-secondary">아직 수업안을 만들지 않았어요</Text>
         </Card>
-        <Button label="수업안 만들기" onPress={handleCreateLessonPlan} className="mb-lg" />
+        <Button label="수업안 만들기" onPress={handleCreateLessonPlan} />
+      </View>
 
+      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <Text className="text-base font-bold text-ink mb-sm">종료된 수업</Text>
         <Card variant="muted" className="items-center py-lg">
           <Text className="text-sm text-ink-secondary">아직 종료된 수업이 없어요</Text>
         </Card>
-      </View>
+        <View className="pb-xl" />
+      </ScrollView>
     </ScreenLayout>
   );
 };
