@@ -18,7 +18,7 @@ const Stack = createNativeStackNavigator<NavStackParamList>();
 export const AppNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="LessonPlanConfirm"
+      initialRouteName="ClassList"
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#FFFFFF' },
