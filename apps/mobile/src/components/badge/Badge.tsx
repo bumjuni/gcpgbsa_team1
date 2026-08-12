@@ -1,7 +1,7 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { BADGE_CONTAINER_STYLES, BADGE_TEXT_STYLES } from "./Badge.variants";
 
-export type BadgeVariant = 'default' | 'primary' | 'danger';
+export type BadgeVariant = 'default' | 'primary' | 'danger' | 'muted';
 
 interface BadgeProps {
   variant?: BadgeVariant;

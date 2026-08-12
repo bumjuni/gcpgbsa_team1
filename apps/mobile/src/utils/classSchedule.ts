@@ -108,31 +108,32 @@ export const formatNextClassLabel = (
 /** 섹션① 오늘 카드 뱃지: completed면 종료, 아니면 다음(단, "다음"은 화면에서 1개만 골라 씀) */
 export const getTodayBadge = (
   todayProgramStatus: ProgramStatusType | null
-): { text: string; variant: 'default' | 'primary' | 'danger' } => {
-  return todayProgramStatus === 'completed'
-    ? { text: '종료', variant: 'default' }
+): { text: string; variant: 'default' | 'primary' | 'muted' } => {
+  return todayProgramStatus === 'COMPLETED'
+    ? { text: '종료', variant: 'muted' }
     : { text: '다음', variant: 'primary' };
 };
+
 
 /** next_program_status -> 전체 반 카드 뱃지 (섹션② 4종) */
 export const getLessonPlanBadge = (
   nextProgramStatus: ProgramStatusType | null
-): { text: string; variant: 'default' | 'primary' | 'danger' } => {
+): { text: string; variant: 'default' | 'primary' | 'muted' } => {
   switch (nextProgramStatus) {
-    case 'confirmed':
-      return { text: '수업안 확정됨', variant: 'primary' };
-    case 'draft':
+    case 'CONFIRMED':
+      return { text: '수업안 확정됨', variant: 'default' };
+    case 'INPROGRESS':
+      return { text: '수업 진행중', variant: 'default' };
+    case 'DRAFT':
       return { text: '수업안 준비중', variant: 'default' };
-    case 'inProgress':
-      return { text: '수업 진행중', variant: 'primary' };
-    case 'completed':
-      // 백엔드가 next_program_status에서 completed를 제외하고 내려주므로 도달하면 안 됨
+    case 'COMPLETED':
       console.warn('Unexpected completed in next_program_status');
       return { text: '수업안 없음', variant: 'default' };
     default:
       return { text: '수업안 없음', variant: 'default' };
   }
 };
+
 
 export const timeToMinutes = (time: string): number => {
   const { hour, minute } = parseTime(time);
