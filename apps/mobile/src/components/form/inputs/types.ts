@@ -9,7 +9,7 @@ export interface FormFieldChipGroupProps<T> {
   value: T | T[];
   onChange: (value: any) => void;
   multiple?: boolean;
-  variant?: 'circle' | 'pill';
+  variant?: 'circle' | 'rounded-square';
 }
 
 export interface FormFieldCardGroupProps<T> {
@@ -18,8 +18,8 @@ export interface FormFieldCardGroupProps<T> {
   onChange: (value: T) => void;
 }
 
-export interface FormFieldSelectProps {
-  value?: string;
+export interface FormFieldSelectProps<T> {
+  value?: T;
   placeholder?: string;
-  onPress: () => void;
+  onChange: (value: T) => void;
 }
