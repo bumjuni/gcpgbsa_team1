@@ -44,48 +44,59 @@ export const ClassListScreen = ({ navigation }: any) => {
   );
 
   const highlightedClassId = useMemo(
-    () => getNearestUpcomingTodayClassId(todayClasses, now),
-    [todayClasses, now]
+    () => getNearestUpcomingTodayClassId(todayClasses),
+    [todayClasses]
   );
 
   const renderStudentCount = (item: SwimClass) =>
-    `${item.student_count ?? '-'}/${item.capacity}명`;
+    `${item.student_count ?? '0'}/${item.capacity}명`;
 
   return (
     <ScreenLayout
       title="내 반 목록"
-      footer={
-        <Button
-          label="반 등록하기"
-          onPress={() => navigation?.navigate('ClassRegister')}
-        />
-      }
+      footer={<Button label="반 등록하기" onPress={() => navigation?.navigate('ClassRegister')} />}
     >
       {classes.length > 0 ? (
         <>
           {todayClasses.length > 0 && (
             <View className="mb-lg">
-              <Text className="text-title-sm text-ink mb-sm">
+              <Text className="text-title-sm text-ink my-md">
                 오늘의 수업 {todayClasses.length}개
               </Text>
               {todayClasses.map((item) => {
-                const badge = getTodayBadge(item.end_time, now);
+                const isCompleted = item.today_program_status === 'COMPLETED';
                 const isHighlighted = item.id === highlightedClassId;
+                const badge = getTodayBadge(item.today_program_status);
+
+                // SRS: completed가 아닌 카드는 '다음'이 아니어도 강조 배경 유지
+                const cardBg = isCompleted ? '' : 'bg-primary-subtle border-primary-subtle';
+                const captionBg = isCompleted ? 'text-caption text-ink-secondary' : 'text-primary text-caption-strong';
+
+                // 뱃지 텍스트는 completed(종료) 또는 highlighted(다음)일 때만 노출
+                const showBadge = isCompleted || isHighlighted;
 
                 return (
                   <Card
                     key={item.id}
                     variant="default"
                     onPress={() => handleClassPress(item.id)}
-                    className={`px-md py-sm mb-md ${isHighlighted ? 'bg-primary-subtle' : ''}`
-                    }>
-                    <View className="flex-row items-center justify-between mb-xxs">
-                      <Text className="text-title-sm text-ink">{item.name}</Text>
-                      <Badge variant={badge.variant} text={badge.text} />
+                    className={`px-md py-md mb-md flex-row items-center ${cardBg}`}
+                  >
+                    <View className='flex-1'>
+                      <View className="flex-row items-center justify-between">
+                        {/* 오늘의 수업: 제목+뱃지 inline, 우측 끝 chevron */}
+                        <View className="flex-row items-center flex-shrink">
+                          <Text className="text-title-md text-ink mr-xs">{item.name}</Text>
+                          {showBadge && <Badge variant={badge.variant} text={badge.text} />}
+                        </View>
+                      </View>
+                      <Text className={`mt-xs ${captionBg}`}>
+                        {formatTime(item.start_time)} · {renderStudentCount(item)} ·{' '}
+                        {getTodayClassPlanText(item.today_program_status)}
+                      </Text>
                     </View>
-                    <Text className="text-xs text-ink-secondary">
-                      {formatTime(item.start_time)} · {renderStudentCount(item)} ·{' '}
-                      {getTodayClassPlanText(item.lesson_status)}                    </Text>
+                    <View className="w-xs h-xs rotate-45 border-r-2 border-t-2 border-ink-tertiary self-center ml-auto place-self-center" />
+
                   </Card>
                 );
               })}
@@ -93,9 +104,9 @@ export const ClassListScreen = ({ navigation }: any) => {
           )}
 
           <View>
-            <Text className="text-title-sm text-ink mb-sm">전체 반</Text>
+            <Text className="text-title-md text-ink mb-sm">전체 반</Text>
             {classes.map((item: SwimClass) => {
-              const planBadge = getLessonPlanBadge(item.lesson_status);
+              const planBadge = getLessonPlanBadge(item.next_program_status);
               return (
                 <Card
                   key={item.id}
@@ -103,18 +114,19 @@ export const ClassListScreen = ({ navigation }: any) => {
                   onPress={() => handleClassPress(item.id)}
                   className="px-md py-sm mb-md"
                 >
-                  <View className="flex-row items-center justify-between mb-xxs">
-                    <Text className="text-title-sm text-ink">{item.name}</Text>
-                    <Badge variant={planBadge.variant} text={planBadge.text} />
+                  {/* 전체 반: 제목 좌측, 뱃지 우측 끝 정렬, chevron 없음 */}
+                  <View className="flex-row items-center justify-between">
+                    <Text className="text-button-sm text-ink">{item.name}</Text>
+                    <Badge variant={planBadge.variant} text={planBadge.text}/>
                   </View>
-                  <Text className="text-xs text-ink-secondary mb-xxs">
+                  <Text className="text-label text-ink-secondary">
                     {renderStudentCount(item)} · {LEVEL_LABEL[item.level]}
                   </Text>
-                  <Text className="text-xs text-ink-teriary">
+                  <Text className="text-legal text-ink-tertiary mt-xs">
                     {formatNextClassLabel(
                       item.days_of_week,
                       item.start_time,
-                      item.end_time,
+                      item.today_program_status,
                       now
                     )}
                   </Text>
@@ -126,11 +138,9 @@ export const ClassListScreen = ({ navigation }: any) => {
       ) : (
         <View className="flex-1 justify-center items-center py-xxl">
           <View className="w-xxl h-xxl bg-canvas-muted rounded-full justify-center items-center mb-md">
-            <Text className="text-2xl text-ink-teriary">☰</Text>
+            <Text className="text-2xl text-ink-tertiary">☰</Text>
           </View>
-          <Text className="text-body font-bold text-ink mb-xs">
-            아직 등록한 반이 없어요
-          </Text>
+          <Text className="text-body font-bold text-ink mb-xs">아직 등록한 반이 없어요</Text>
           <Text className="text-sm text-ink-secondary text-center">
             반을 등록하면 수업안을 만들 수 있어요
           </Text>

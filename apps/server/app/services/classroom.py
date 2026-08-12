@@ -1,4 +1,6 @@
 from fastapi import HTTPException, status
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from crud.classroom import ClassroomCrud
 from models.classroom import SwimClass
@@ -8,19 +10,43 @@ from schemas.classroom import (
     SwimClassResponse,
 )
 
+KST = ZoneInfo("Asia/Seoul")
+
 class ClassroomService:
     def __init__(self, crud: ClassroomCrud):
          self.crud = crud
 
+    # async def get_swim_class(self) -> list[SwimClassResponse]:
+    #     swim_classes_orm = await self.crud.get_classes()
+
+    #     if not swim_classes_orm:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             detail="SwimClasses not found.",
+    #         )
+    #     return [SwimClassResponse.model_validate(item) for item in swim_classes_orm]
+
     async def get_swim_class(self) -> list[SwimClassResponse]:
         swim_classes_orm = await self.crud.get_classes()
-
         if not swim_classes_orm:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="SwimClasses not found.",
+            raise HTTPException(status_code=404, detail="SwimClasses not found.")
+
+        today = datetime.now(KST).date()
+        class_ids = [sc.id for sc in swim_classes_orm]
+
+        today_map = await self.crud.get_today_program_status_map(class_ids, today)
+        next_map = await self.crud.get_next_program_status_map(class_ids)
+
+        return [
+            SwimClassResponse.model_validate(sc).model_copy(
+                update={
+                    "today_program_status": today_map.get(sc.id),
+                    "next_program_status": next_map.get(sc.id),
+                }
             )
-        return [SwimClassResponse.model_validate(item) for item in swim_classes_orm]
+            for sc in swim_classes_orm
+        ]
+
 
     async def get_swim_class_detail(self, swim_class_id: int) -> SwimClassDetailResponse:
         swim_class_orm = await self.crud.get_class_detail(
