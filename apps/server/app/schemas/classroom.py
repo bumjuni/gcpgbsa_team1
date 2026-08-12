@@ -12,8 +12,8 @@ class SwimClassCreate(BaseModel):
     capacity: int = Field(..., ge=1)
     # student_count: int
     level: LevelEnum
-    age_groups: AgeGroupEnum
-    goals: str = Field(..., max_length=200)
+    age_groups: str = Field(..., min=1)      # AgeGroupEnum
+    goals: str = Field(..., min=1)
     goal_etc: Optional[str] = None
     start_time: time
     end_time: time
@@ -27,7 +27,7 @@ class SwimClassResponse(ORMBaseModel):
     student_count: Optional[int] = None
     capacity: int
     level: LevelEnum
-    age_groups: AgeGroupEnum
+    age_groups: str = Field(..., min=1)
     start_time: time
     end_time: time
     days_of_week: str

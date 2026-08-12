@@ -44,7 +44,7 @@ export const getNextClassDate = (
 
   const todayIndex = now.getDay();
   const { hour, minute } = parseTime(startTime);
-  const isTodayCompleted = todayProgramStatus === 'completed';
+  const isTodayCompleted = todayProgramStatus === 'COMPLETED';
 
   if (days.includes(todayIndex) && !isTodayCompleted) {
     const todayDate = new Date(now);
@@ -85,7 +85,7 @@ export const formatNextClassLabel = (
   now: Date = new Date()
 ): string => {
   const today = isToday(daysOfWeek, now);
-  const todayCompleted = todayProgramStatus === 'completed';
+  const todayCompleted = todayProgramStatus === 'COMPLETED';
   const next = getNextClassDate(daysOfWeek, startTime, todayProgramStatus, now);
 
   if (!next) return '수업 일정 없음';

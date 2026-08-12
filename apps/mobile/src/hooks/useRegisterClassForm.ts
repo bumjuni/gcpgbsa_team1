@@ -6,8 +6,8 @@ import { formatList } from '../utils/listToString';
 const INITIAL_VALUES: ClassFormValues = {
   name: '',
   days_of_week: [],
-  start_time: '',
-  end_time: '',
+  start_time: '00:00',
+  end_time: '00:00',
   capacity: '',
   age_groups: [],
   level: '',
