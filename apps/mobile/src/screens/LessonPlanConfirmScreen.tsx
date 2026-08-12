@@ -98,7 +98,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   };
 
   const handleConfirm = () => {
-    navigation?.navigate('LessonPlanComplete', { totalDistance, sections });
+    navigation?.navigate('ClassListFilled');
   };
 
   const handleEditItem = (sectionTitle: string, itemIndex: number, item: LessonSetItem) => {

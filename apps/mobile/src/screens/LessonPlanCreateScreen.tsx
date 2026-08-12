@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { View, Text, Pressable, TextInput } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
@@ -38,6 +38,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   const [formData, setFormData] = useState<LessonPlanFormState>(initialFormState);
   const [, startTransition] = useTransition();
   const [equipment, setEquipment] = useState<string[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleFieldChange = <K extends keyof LessonPlanFormState>(key: K, value: LessonPlanFormState[K]) => {
     startTransition(() => {
@@ -57,8 +58,21 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   };
 
   const handleSubmit = () => {
-    navigation?.navigate('LessonPlanComplete', { day, timeOfDay, className, memberCount, level, ...formData });
+    setIsGenerating(true);
   };
+
+  useEffect(() => {
+    if (!isGenerating) return;
+    const timer = setTimeout(() => {
+      setIsGenerating(false);
+      navigation?.navigate('LessonPlanConfirm', { day, timeOfDay, className, memberCount, level, ...formData });
+    }, 2000); // TODO: 임시 타이머. 실제 수업안 생성 API 연동 시 응답 완료 시점으로 교체 필요
+    return () => clearTimeout(timer);
+  }, [isGenerating]);
+
+  if (isGenerating) {
+    return <LessonPlanGeneratingView />;
+  }
 
   return (
     <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성하기" onPress={handleSubmit} />}>
@@ -105,3 +119,20 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
     </ScreenLayout>
   );
 };
+
+const generatingDotStyle = 'w-3 h-3 rounded-full mx-xxs';
+
+const LessonPlanGeneratingView = () => (
+  <View className="flex-1 justify-center items-center">
+    <View className="w-20 h-20 rounded-full bg-primary-subtle items-center justify-center mb-md">
+      <View className="flex-row items-center">
+        <View className={`${generatingDotStyle} bg-primary`} />
+        <View className={`${generatingDotStyle} bg-white`} />
+        <View className={`${generatingDotStyle} bg-white`} />
+      </View>
+    </View>
+    <Text className="text-sm text-ink-teriary text-center">
+      반 정보에 맞춰 수업안을 만들고 있어요
+    </Text>
+  </View>
+);
