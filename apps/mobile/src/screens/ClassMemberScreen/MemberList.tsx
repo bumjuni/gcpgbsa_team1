@@ -1,15 +1,14 @@
 import { Text, View } from "react-native"
 import { Badge } from "../../components/badge/Badge"
 import { Card } from "../../components/card/Card"
-import { Member } from "./ClassMemberScreen";
+import { Member } from "../../types/member";
 
 interface MemberListProps {
   members: Member[];
-  onDelete: (id: string) => {};
+  onDelete: (id: string) => void; // 원본 타입이 () => {} 였던 오타 수정
 }
 
 export const MemberList = ({ members, onDelete }: MemberListProps) => {
-
   return (
     <>
       {members.map((member, index) => (
@@ -17,7 +16,6 @@ export const MemberList = ({ members, onDelete }: MemberListProps) => {
           key={member.id}
           className="flex-row items-center justify-between border border-surface-hairline rounded-md px-md py-sm mb-md"
         >
-          {/* 회원정보 */}
           <View className='align-middle flex-row py-xxs'>
             <View className="w-xl h-xl rounded-full bg-status-present-subtle items-center justify-center mr-xs">
               <Text className="text-sm font-bold text-status-present">✓</Text>
@@ -27,12 +25,10 @@ export const MemberList = ({ members, onDelete }: MemberListProps) => {
                 회원 {index + 1} · {member.name}
               </Text>
               <Text className="text-label text-ink-secondary">
-                {member.age}세 · {member.level}
-                </Text>
+                {new Date().getFullYear() - Number(member.birthYear)}세
+              </Text>
             </View>
           </View>
-
-          {/* delete button */}
           <Badge variant='danger' onPress={() => onDelete(member.id)} text='삭제' />
         </Card>
       ))}

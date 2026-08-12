@@ -8,7 +8,7 @@ import { useRegisterClassForm } from '../hooks/useRegisterClassForm';
 
 export const ClassRegisterScreen = ({ navigation }: any) => {
   const { values, errors, isSubmitting, setFieldValue, handleSubmit } = useRegisterClassForm({
-    onSuccess: () => navigation?.navigate('ClassMember')
+    onSuccess: (classId: number) => navigation?.navigate('ClassMember', { classId })
   });
 
   return (
