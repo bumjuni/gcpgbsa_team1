@@ -71,7 +71,9 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
   const totalDistance = formData.count * formData.intervalDistance;
 
   const handleSave = () => {
-    navigation?.goBack();
+    navigation?.navigate('LessonPlanConfirm', {
+      editedItem: { sectionTitle, itemIndex, ...formData },
+    });
   };
 
   return (
