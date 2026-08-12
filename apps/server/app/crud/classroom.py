@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, func
 
-from models.classroom import SwimClass
+from models.classroom import SwimClass, Program
+from models.enums import ProgramStatusEnum
 
 
 class ClassroomCrud:
@@ -59,3 +60,45 @@ class ClassroomCrud:
         await self.db.refresh(swim_class)
 
         return swim_class
+
+    async def get_next_program_status_map(
+        self, class_ids: list[int]
+    ) -> dict[int, ProgramStatusEnum]:
+        """반별로 완료되지 않은 program row 중 date가 가장 이른 것 1개의 status.
+        lazy 생성 원칙상 반당 미완료 row는 보통 1개뿐이지만,
+        혹시 여러 개 있어도 가장 이른 날짜 것을 '다음 것'으로 취급."""
+        if not class_ids:
+            return {}
+
+        subq = (
+            select(
+                Program.class_id,
+                Program.status,
+                func.row_number()
+                .over(partition_by=Program.class_id, order_by=Program.date.asc())
+                .label("rn"),
+            )
+            .where(
+                Program.class_id.in_(class_ids),
+                Program.status != ProgramStatusEnum.COMPLETED,
+                Program.deleted_at.is_(None),
+            )
+            .subquery()
+        )
+        stmt = select(subq.c.class_id, subq.c.status).where(subq.c.rn == 1)
+        result = await self.db.execute(stmt)
+        return {row.class_id: row.status for row in result.all()}
+
+
+    async def get_today_program_status_map(
+        self, class_ids: list[int], today: date
+    ) -> dict[int, ProgramStatusEnum]:
+        if not class_ids:
+            return {}
+        stmt = select(Program.class_id, Program.status).where(
+            Program.class_id.in_(class_ids),
+            Program.date == today,
+            Program.deleted_at.is_(None),
+        )
+        result = await self.db.execute(stmt)
+        return {row.class_id: row.status for row in result.all()}
