@@ -7,7 +7,7 @@ export const BADGE_CONTAINER_STYLES: Record<BadgeVariant, string> = {
   'primary-stressed': 'bg-primary',
   present: 'bg-status-present-subtle',
   danger: 'bg-status-danger-subtle',
-  muted: 'bg-hairline border border-hairline',
+  muted: 'bg-canvas-muted border border-canvas-muted',
 };
 
 export const BADGE_TEXT_STYLES: Record<BadgeVariant, string> = {
