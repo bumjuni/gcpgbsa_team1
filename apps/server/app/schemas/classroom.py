@@ -1,7 +1,8 @@
+from enum import Enum
 from datetime import datetime, time
 from typing import Optional
 
-from models.enums import AgeGroupEnum, LevelEnum
+from models.enums import AgeGroupEnum, LevelEnum, ProgramStatusEnum
 from pydantic import BaseModel, Field
 from .base import ORMBaseModel
 
@@ -19,16 +20,19 @@ class SwimClassCreate(BaseModel):
     days_of_week: str
     is_active: bool = True
 
+# schemas/classroom.py
 class SwimClassResponse(ORMBaseModel):
+    id: int
     name: str
     student_count: Optional[int] = None
     capacity: int
     level: LevelEnum
     age_groups: AgeGroupEnum
-    start_time: time  # time 타입 변경
+    start_time: time
     end_time: time
     days_of_week: str
-    # is_active: bool = True # 추후 수업안 여부에 따라 수정
+    today_program_status: Optional[ProgramStatusEnum] = None
+    next_program_status: Optional[ProgramStatusEnum] = None
 
 class SwimClassDetailResponse(SwimClassCreate, ORMBaseModel):
     id: int
