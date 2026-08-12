@@ -31,8 +31,8 @@ export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
         age_groups: formatList(validatedData.age_groups),
         goals: formatList(validatedData.goals),
       };
-      await classroomApi.createClass(parsedData);
-      options?.onSuccess?.();
+      const response = await classroomApi.createClass(parsedData);
+      options?.onSuccess?.(response.id);
     },
   });
 
