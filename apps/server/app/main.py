@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from core.database import engine
-from api import classroom
-from models import Base, SwimClass, Enrollment, Student, ProgramItem, Program
+from api import classroom, enrollment, program
+from models import Base
 
 # DB 생성
 @asynccontextmanager
@@ -17,6 +17,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(classroom.router)
+app.include_router(enrollment.router)
+app.include_router(program.router)
 
 @app.get("/")
 def read_root():

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_enrollment_service
-from schemas.classroom import (
+from schemas.enrollment import (
     EnrollmentCreate,
     EnrollmentResponse,
 )

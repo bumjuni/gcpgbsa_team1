@@ -17,9 +17,10 @@ class AgeGroupEnum(str, enum.Enum):
 
 
 class ProgramStatusEnum(str, enum.Enum):
-    DRAFT = "DRAFT"                 # 미확정
-    SCHEDULED = "SCHEDULED"         # 확정
-    COMPLETED = "COMPLETED"         # 완료
+    DRAFT = "DRAFT"                 # 수업안 준비중
+    CONFIRMED = "CONFIRMED"         # 수업안 확정됨
+    INPROGRESS = "INPROGRESS"       # 수업 진행중
+    COMPLETED = "COMPLETED"         # 수업 완료
 
 
 class ProgramPhaseEnum(str, enum.Enum):

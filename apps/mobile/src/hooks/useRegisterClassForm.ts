@@ -15,7 +15,7 @@ const INITIAL_VALUES: ClassFormValues = {
 };
 
 interface UseRegisterClassFormOptions {
-  onSuccess?: () => void;
+  onSuccess?: (value: any) => void;
 }
 
 export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
