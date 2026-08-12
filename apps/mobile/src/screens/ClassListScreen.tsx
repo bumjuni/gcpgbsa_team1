@@ -49,7 +49,7 @@ export const ClassListScreen = ({ navigation }: any) => {
   );
 
   const renderStudentCount = (item: SwimClass) =>
-    `${item.student_count ?? '-'}/${item.capacity}명`;
+    `${item.student_count ?? '0'}/${item.capacity}명`;
 
   return (
     <ScreenLayout
@@ -80,20 +80,23 @@ export const ClassListScreen = ({ navigation }: any) => {
                     key={item.id}
                     variant="default"
                     onPress={() => handleClassPress(item.id)}
-                    className={`px-md py-md mb-md ${cardBg}`}
+                    className={`px-md py-md mb-md flex-row items-center ${cardBg}`}
                   >
-                    <View className="flex-row items-center justify-between">
-                      {/* 오늘의 수업: 제목+뱃지 inline, 우측 끝 chevron */}
-                      <View className="flex-row items-center flex-shrink">
-                        <Text className="text-title-md text-ink mr-xs">{item.name}</Text>
-                        {showBadge && <Badge variant={badge.variant} text={badge.text} />}
+                    <View className='flex-1'>
+                      <View className="flex-row items-center justify-between">
+                        {/* 오늘의 수업: 제목+뱃지 inline, 우측 끝 chevron */}
+                        <View className="flex-row items-center flex-shrink">
+                          <Text className="text-title-md text-ink mr-xs">{item.name}</Text>
+                          {showBadge && <Badge variant={badge.variant} text={badge.text} />}
+                        </View>
                       </View>
-                      <Text className="text-ink-tertiary">{'>'}</Text>
+                      <Text className={`mt-xs ${captionBg}`}>
+                        {formatTime(item.start_time)} · {renderStudentCount(item)} ·{' '}
+                        {getTodayClassPlanText(item.today_program_status)}
+                      </Text>
                     </View>
-                    <Text className={`mt-xs ${captionBg}`}>
-                      {formatTime(item.start_time)} · {renderStudentCount(item)} ·{' '}
-                      {getTodayClassPlanText(item.today_program_status)}
-                    </Text>
+                    <View className="w-xs h-xs rotate-45 border-r-2 border-t-2 border-ink-tertiary self-center ml-auto place-self-center" />
+
                   </Card>
                 );
               })}
