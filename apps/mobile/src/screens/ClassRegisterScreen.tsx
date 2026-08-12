@@ -183,7 +183,7 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
         {/* 정원 */}
         <FormField>
           <FormField.Label label="정원" required />
-          <FormField.TextInput placeholder="예: 10" suffix="명" keyboardType="numeric" />
+          <FormField.TextInput placeholder="예: 10 (최대 인원)" suffix="명" keyboardType="numeric" />
         </FormField>
 
         {/* 나이대 */}
