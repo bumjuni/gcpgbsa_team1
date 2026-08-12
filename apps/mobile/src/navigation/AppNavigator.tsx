@@ -8,10 +8,10 @@ import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScree
 import { ClassCreateCompleteScreen } from '../screens/ClassCreateCompleteScreen';
 import { LevelGuideScreen } from '../screens/LevelGuideScreen';
 import { LessonPlanCreateScreen } from '../screens/LessonPlanCreateScreen';
-import { LessonPlanGeneratingScreen } from '../screens/LessonPlanGeneratingScreen';
 import { LessonPlanConfirmScreen } from '../screens/LessonPlanConfirmScreen';
 import { LessonPlanCompleteScreen } from '../screens/LessonPlanCompleteScreen';
 import { LessonPlanEditItemScreen } from '../screens/LessonPlanEditItemScreen';
+import { ClassListScreen_Filled } from '../screens/ClassListScreen_Filled';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 
@@ -30,10 +30,10 @@ export const AppNavigator = () => {
       <Stack.Screen name="ClassCreateComplete" component={ClassCreateCompleteScreen} />
       <Stack.Screen name="LevelGuide" component={LevelGuideScreen} />
       <Stack.Screen name="LessonPlanCreate" component={LessonPlanCreateScreen} />
-      <Stack.Screen name="LessonPlanGenerating" component={LessonPlanGeneratingScreen} />
       <Stack.Screen name="LessonPlanConfirm" component={LessonPlanConfirmScreen} />
       <Stack.Screen name="LessonPlanComplete" component={LessonPlanCompleteScreen} />
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
+      <Stack.Screen name="ClassListFilled" component={ClassListScreen_Filled} />
     </Stack.Navigator>
   );
 };
