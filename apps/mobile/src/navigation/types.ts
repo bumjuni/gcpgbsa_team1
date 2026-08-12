@@ -9,4 +9,13 @@ export type NavStackParamList = {
   LessonPlanComplete: undefined;
   LessonPlanEditItem: undefined;
   ClassListFilled: undefined;
+  ClassDetailsLessonTab: undefined;
+  ClassDetailsLessonTabEmpty: undefined;
+  ClassDetailsLessonHistory: undefined;
+  ClassDetailsInfoTab: undefined;
+  ClassDetailsInfoEdit: undefined;
+  ClassDetailsMemberTab: undefined;
+  ClassDetailsMemberTabAdding: undefined;
+  ClassDetailsMemberDetail: undefined;
+  ClassDetailsMemberEdit: undefined;
 };

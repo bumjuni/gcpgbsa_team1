@@ -3,6 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
+import { ConfirmModal } from '../components/ConfirmModal';
 
 interface ClassInfoEditFormState {
   name: string;
@@ -31,6 +32,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
     goals: ['BASIC_ADAPTATION'],
     goalsEtc: '',
   });
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [, startTransition] = useTransition();
 
   const handleFieldChange = <K extends keyof ClassInfoEditFormState>(
@@ -60,13 +62,15 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
     navigation?.navigate('ClassDetailsInfoTab', { classId, className: formData.name });
   };
 
-  const handleDelete = () => {
-    navigation?.navigate('ClassDetailsDeleteConfirm', { classId, className: formData.name });
+  const handleConfirmDelete = () => {
+    setIsDeleteModalOpen(false);
+    navigation?.navigate('ClassList', { deletedClassId: classId });
   };
 
   const showGoalsEtcInput = formData.goals.includes('ETC');
 
   return (
+    <>
     <ScreenLayout
       title="반정보 수정"
       showBackButton
@@ -80,7 +84,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
               <Button label="저장하기" onPress={handleSave} variant="primary" />
             </View>
           </View>
-          <Button label="반 삭제하기" onPress={handleDelete} variant="danger" />
+          <Button label="반 삭제하기" onPress={() => setIsDeleteModalOpen(true)} variant="danger" />
         </View>
       }
     >
@@ -207,5 +211,16 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
         </FormField>
       </View>
     </ScreenLayout>
+
+    <ConfirmModal
+      visible={isDeleteModalOpen}
+      title="이 반을 삭제할까요?"
+      description={'삭제하면 홈 목록에서 사라지며\n이 작업은 취소할 수 없어요.'}
+      confirmText="삭제하기"
+      cancelText="취소"
+      onConfirm={handleConfirmDelete}
+      onCancel={() => setIsDeleteModalOpen(false)}
+    />
+    </>
   );
 };
