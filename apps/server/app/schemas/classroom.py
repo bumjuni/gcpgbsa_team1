@@ -21,7 +21,7 @@ class SwimClassCreate(BaseModel):
 
 class SwimClassResponse(ORMBaseModel):
     name: str
-    student_count: int
+    student_count: Optional[int] = None
     capacity: int
     level: LevelEnum
     age_groups: AgeGroupEnum

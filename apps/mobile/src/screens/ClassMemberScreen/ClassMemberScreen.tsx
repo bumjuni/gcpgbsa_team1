@@ -13,23 +13,10 @@ export interface Member {
   level: string;
 }
 
-const MAX_MEMBERS = 10;
-
-const initialMembers: Member[] = [
-  { id: '1', name: '김수영', age: 8, level: '초급' },
-  { id: '2', name: '이도윤', age: 9, level: '초급' },
-  { id: '3', name: '박서준', age: 7, level: '입문' },
-  { id: '4', name: '최유하', age: 10, level: '중급' },
-  { id: '5', name: '정하은', age: 8, level: '초급' },
-  { id: '6', name: '강민준', age: 9, level: '초급' },
-  { id: '7', name: '조서연', age: 6, level: '입문' },
-  { id: '8', name: '윤지호', age: 11, level: '중급' },
-  { id: '9', name: '임채원', age: 8, level: '초급' },
-  { id: '10', name: '한지우', age: 7, level: '초급' },
-];
+const MAX_MEMBERS = 50;
 
 export const ClassMemberScreen = ({ navigation }: any) => {
-  const [members, setMembers] = useState<Member[]>(initialMembers);
+  const [members, setMembers] = useState<Member[]>([]);
   const [, startTransition] = useTransition();
 
   const isMemberLimitReached = members.length >= MAX_MEMBERS;
