@@ -10,7 +10,7 @@ const INITIAL_VALUES: ClassFormValues = {
   start_time: '00:00',
   end_time: '00:00',
   capacity: '',
-  age_groups: [],
+  age_group: '', // age_groups(배열) -> age_group(단일값)
   level: '',
   goals: [],
 };
@@ -30,17 +30,10 @@ export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
       const parsedData = {
         ...validatedData,
         days_of_week: formatList(validatedData.days_of_week),
-        age_groups: formatList(validatedData.age_groups),
         goals: formatList(validatedData.goals),
       };
       const response = await classroomApi.createClass(parsedData);
-      setClass({
-        classId: response.id,
-        className: response.name,
-        studentCount: response.student_count || 0,
-        level: response.level
-      });
-
+      setClass(response); // SwimClass 객체 통째로 저장
       options?.onSuccess?.(response.id);
     },
   });
