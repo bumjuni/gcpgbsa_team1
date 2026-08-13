@@ -1,9 +1,9 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { FormField } from '../components/form/FormField';
-import { ConfirmModal } from '../components/ConfirmModal';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { FormField } from '../../components/form/FormField';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 interface ClassInfoEditFormState {
   name: string;

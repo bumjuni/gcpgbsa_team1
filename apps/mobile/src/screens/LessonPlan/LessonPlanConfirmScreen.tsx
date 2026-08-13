@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { Card } from '../components/card/Card';
-import { LessonSection, LessonSetItem } from '../types/lessonPlan';
-import { useLessonPlanStore } from '../stores/useLessonPlanStore';
-import { lessonPlanApi } from '../api/lessonPlan';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { Card } from '../../components/card/Card';
+import { LessonSection, LessonSetItem } from '../../types/lessonPlan';
+import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { lessonPlanApi } from '../../api/lessonPlan';
 
 
 const getSectionTotalMeters = (section: LessonSection): number =>

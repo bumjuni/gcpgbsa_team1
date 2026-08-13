@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Card } from '../components/card/Card';
-import { FormField } from '../components/form/FormField';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Card } from '../../components/card/Card';
+import { FormField } from '../../components/form/FormField';
 
 const ReadOnlyBox = ({ value }: { value: string }) => (
   <View className="h-14 justify-center bg-surface-muted border border-hairline-border-strong rounded-md px-md">

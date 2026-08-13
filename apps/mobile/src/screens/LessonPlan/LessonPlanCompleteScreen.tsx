@@ -1,9 +1,9 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { Card } from '../components/card/Card';
-import { ConfirmModal } from '../components/ConfirmModal';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { Card } from '../../components/card/Card';
+import { ConfirmModal } from '../../components/ConfirmModal';
 
 interface LessonSetItem {
   name: string;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Card } from '../components/card/Card';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Card } from '../../components/card/Card';
 
 interface ReportMember {
   id: string;

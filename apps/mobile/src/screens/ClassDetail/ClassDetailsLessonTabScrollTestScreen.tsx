@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { Card } from '../components/card/Card';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { Card } from '../../components/card/Card';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -23,6 +23,7 @@ const UPCOMING_LESSON = {
   totalDistanceM: 1150,
 };
 
+// 06-1D — Max dummy: 8월~5월 스크롤 테스트용 데이터(02-B2/02-B3 max dummy 프로토타입과 같은 용도)
 const COMPLETED_WEEKS: CompletedLessonWeek[] = [
   {
     weekLabel: '8월 1주차 (8/3~8/9)',
@@ -38,9 +39,79 @@ const COMPLETED_WEEKS: CompletedLessonWeek[] = [
       { id: '2026-07-28', label: '7월 28일 (화) 오후 7:00' },
     ],
   },
+  {
+    weekLabel: '7월 3주차 (7/20~7/26)',
+    lessons: [
+      { id: '2026-07-23', label: '7월 23일 (목) 오후 7:00' },
+      { id: '2026-07-21', label: '7월 21일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '7월 2주차 (7/13~7/19)',
+    lessons: [
+      { id: '2026-07-16', label: '7월 16일 (목) 오후 7:00' },
+      { id: '2026-07-14', label: '7월 14일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '7월 1주차 (7/6~7/12)',
+    lessons: [
+      { id: '2026-07-09', label: '7월 9일 (목) 오후 7:00' },
+      { id: '2026-07-07', label: '7월 7일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '6월 5주차 (6/29~7/5)',
+    lessons: [
+      { id: '2026-07-02', label: '7월 2일 (목) 오후 7:00' },
+      { id: '2026-06-30', label: '6월 30일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '6월 4주차 (6/22~6/28)',
+    lessons: [
+      { id: '2026-06-25', label: '6월 25일 (목) 오후 7:00' },
+      { id: '2026-06-23', label: '6월 23일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '6월 3주차 (6/15~6/21)',
+    lessons: [
+      { id: '2026-06-18', label: '6월 18일 (목) 오후 7:00' },
+      { id: '2026-06-16', label: '6월 16일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '6월 2주차 (6/8~6/14)',
+    lessons: [
+      { id: '2026-06-11', label: '6월 11일 (목) 오후 7:00' },
+      { id: '2026-06-09', label: '6월 9일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '6월 1주차 (6/1~6/7)',
+    lessons: [
+      { id: '2026-06-04', label: '6월 4일 (목) 오후 7:00' },
+      { id: '2026-06-02', label: '6월 2일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '5월 4주차 (5/25~5/31)',
+    lessons: [
+      { id: '2026-05-28', label: '5월 28일 (목) 오후 7:00' },
+      { id: '2026-05-26', label: '5월 26일 (화) 오후 7:00' },
+    ],
+  },
+  {
+    weekLabel: '5월 3주차 (5/18~5/24)',
+    lessons: [
+      { id: '2026-05-21', label: '5월 21일 (목) 오후 7:00' },
+      { id: '2026-05-19', label: '5월 19일 (화) 오후 7:00' },
+    ],
+  },
 ];
 
-export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
+export const ClassDetailsLessonTabScrollTestScreen = ({ navigation, route }: any) => {
   const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });

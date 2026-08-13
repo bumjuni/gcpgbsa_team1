@@ -7,24 +7,23 @@ import { ClassRegisterScreen } from '../screens/ClassRegisterScreen';
 import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScreen';
 import { ClassCreateCompleteScreen } from '../screens/ClassCreateCompleteScreen';
 import { LevelGuideScreen } from '../screens/LevelGuideScreen';
-import { LessonPlanCreateScreen } from '../screens/LessonPlanCreateScreen';
-import { LessonPlanConfirmScreen } from '../screens/LessonPlanConfirmScreen';
-import { LessonPlanCompleteScreen } from '../screens/LessonPlanCompleteScreen';
-import { LessonPlanEditItemScreen } from '../screens/LessonPlanEditItemScreen';
-import { ClassListScreen_Filled } from '../screens/ClassListScreen_Filled';
-import { ClassDetailsLessonTabScreen } from '../screens/ClassDetailsLessonTabScreen';
-import { ClassDetailsLessonTabScrollTestScreen } from '../screens/ClassDetailsLessonTabScrollTestScreen';
-import { ClassDetailsLessonTabDraftScreen } from '../screens/ClassDetailsLessonTabDraftScreen';
-import { ClassDetailsLessonTabEmptyScreen } from '../screens/ClassDetailsLessonTabEmptyScreen';
-import { ClassDetailsLessonHistoryScreen } from '../screens/ClassDetailsLessonHistoryScreen';
-import { ClassDetailsInfoTabScreen } from '../screens/ClassDetailsInfoTabScreen';
-import { ClassDetailsInfoEditScreen } from '../screens/ClassDetailsInfoEditScreen';
-import { ClassDetailsMemberTabScreen } from '../screens/ClassDetailsMemberTabScreen';
-import { ClassDetailsMemberDetailScreen } from '../screens/ClassDetailsMemberDetailScreen';
-import { ClassDetailsMemberEditScreen } from '../screens/ClassDetailsMemberEditScreen';
-import { ClassDetailsReportTabScreen } from '../screens/ClassDetailsReportTabScreen';
-import { ClassDetailsReportSendScreen } from '../screens/ClassDetailsReportSendScreen';
-import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetailsReportHistoryScreen';
+import { LessonPlanCreateScreen } from '../screens/LessonPlan/LessonPlanCreateScreen';
+import { LessonPlanConfirmScreen } from '../screens/LessonPlan/LessonPlanConfirmScreen';
+import { LessonPlanCompleteScreen } from '../screens/LessonPlan/LessonPlanCompleteScreen';
+import { LessonPlanEditItemScreen } from '../screens/LessonPlan/LessonPlanEditItemScreen';
+import { ClassDetailsLessonTabScreen } from '../screens/ClassDetail/ClassDetailsLessonTabScreen';
+import { ClassDetailsLessonTabScrollTestScreen } from '../screens/ClassDetail/ClassDetailsLessonTabScrollTestScreen';
+import { ClassDetailsLessonTabDraftScreen } from '../screens/ClassDetail/ClassDetailsLessonTabDraftScreen';
+import { ClassDetailsLessonTabEmptyScreen } from '../screens/ClassDetail/ClassDetailsLessonTabEmptyScreen';
+import { ClassDetailsLessonHistoryScreen } from '../screens/ClassDetail/ClassDetailsLessonHistoryScreen';
+import { ClassDetailsInfoTabScreen } from '../screens/ClassDetail/ClassDetailsInfoTabScreen';
+import { ClassDetailsInfoEditScreen } from '../screens/ClassDetail/ClassDetailsInfoEditScreen';
+import { ClassDetailsMemberTabScreen } from '../screens/ClassDetail/ClassDetailsMemberTabScreen';
+import { ClassDetailsMemberDetailScreen } from '../screens/ClassDetail/ClassDetailsMemberDetailScreen';
+import { ClassDetailsMemberEditScreen } from '../screens/ClassDetail/ClassDetailsMemberEditScreen';
+import { ClassDetailsReportTabScreen } from '../screens/ClassDetail/ClassDetailsReportTabScreen';
+import { ClassDetailsReportSendScreen } from '../screens/ClassDetail/ClassDetailsReportSendScreen';
+import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetail/ClassDetailsReportHistoryScreen';
 import { WebReportsScreen } from '../screens/WebReportsScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
@@ -48,7 +47,6 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanConfirm" component={LessonPlanConfirmScreen} />
       <Stack.Screen name="LessonPlanComplete" component={LessonPlanCompleteScreen} />
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
-      <Stack.Screen name="ClassListFilled" component={ClassListScreen_Filled} />
       <Stack.Screen name="ClassDetailsLessonTab" component={ClassDetailsLessonTabScreen} />
       <Stack.Screen name="ClassDetailsLessonTabScrollTest" component={ClassDetailsLessonTabScrollTestScreen} />
       <Stack.Screen name="ClassDetailsLessonTabDraft" component={ClassDetailsLessonTabDraftScreen} />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { FormField } from '../components/form/FormField';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { FormField } from '../../components/form/FormField';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 

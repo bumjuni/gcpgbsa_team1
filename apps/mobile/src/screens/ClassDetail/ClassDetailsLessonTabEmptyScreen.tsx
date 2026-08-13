@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { Card } from '../components/card/Card';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { Card } from '../../components/card/Card';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 

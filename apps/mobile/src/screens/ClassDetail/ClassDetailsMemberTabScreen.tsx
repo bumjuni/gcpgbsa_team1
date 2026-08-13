@@ -1,9 +1,9 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { Button } from '../components/button/Button';
-import { Card } from '../components/card/Card';
-import { FormField } from '../components/form/FormField';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { Button } from '../../components/button/Button';
+import { Card } from '../../components/card/Card';
+import { FormField } from '../../components/form/FormField';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
