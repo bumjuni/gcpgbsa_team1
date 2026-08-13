@@ -41,20 +41,23 @@ JOIN_SEP = ", "
 
 def build_request_body(swim_class, equipment: str, request: str) -> dict:
     """SwimClass ORM 객체 + equipment/request로 RequestBody 11개 키를 조립한다."""
-    days = swim_class.daysOfWeek
+    days = swim_class.days_of_week
     days_str = JOIN_SEP.join(days) if isinstance(days, list) else days
-
+    duration_min = (
+        (swim_class.end_time.hour * 60 + swim_class.end_time.minute)
+        - (swim_class.start_time.hour * 60 + swim_class.start_time.minute)
+    )
     return {
         "class_name": swim_class.name,
         "days_of_week": days_str,
-        "start_time": swim_class.startTime,
+        "start_time": swim_class.start_time,
         # C 확정: 요청은 durationMin을 그대로 쓴다 (LLM이 total_time_m을 계산해 돌려준다).
-        "duration_min": swim_class.durationMin,
+        "duration_min": duration_min,
         "capacity": swim_class.capacity,
-        "age_group": JOIN_SEP.join(AGE_GROUP_MAP[g] for g in swim_class.ageGroups),
+        "age_group": swim_class.age_groups,
         "level": LEVEL_MAP[swim_class.level],
         "goal": JOIN_SEP.join(GOAL_MAP[g] for g in swim_class.goals),
-        "goal_etc": swim_class.goalEtc or "",
+        "goal_etc": swim_class.goal_etc or "",
         "equipment": equipment or "",
         "request": request or "",
     }

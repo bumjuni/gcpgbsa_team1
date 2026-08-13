@@ -1,42 +1,33 @@
 // store/useClassStore.ts
 
 import { create } from 'zustand';
-import { LevelType } from '../types/classroom';
+import { SwimClass } from '../types/classroom';
 
 interface ClassState {
-  classId: number | null;
-  className: string | null;
-  studentCount: number | null;
-  level: LevelType | null;
+  currentClass: SwimClass | null;
 }
 
 interface ClassActions {
-  // 화면 진입 시 반 정보를 한 번에 세팅
-  setClass: (data: {
-    classId: number;
-    className: string;
-    studentCount: number;
-    level: LevelType;
-  }) => void;
+  // 화면 진입 시 반 객체를 통째로 세팅
+  setClass: (currentClass: SwimClass) => void;
   // 부분 업데이트가 필요할 때 (예: 인원 수만 갱신)
-  updateClass: (data: Partial<ClassState>) => void;
+  updateClass: (data: Partial<SwimClass>) => void;
   clearClass: () => void;
 }
 
 const initialState: ClassState = {
-  classId: null,
-  className: null,
-  studentCount: null,
-  level: null,
+  currentClass: null,
 };
 
 export const useClassStore = create<ClassState & ClassActions>((set) => ({
   ...initialState,
 
-  setClass: ({ classId, className, studentCount, level }) =>
-    set({ classId, className, studentCount, level }),
+  setClass: (currentClass) => set({ currentClass }),
 
-  updateClass: (data) => set((prev) => ({ ...prev, ...data })),
+  updateClass: (data) =>
+    set((prev) => ({
+      currentClass: prev.currentClass ? { ...prev.currentClass, ...data } : prev.currentClass,
+    })),
 
   clearClass: () => set(initialState),
 }));
@@ -45,10 +36,13 @@ export const useClassStore = create<ClassState & ClassActions>((set) => ({
 //
 // 저장 (예: 반 상세 화면 진입 시)
 //   const setClass = useClassStore((s) => s.setClass);
-//   setClass({ classId: 1, className: '화요일 저녁 초급반', studentCount: 8, level: 'beginner' });
+//   setClass(swimClass); // SwimClass 객체 통째로
 //
 // 불러오기 (예: LessonPlanCreateScreen)
-//   const { classId, name, studentCount, level } = useClassStore();
+//   const currentClass = useClassStore((s) => s.currentClass);
+//   if (!currentClass) { /* 반 정보 없음 처리 */ }
+//   const { id, name, level } = currentClass;
 //
-// 특정 필드만 구독 (불필요한 리렌더 방지)
-//   const classId = useClassStore((s) => s.classId);
+// 부분 업데이트 (예: today_program_status만 갱신)
+//   const updateClass = useClassStore((s) => s.updateClass);
+//   updateClass({ today_program_status: 'inProgress' });

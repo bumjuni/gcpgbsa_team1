@@ -1,6 +1,6 @@
 // LessonPlanCreateScreen.tsx
 
-import React, { useState, useEffect, useTransition } from 'react';
+import React, { useState, useTransition } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
@@ -8,6 +8,7 @@ import { FormField } from '../components/form/FormField';
 import { Card } from '../components/card/Card';
 import { lessonPlanApi } from '../api/lessonPlan';
 import { useClassStore } from '../stores/useClassStore';
+import { formatDateToYMD, getNextClassDate } from '../utils/classSchedule';
 
 // ── 장비 enum: 서버 RequestBody의 equipment 값과 1:1 대응 ──
 // 'NONE'은 다른 장비와 함께 선택할 수 없다 (배타 선택)
@@ -33,16 +34,13 @@ const initialFormState: LessonPlanFormState = Object.freeze({
   request: '',
 });
 
-export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
-  const {
-    sessionDate, // 'YYYY-MM-DD'. 세션 날짜는 프론트에서 계산해 넘긴다 (LessonPlanCreate.date)
-  } = route?.params ?? {};
+export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
   const [formData, setFormData] = useState<LessonPlanFormState>(initialFormState);
   const [, startTransition] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const { classId, className, studentCount, level } = useClassStore();
+  const currentClass = useClassStore((s) => s.currentClass);
 
   const handleRequestChange = (value: string) => {
     // maxLength로도 막지만, 붙여넣기 등으로 초과 입력되는 경우를 대비해 이중 방어
@@ -73,7 +71,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   };
 
   const handleSubmit = async () => {
-    if (!classId || !sessionDate) {
+    if (!currentClass) {
       setErrorMessage('반 정보를 찾을 수 없어요. 다시 시도해주세요.');
       return;
     }
@@ -83,9 +81,16 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
 
     // LessonPlanCreate 스키마에 맞춘 페이로드.
     // class_name/days_of_week/start_time 등 반 상세 정보는 서버가 DB에서 직접 조립한다.
+    const nextClass = getNextClassDate(currentClass.days_of_week, currentClass?.start_time, null);
+
+    if (!nextClass) {
+      setErrorMessage('다음 수업일을 계산할 수 없어요.');
+      return;
+    }
+
     const requestPayload = {
-      class_id: classId,
-      date: sessionDate, // 'YYYY-MM-DD'
+      class_id: currentClass?.id,
+      date: formatDateToYMD(nextClass?.date), // 'YYYY-MM-DD'
       equipment: formData.equipment.join(', '), // 예: "FINS, PULLBUOY"
       request: formData.request,
     };
@@ -94,12 +99,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
       const result = await lessonPlanApi.createLessonPlan(requestPayload);
 
       setIsGenerating(false);
-      navigation?.navigate('LessonPlanConfirm', {
-        className,
-        studentCount,
-        level,
-        ...result,
-      });
+      navigation?.navigate('LessonPlanConfirm');
     } catch (error) {
       setIsGenerating(false);
       setErrorMessage('수업안을 만드는 데 문제가 생겼어요. 다시 시도해주세요.');
@@ -117,11 +117,11 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
         <Card variant="muted" className="mb-lg">
           <View className="flex-row items-center justify-between mb-xxs">
             <Text className="text-title-sm text-ink">
-              {className}
+              {currentClass?.name}
             </Text>
           </View>
           <Text className="text-caption text-ink-secondary mt-1">
-            인원 {studentCount}명 · {level}
+            인원 {currentClass?.student_count || 0}명 · {currentClass?.level}
           </Text>
         </Card>
 

@@ -16,10 +16,12 @@ import {
   formatTime,
   formatNextClassLabel,
 } from '../utils/classSchedule';
+import { useClassStore } from '../stores/useClassStore';
 
 export const ClassListScreen = ({ navigation }: any) => {
   const [classes, setClasses] = useState<SwimClass[]>([]);
   const [now] = useState(() => new Date());
+  const { setClass } = useClassStore();
 
   const fetchClasses = async () => {
     try {
@@ -35,7 +37,11 @@ export const ClassListScreen = ({ navigation }: any) => {
   }, []);
 
   const handleClassPress = (classId: number) => {
-    navigation?.navigate('ClassDetail', { classId });
+    const currentClass = classes.find((c) => c.id === classId);
+    if (!currentClass) return;
+
+    setClass(currentClass);
+    navigation?.navigate('LessonPlanCreate');
   };
 
   const todayClasses = useMemo(
