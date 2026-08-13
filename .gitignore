@@ -1,0 +1,8 @@
+apps/server/venv/
+apps/server/app/services/llm/__pycache__/
+apps/server/app/services/llm/.env
+apps/server/app/services/llm/my_rag_db/
+apps/server/app/services/llm/Basic_Tech/
+apps/server/app/services/llm/Extra_Texts/
+apps/server/app/services/llm/PDF_Books/
+apps/server/app/services/llm/YouTube/
