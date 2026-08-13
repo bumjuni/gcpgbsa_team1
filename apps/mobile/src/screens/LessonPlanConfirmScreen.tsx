@@ -229,8 +229,8 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   title={item.title}
                   description={item.detail}
                   rightElement={
-                    <View className="items-end">
-                      <Text className="text-caption-strong text-ink">{item.distance_m}m</Text>
+                    <View className="items-end flex-col justify-between">
+                      <Text className="text-label text-ink-tertiary">{item.distance_m}m</Text>
                       <Pressable onPress={() => handleEditItem(section.title, index, item)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>
