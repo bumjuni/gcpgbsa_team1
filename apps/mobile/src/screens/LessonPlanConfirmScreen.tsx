@@ -1,20 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
-
-interface LessonSetItem {
-  title: string;
-  set: number;
-  distance_m: number;
-  detail: string;
-}
-
-interface LessonSection {
-  title: string;
-  items: LessonSetItem[];
-}
+import { LessonSection, LessonSetItem } from '../types/lessonPlan';
+import { useLessonPlanStore } from '../stores/useLessonPlanStore';
 
 
 const getSectionTotalMeters = (section: LessonSection): number =>
@@ -132,39 +122,16 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     },
   };
   // const { result } = route?.params ?? {};
-  const [sections, setSections] = useState<LessonSection[]>([
-    { title: 'Pre-Set', items: result.program.pre_set },
-    { title: 'Main-Set', items: result.program.main_set },
-    { title: 'Post-Set', items: result.program.post_set },
-  ]);
+  const sections = useLessonPlanStore((s) => s.sections);
+  const initSections = useLessonPlanStore((s) => s.initSections);
+  const clearSections = useLessonPlanStore((s) => s.clearSections);
 
   useEffect(() => {
-    const edited = route?.params?.editedItem;
-    if (!edited) return;
-
-    setSections((prev) =>
-      prev.map((section) =>
-        section.title !== edited.sectionTitle
-          ? section
-          : {
-              ...section,
-              items: section.items.map((it, i) =>
-                i !== edited.itemIndex
-                  ? it
-                  : {
-                      name: edited.name,
-                      description: edited.description,
-                      distance:
-                        edited.count === 1
-                          ? `${edited.intervalDistance}m`
-                          : `${edited.count}×${edited.intervalDistance}m`,
-                    }
-              ),
-            }
-      )
-    );
-    navigation?.setParams({ editedItem: undefined });
-  }, [route?.params?.editedItem]);
+    initSections(result);
+    return () => {
+      clearSections(); // 화면 unmount 시 정리
+    };
+  }, []);
 
   const handleRetry = () => {
     navigation?.goBack();
@@ -174,16 +141,8 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     navigation?.navigate('ClassListFilled');
   };
 
-  const handleEditItem = (sectionTitle: string, itemIndex: number, item: LessonSetItem) => {
-    const { count, intervalDistance } = parseCountAndDistance(item.distance);
-    navigation?.navigate('LessonPlanEditItem', {
-      sectionTitle,
-      itemIndex,
-      name: item.name,
-      description: item.description,
-      count,
-      intervalDistance,
-    });
+  const handleEditItem = (sectionTitle: string, itemIndex: number) => {
+    navigation?.navigate('LessonPlanEditItem', { sectionTitle, itemIndex });
   };
 
   return (
@@ -231,7 +190,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   rightElement={
                     <View className="items-end flex-col justify-between">
                       <Text className="text-label text-ink-tertiary">{item.distance_m}m</Text>
-                      <Pressable onPress={() => handleEditItem(section.title, index, item)} hitSlop={8}>
+                      <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>
                     </View>

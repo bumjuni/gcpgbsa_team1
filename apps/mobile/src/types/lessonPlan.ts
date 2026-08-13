@@ -1,4 +1,16 @@
 // mapLLMCurriculumResponse.ts
+//
+export interface LessonSetItem {
+  title: string;
+  set: number;
+  distance_m: number;
+  detail: string;
+}
+
+export interface LessonSection {
+  title: string;
+  items: LessonSetItem[];
+}
 
 // LLM(generate_curriculum)이 그대로 반환하는 원본 응답 형태
 export interface LLMCurriculumItem {
