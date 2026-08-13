@@ -4,7 +4,7 @@
 # RequestBody 11개 키를 조립하고 generate_curriculum을 호출한다.
 # 이 서비스는 DB에 접근하지 않는다 (DB 조회는 ProgramService의 책임).
 
-from services.llm.rag.rag_service_ver3 import generate_curriculum
+from services.llm.rag_service_ver4 import generate_curriculum
 from schemas.program import Program as ProgramSchema, SessionSummary
 
 
@@ -43,20 +43,21 @@ def build_request_body(swim_class, equipment: str, request: str) -> dict:
     """SwimClass ORM 객체 + equipment/request로 RequestBody 11개 키를 조립한다."""
     days = swim_class.days_of_week
     days_str = JOIN_SEP.join(days) if isinstance(days, list) else days
+
     duration_min = (
         (swim_class.end_time.hour * 60 + swim_class.end_time.minute)
         - (swim_class.start_time.hour * 60 + swim_class.start_time.minute)
     )
+
     return {
         "class_name": swim_class.name,
         "days_of_week": days_str,
-        "start_time": swim_class.start_time,
-        # C 확정: 요청은 durationMin을 그대로 쓴다 (LLM이 total_time_m을 계산해 돌려준다).
+        "start_time": swim_class.start_time.strftime("%H:%M"),
         "duration_min": duration_min,
         "capacity": swim_class.capacity,
-        "age_group": swim_class.age_groups,
-        "level": LEVEL_MAP[swim_class.level],
-        "goal": JOIN_SEP.join(GOAL_MAP[g] for g in swim_class.goals),
+        "age_group": swim_class.age_group,
+        "level": swim_class.level,
+        "goal": swim_class.goals,
         "goal_etc": swim_class.goal_etc or "",
         "equipment": equipment or "",
         "request": request or "",

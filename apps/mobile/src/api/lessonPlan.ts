@@ -18,19 +18,19 @@ export interface LessonPlanItemResponse {
   detail: string;
 }
 
-export interface LessonPlanPlan {
+export interface LessonPlanSession {
   warmup: LessonPlanItemResponse[];
   main: LessonPlanItemResponse[];
   cooldown: LessonPlanItemResponse[];
 }
 
 export interface SessionSummary {
-  total_time_m: number;
+  total_min: number;
   total_distance_m: number;
   focus_point: string;
 }
 
-// ProgramResponse 스키마와 1:1 대응
+// LessonPlanResponse 스키마와 1:1 대응
 export interface LessonPlanResponse {
   id: number;
   class_id: number;
@@ -39,7 +39,7 @@ export interface LessonPlanResponse {
   request: string | null;
   created_at: string;
   session_summary: SessionSummary;
-  lessonPlan: LessonPlanPlan;
+  program: LessonPlanSession;
 }
 
 export const lessonPlanApi = {
