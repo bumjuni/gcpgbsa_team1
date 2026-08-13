@@ -2,6 +2,7 @@ import { classroomApi } from '../api/classroom';
 import { classFormSchema, ClassFormValues } from './classForm.schema';
 import { useForm } from './useForm';
 import { formatList } from '../utils/listToString';
+import { useClassStore } from '../stores/useClassStore';
 
 const INITIAL_VALUES: ClassFormValues = {
   name: '',
@@ -19,6 +20,7 @@ interface UseRegisterClassFormOptions {
 }
 
 export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
+  const setClass = useClassStore((s) => s.setClass);
 
   const form = useForm<ClassFormValues>({
     initialValues: INITIAL_VALUES,
@@ -32,6 +34,13 @@ export const useRegisterClassForm = (options?: UseRegisterClassFormOptions) => {
         goals: formatList(validatedData.goals),
       };
       const response = await classroomApi.createClass(parsedData);
+      setClass({
+        classId: response.id,
+        className: response.name,
+        studentCount: response.student_count || 0,
+        level: response.level
+      });
+
       options?.onSuccess?.(response.id);
     },
   });

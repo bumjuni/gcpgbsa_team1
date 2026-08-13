@@ -1,12 +1,11 @@
 // store/useClassStore.ts
 
 import { create } from 'zustand';
-
-export type LevelType = 'new' | 'beginner' | 'intermediate' | 'advanced' | 'masters';
+import { LevelType } from '../types/classroom';
 
 interface ClassState {
   classId: number | null;
-  name: string | null;
+  className: string | null;
   studentCount: number | null;
   level: LevelType | null;
 }
@@ -15,7 +14,7 @@ interface ClassActions {
   // 화면 진입 시 반 정보를 한 번에 세팅
   setClass: (data: {
     classId: number;
-    name: string;
+    className: string;
     studentCount: number;
     level: LevelType;
   }) => void;
@@ -26,7 +25,7 @@ interface ClassActions {
 
 const initialState: ClassState = {
   classId: null,
-  name: null,
+  className: null,
   studentCount: null,
   level: null,
 };
@@ -34,8 +33,8 @@ const initialState: ClassState = {
 export const useClassStore = create<ClassState & ClassActions>((set) => ({
   ...initialState,
 
-  setClass: ({ classId, name, studentCount, level }) =>
-    set({ classId, name, studentCount, level }),
+  setClass: ({ classId, className, studentCount, level }) =>
+    set({ classId, className, studentCount, level }),
 
   updateClass: (data) => set((prev) => ({ ...prev, ...data })),
 
@@ -46,7 +45,7 @@ export const useClassStore = create<ClassState & ClassActions>((set) => ({
 //
 // 저장 (예: 반 상세 화면 진입 시)
 //   const setClass = useClassStore((s) => s.setClass);
-//   setClass({ classId: 1, name: '화요일 저녁 초급반', studentCount: 8, level: 'beginner' });
+//   setClass({ classId: 1, className: '화요일 저녁 초급반', studentCount: 8, level: 'beginner' });
 //
 // 불러오기 (예: LessonPlanCreateScreen)
 //   const { classId, name, studentCount, level } = useClassStore();

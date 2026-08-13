@@ -7,6 +7,7 @@ import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
 import { Card } from '../components/card/Card';
 import { lessonPlanApi } from '../api/lessonPlan';
+import { useClassStore } from '../stores/useClassStore';
 
 // ── 장비 enum: 서버 RequestBody의 equipment 값과 1:1 대응 ──
 // 'NONE'은 다른 장비와 함께 선택할 수 없다 (배타 선택)
@@ -34,12 +35,6 @@ const initialFormState: LessonPlanFormState = Object.freeze({
 
 export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   const {
-    day = '화요일',
-    timeOfDay = '저녁',
-    className = '초급반',
-    memberCount = 8,
-    level = '초급',
-    classId, // 반 PK (LessonPlanCreate.class_id). 상위 화면에서 route.params로 반드시 전달돼야 함
     sessionDate, // 'YYYY-MM-DD'. 세션 날짜는 프론트에서 계산해 넘긴다 (LessonPlanCreate.date)
   } = route?.params ?? {};
 
@@ -47,6 +42,7 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
   const [, startTransition] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { classId, className, studentCount, level } = useClassStore();
 
   const handleRequestChange = (value: string) => {
     // maxLength로도 막지만, 붙여넣기 등으로 초과 입력되는 경우를 대비해 이중 방어
@@ -99,10 +95,8 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
 
       setIsGenerating(false);
       navigation?.navigate('LessonPlanConfirm', {
-        day,
-        timeOfDay,
         className,
-        memberCount,
+        studentCount,
         level,
         ...result,
       });
@@ -123,11 +117,11 @@ export const LessonPlanCreateScreen = ({ navigation, route }: any) => {
         <Card variant="muted" className="mb-lg">
           <View className="flex-row items-center justify-between mb-xxs">
             <Text className="text-title-sm text-ink">
-              {day} {timeOfDay} {className}
+              {className}
             </Text>
           </View>
           <Text className="text-caption text-ink-secondary mt-1">
-            인원 {memberCount}명 · {level}
+            인원 {studentCount}명 · {level}
           </Text>
         </Card>
 
