@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { FormField } from '../../components/form/FormField';
+import { useClassStore } from '../../stores/useClassStore';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -15,16 +16,17 @@ const ReadOnlyBox = ({ value }: { value: string }) => (
   </View>
 );
 
-export const ClassDetailsInfoTabScreen = ({ navigation, route }: any) => {
-  const { classId, className = '화요일 저녁 초급반' } = route?.params ?? {};
+export const ClassDetailsInfoTabScreen = ({ navigation }: any) => {
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
+  const { currentClass } = useClassStore();
+
 
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '반정보') return;
-    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab', { classId, className });
-    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
-    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
+    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab');
+    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab');
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab');
   };
 
   const handleEdit = () => {

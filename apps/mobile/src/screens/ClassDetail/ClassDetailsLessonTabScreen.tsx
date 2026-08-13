@@ -3,6 +3,9 @@ import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-nati
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
+import { useClassStore } from '../../stores/useClassStore';
+import { formatNextClassLabel } from '../../utils/classSchedule';
+import { number } from 'zod';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -18,10 +21,6 @@ interface CompletedLessonWeek {
   lessons: CompletedLesson[];
 }
 
-const UPCOMING_LESSON = {
-  dateLabel: '8월 11일 (화) 오후 7:00',
-  totalDistanceM: 1150,
-};
 
 const COMPLETED_WEEKS: CompletedLessonWeek[] = [
   {
@@ -40,24 +39,45 @@ const COMPLETED_WEEKS: CompletedLessonWeek[] = [
   },
 ];
 
-export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
-  const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
+export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
+  const { currentClass } = useClassStore();
+  // const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
 
+  if (!currentClass) return null;
+
+  const printNextLesson = () => {
+    const nextLesson = formatNextClassLabel(
+      currentClass?.days_of_week,
+      currentClass?.start_time,
+      currentClass?.today_program_status)
+
+    if (nextLesson.startsWith('다'))
+      return nextLesson.substring(8)
+
+    return nextLesson
+  }
+
+  const UPCOMING_LESSON = {
+    dateLabel: printNextLesson(),
+    totalDistanceM: 1150,
+  };
+
+
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '수업진행') return;
-    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
-    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
-    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
+    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab');
+    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab');
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab');
   };
 
   const handleStartLesson = () => {
-    navigation?.navigate('LessonPlanComplete', { classId, className });
+    navigation?.navigate('LessonPlanComplete');
   };
 
   const handleLessonHistoryPress = (lesson: CompletedLesson) => {
-    navigation?.navigate('ClassDetailsLessonHistory', { classId, lessonId: lesson.id, label: lesson.label });
+    navigation?.navigate('ClassDetailsLessonHistory');
   };
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
@@ -72,7 +92,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={className} showBackButton scrollable={false}>
+    <ScreenLayout title={currentClass.name} showBackButton scrollable={false}>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-lg"
         onLayout={handleTabRowLayout}

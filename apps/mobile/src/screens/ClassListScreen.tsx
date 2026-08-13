@@ -41,7 +41,7 @@ export const ClassListScreen = ({ navigation }: any) => {
     if (!currentClass) return;
 
     setClass(currentClass);
-    navigation?.navigate('LessonPlanCreate');
+    navigation?.navigate('ClassDetailsLessonTab');
   };
 
   const todayClasses = useMemo(

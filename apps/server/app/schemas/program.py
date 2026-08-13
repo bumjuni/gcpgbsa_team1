@@ -49,3 +49,12 @@ class ProgramResponse(ProgramCreate):
 
     class Config:
         from_attributes = True
+
+
+class ProgramHistoryItem(BaseModel):
+    program_id: int
+    status: ProgramStatusEnum
+    date: date
+
+    class Config:
+        from_attributes = True
