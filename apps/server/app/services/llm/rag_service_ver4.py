@@ -22,7 +22,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.messages import AIMessage, HumanMessage
 from dotenv import load_dotenv
 
-from drill_picker import pick_drills, format_drills   # 드릴 라이브러리 조회
+from services.llm.rag.drill_picker import pick_drills, format_drills   # 드릴 라이브러리 조회
 
 warnings.filterwarnings("ignore", category=UserWarning)
 

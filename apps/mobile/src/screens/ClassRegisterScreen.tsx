@@ -4,6 +4,7 @@ import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
 import { useRegisterClassForm } from '../hooks/useRegisterClassForm';
+import { AgeGroupType } from '../types/classroom';
 
 
 export const ClassRegisterScreen = ({ navigation }: any) => {
@@ -95,7 +96,6 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
           <FormField.HelperText type='guide' text='여러 개 선택할 수 있어요' />
           <FormField.ChipGroup
             variant='rounded-square'
-            multiple
             options={[
               { label: '어린이 (5-7세)', value: 'PRESCHOOL' },
               { label: '초등 (8-13세)', value: 'ELEMENTARY' },
@@ -103,8 +103,8 @@ export const ClassRegisterScreen = ({ navigation }: any) => {
               { label: '성인 (20-59세)', value: 'ADULT' },
               { label: '시니어 (60세~)', value: 'SENIOR' },
             ]}
-            value={values.age_groups}
-            onChange={(val) => setFieldValue('age_groups', val as string[])}
+            value={values.age_group}
+            onChange={(val) => setFieldValue('age_group', val as AgeGroupType)}
             />
         </FormField>
 

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { AgeGroupType } from '../types/classroom';
 
 export const classFormSchema = z
   .object({
@@ -17,7 +18,9 @@ export const classFormSchema = z
       .min(1, '정원을 입력해 주세요.')
       .transform((val) => Number(val))
       .refine((val) => !isNaN(val) && val > 0, '정원은 1명 이상이어야 합니다.'),
-    age_groups: z.array(z.string()).min(1, '나이대를 하나 이상 선택해 주세요.'),
+    age_group: z
+      .custom<AgeGroupType | ''>((val) => typeof val === 'string')
+      .refine((val) => val !== '', { message: '나이대를 선택해 주세요.' }),
     level: z.string().min(1, '수준을 선택해 주세요.'),
     goals: z.array(z.string()).min(1, '수업목표를 하나 이상 선택해 주세요.')
     })

@@ -5,7 +5,7 @@ import { Button } from '../components/button/Button';
 import { classroomApi } from '../api/classroom';
 import { SwimClass } from '../types/classroom';
 import { Card } from '../components/card/Card';
-import { Badge } from '../components/badge/Badge';
+import { Badge, BadgeVariant } from '../components/badge/Badge';
 import { LEVEL_LABEL } from '../constants/classLabels';
 import {
   isToday,
@@ -16,10 +16,12 @@ import {
   formatTime,
   formatNextClassLabel,
 } from '../utils/classSchedule';
+import { useClassStore } from '../stores/useClassStore';
 
 export const ClassListScreen = ({ navigation }: any) => {
   const [classes, setClasses] = useState<SwimClass[]>([]);
   const [now] = useState(() => new Date());
+  const { setClass } = useClassStore();
 
   const fetchClasses = async () => {
     try {
@@ -35,7 +37,11 @@ export const ClassListScreen = ({ navigation }: any) => {
   }, []);
 
   const handleClassPress = (classId: number) => {
-    navigation?.navigate('ClassDetail', { classId });
+    const currentClass = classes.find((c) => c.id === classId);
+    if (!currentClass) return;
+
+    setClass(currentClass);
+    navigation?.navigate('LessonPlanCreate');
   };
 
   const todayClasses = useMemo(
@@ -87,7 +93,7 @@ export const ClassListScreen = ({ navigation }: any) => {
                         {/* 오늘의 수업: 제목+뱃지 inline, 우측 끝 chevron */}
                         <View className="flex-row items-center flex-shrink">
                           <Text className="text-title-md text-ink mr-xs">{item.name}</Text>
-                          {showBadge && <Badge variant={badge.variant} text={badge.text} />}
+                          {showBadge && <Badge variant={badge.variant as BadgeVariant} text={badge.text} />}
                         </View>
                       </View>
                       <Text className={`mt-xs ${captionBg}`}>
@@ -117,7 +123,7 @@ export const ClassListScreen = ({ navigation }: any) => {
                   {/* 전체 반: 제목 좌측, 뱃지 우측 끝 정렬, chevron 없음 */}
                   <View className="flex-row items-center justify-between">
                     <Text className="text-button-sm text-ink">{item.name}</Text>
-                    <Badge variant={planBadge.variant} text={planBadge.text}/>
+                    <Badge variant={planBadge.variant as BadgeVariant} text={planBadge.text}/>
                   </View>
                   <Text className="text-label text-ink-secondary">
                     {renderStudentCount(item)} · {LEVEL_LABEL[item.level]}

@@ -33,6 +33,7 @@ export const AppNavigator = () => {
   return (
     <Stack.Navigator
       initialRouteName="ClassList"
+
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#FFFFFF' },
