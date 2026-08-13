@@ -24,6 +24,6 @@ class ProgramStatusEnum(str, enum.Enum):
 
 
 class ProgramPhaseEnum(str, enum.Enum):
-    WARM_UP = "WARM_UP"             # 웜업
-    MAIN = "MAIN"                   # 메인
-    COOL_DOWN = "COOL_DOWN"         # 쿨다운
+    PRE_SET = "PRE_SET"             # 웜업
+    MAIN_SET = "MAIN_SET"                   # 메인
+    POST_SET = "POST_SET"         # 쿨다운

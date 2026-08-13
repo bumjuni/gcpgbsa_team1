@@ -74,11 +74,11 @@ class ProgramService:
                 }
             )
 
-        # 4. ProgramItem 생성 (warmup/main/cooldown 순서대로, phase enum 부여)
+        # 4. ProgramItem 생성
         phase_groups = {
-            "WARMUP": program_plan.warmup,
-            "MAIN": program_plan.main,
-            "COOLDOWN": program_plan.cooldown,
+            "PRE_SET": program_plan.pre_set,
+            "MAIN_SET": program_plan.main_set,
+            "POST_SET": program_plan.post_set,
         }
         for phase, items in phase_groups.items():
             for item in items:
@@ -94,9 +94,7 @@ class ProgramService:
                     }
                 )
 
-
-        # 5. 응답 조립 (LLM 응답 그대로 재사용 - DB 재조회 불필요)
-        return ProgramResponse(
+        response = ProgramResponse(
             id=program.id,
             class_id=program.class_id,
             date=program.date,
@@ -106,3 +104,8 @@ class ProgramService:
             session_summary=session_summary,
             program=program_plan,
         )
+
+        print(response)
+
+        # 5. 응답 조립 (LLM 응답 그대로 재사용 - DB 재조회 불필요)
+        return response

@@ -9,6 +9,7 @@ import { Card } from '../components/card/Card';
 import { lessonPlanApi } from '../api/lessonPlan';
 import { useClassStore } from '../stores/useClassStore';
 import { formatDateToYMD, getNextClassDate } from '../utils/classSchedule';
+import { mapLLMCurriculumResponse } from '../types/lessonPlan';
 
 // ── 장비 enum: 서버 RequestBody의 equipment 값과 1:1 대응 ──
 // 'NONE'은 다른 장비와 함께 선택할 수 없다 (배타 선택)
@@ -96,11 +97,13 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
     };
 
     try {
+      // const result = mapLLMCurriculumResponse(await lessonPlanApi.createLessonPlan(requestPayload));
       const result = await lessonPlanApi.createLessonPlan(requestPayload);
 
       setIsGenerating(false);
-      navigation?.navigate('LessonPlanConfirm');
+      navigation?.navigate('LessonPlanConfirm', { result });
     } catch (error) {
+      console.error(error)
       setIsGenerating(false);
       setErrorMessage('수업안을 만드는 데 문제가 생겼어요. 다시 시도해주세요.');
     }

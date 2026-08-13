@@ -1,3 +1,4 @@
+import { LLMCurriculumResponse } from '../types/lessonPlan';
 import { apiClient } from './client'; // TODO: 실제 apiClient 경로에 맞게 조정
 
 export type EquipmentValue = 'FINS' | 'BOARD' | 'PADDLE' | 'PULLBUOY' | 'NONE';
@@ -19,9 +20,9 @@ export interface LessonPlanItemResponse {
 }
 
 export interface LessonPlanSession {
-  warmup: LessonPlanItemResponse[];
-  main: LessonPlanItemResponse[];
-  cooldown: LessonPlanItemResponse[];
+  pre_set: LessonPlanItemResponse[];
+  main_set: LessonPlanItemResponse[];
+  post_set: LessonPlanItemResponse[];
 }
 
 export interface SessionSummary {
@@ -45,7 +46,7 @@ export interface LessonPlanResponse {
 export const lessonPlanApi = {
   // 수업안(루틴 프로그램) 생성
   createLessonPlan: async (payload: LessonPlanCreatePayload) => {
-    const response = await apiClient.post<LessonPlanResponse>('/program', payload);
+    const response = await apiClient.post<LLMCurriculumResponse>('/program', payload);
     console.log(response);
     return response.data;
   },

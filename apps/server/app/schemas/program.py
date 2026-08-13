@@ -27,9 +27,9 @@ class ProgramItem(BaseModel):
 
 
 class Program(BaseModel):
-    warmup: List[ProgramItem] = Field(default_factory=list)
-    main: List[ProgramItem] = Field(default_factory=list)
-    cooldown: List[ProgramItem] = Field(default_factory=list)
+    pre_set: List[ProgramItem] = Field(default_factory=list)
+    main_set: List[ProgramItem] = Field(default_factory=list)
+    post_set: List[ProgramItem] = Field(default_factory=list)
 
 
 class ProgramResponse(ProgramCreate):
