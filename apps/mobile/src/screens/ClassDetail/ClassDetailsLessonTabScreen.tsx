@@ -1,49 +1,50 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
-import { formatNextClassLabel } from '../../utils/classSchedule';
-import { number } from 'zod';
+import { formatNextClassLabel, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { lessonPlanApi } from '../../api/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
 const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포트'];
 
 interface CompletedLesson {
-  id: string;
+  id: number;
   label: string;
 }
 
-interface CompletedLessonWeek {
-  weekLabel: string;
-  lessons: CompletedLesson[];
-}
-
-
-const COMPLETED_WEEKS: CompletedLessonWeek[] = [
-  {
-    weekLabel: '8월 1주차 (8/3~8/9)',
-    lessons: [
-      { id: '2026-08-06', label: '8월 6일 (목) 오후 7:00' },
-      { id: '2026-08-04', label: '8월 4일 (화) 오후 7:00' },
-    ],
-  },
-  {
-    weekLabel: '7월 4주차 (7/27~8/2)',
-    lessons: [
-      { id: '2026-07-30', label: '7월 30일 (목) 오후 7:00' },
-      { id: '2026-07-28', label: '7월 28일 (화) 오후 7:00' },
-    ],
-  },
-];
-
 export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const { currentClass } = useClassStore();
-  // const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
+  const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
+
+
+  useEffect(() => {
+    if (!currentClass) return;
+
+    const fetchProgramHistory = async () => {
+      try {
+        const data = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
+        setProgramHistory(data);
+      } catch (error) {
+        console.error('종료된 수업 목록 조회 실패:', error);
+      }
+    };
+
+    fetchProgramHistory();
+  }, [currentClass]);
+
+  const completedWeeks = useMemo(
+    () =>
+      programHistory.length > 0 && currentClass
+        ? groupProgramHistoryByWeek(programHistory, currentClass?.start_time)
+        : [],
+    [programHistory, currentClass],
+  );
 
   if (!currentClass) return null;
 
@@ -133,7 +134,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <Text className="text-base font-bold text-ink mb-sm">종료된 수업</Text>
-        {COMPLETED_WEEKS.map((week) => (
+        {completedWeeks.map((week) => (
           <View key={week.weekLabel} className="mb-md">
             <Card>
               <Card.Header title={week.weekLabel} />

@@ -1,4 +1,5 @@
 import { LessonSetItem, LLMCurriculumResponse } from '../types/lessonPlan';
+import { ProgramHistoryItem } from '../utils/classSchedule';
 import { apiClient } from './client'; // TODO: 실제 apiClient 경로에 맞게 조정
 
 export type EquipmentValue = 'FINS' | 'BOARD' | 'PADDLE' | 'PULLBUOY' | 'NONE';
@@ -67,4 +68,9 @@ export const lessonPlanApi = {
     return response.data;
   },
 
+  getLessonPlanHistory: async (swimClassId: number) => {
+    const response = await apiClient.get<ProgramHistoryItem[]>(`/program/${swimClassId}/programs/history`);
+    console.log(response);
+    return response.data;
+  }
 };

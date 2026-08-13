@@ -1,7 +1,7 @@
 from datetime import datetime, date
 from typing import Optional
 
-from apps.server.app.models.enums import ProgramStatusEnum
+from models.enums import ProgramStatusEnum
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 

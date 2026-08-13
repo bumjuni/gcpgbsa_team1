@@ -1,4 +1,4 @@
-from apps.server.app.schemas.program import ProgramHistoryItem
+from schemas.program import ProgramHistoryItem
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_classroom_service
