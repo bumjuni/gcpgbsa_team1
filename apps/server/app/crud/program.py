@@ -73,12 +73,33 @@ class ProgramCrud:
             return result.scalar_one_or_none()
 
 
-    async def update_program(self, program_id: int, update_data: dict) -> Program:
-        """기존 Program row의 필드를 갱신한다 (DRAFT 상태 재생성 시 사용)."""
-        program = await self.db.get(Program, program_id)
+    async def update_program_item(self, item_id: int, update_data: dict) -> ProgramItem:
+        item = await self.db.get(ProgramItem, item_id)
         for key, value in update_data.items():
-            setattr(program, key, value)
-        program.updated_at = datetime.now()
+            setattr(item, key, value)
+        item.updated_at = datetime.now()
         await self.db.commit()
-        await self.db.refresh(program)
-        return program
+        await self.db.refresh(item)
+        return item
+
+    async def get_program_items(self, program_id: int) -> list[ProgramItem]:
+        result = await self.db.execute(
+            select(ProgramItem).where(
+                ProgramItem.program_id == program_id,
+                ProgramItem.deleted_at.is_(None),
+            )
+        )
+        return list(result.scalars().all())
+
+    async def delete_program_items_by_ids(self, item_ids: list[int]) -> None:
+        await self.db.execute(
+            delete(ProgramItem).where(ProgramItem.id.in_(item_ids))
+        )
+        await self.db.commit()
+
+    async def confirm_program(self, program_id, status) -> Program:
+        item = await self.db.get(Program, program_id)
+        item.status = status
+        await self.db.commit()
+        await self.db.refresh(item)
+        return item

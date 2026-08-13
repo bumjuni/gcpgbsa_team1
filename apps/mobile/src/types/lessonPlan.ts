@@ -83,6 +83,6 @@ export const mapLLMCurriculumResponse = (
   program: {
     pre_set: raw.program.pre_set.map(mapItem),
     main_set: raw.program.main_set.map(mapItem),
-    post_set: raw.program.cooldown.map(mapItem),
+    post_set: raw.program.post_set.map(mapItem),
   },
 });

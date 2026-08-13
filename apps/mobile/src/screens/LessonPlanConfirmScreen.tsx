@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { Card } from '../components/card/Card';
 import { LessonSection, LessonSetItem } from '../types/lessonPlan';
 import { useLessonPlanStore } from '../stores/useLessonPlanStore';
+import { lessonPlanApi } from '../api/lessonPlan';
 
 
 const getSectionTotalMeters = (section: LessonSection): number =>
@@ -116,6 +117,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const initSections = useLessonPlanStore((s) => s.initSections);
   const clearSections = useLessonPlanStore((s) => s.clearSections);
   const totalDistance = useMemo(() => getTotalMeters(sections), [sections]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     initSections(result);
@@ -128,8 +130,27 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     navigation?.goBack();
   };
 
-  const handleConfirm = () => {
-    navigation?.navigate('ClassListFilled');
+  const handleConfirm = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    try {
+      await lessonPlanApi.confirmLessonPlan(result.id, {
+        status: 'CONFIRMED',
+        program: {
+          pre_set: sections.find((s) => s.title === 'Pre-Set')?.items ?? [],
+          main_set: sections.find((s) => s.title === 'Main-Set')?.items ?? [],
+          post_set: sections.find((s) => s.title === 'Post-Set')?.items ?? [],
+        },
+      });
+
+      clearSections();
+      navigation?.navigate('ClassList');
+    } catch (error) {
+      console.error(error);
+      // TODO: 에러 토스트/알럿
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleEditItem = (sectionTitle: string, itemIndex: number) => {

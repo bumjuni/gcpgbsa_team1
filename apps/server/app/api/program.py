@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_program_service
 from schemas.program import (
+    ProgramConfirm,
     ProgramCreate,
     ProgramResponse,
 )
@@ -35,6 +36,18 @@ async def delete_program(
 ) -> ProgramResponse:
     return await service.delete_program(program_id)
 
+@router.patch(
+    "/{program_id}/confirm",
+    response_model=ProgramResponse,
+    status_code=status.HTTP_200_OK,
+    summary="루틴 프로그램 확정",
+)
+async def confirm_program(
+    program_id: int,
+    schema: ProgramConfirm,
+    service: ProgramService = Depends(get_program_service),
+) -> ProgramResponse:
+    return await service.confirm_program(program_id, schema)
 
 # # @router.post(
 # #     "/items",

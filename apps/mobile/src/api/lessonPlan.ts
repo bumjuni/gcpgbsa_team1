@@ -1,4 +1,4 @@
-import { LLMCurriculumResponse } from '../types/lessonPlan';
+import { LessonSetItem, LLMCurriculumResponse } from '../types/lessonPlan';
 import { apiClient } from './client'; // TODO: 실제 apiClient 경로에 맞게 조정
 
 export type EquipmentValue = 'FINS' | 'BOARD' | 'PADDLE' | 'PULLBUOY' | 'NONE';
@@ -43,6 +43,15 @@ export interface LessonPlanResponse {
   program: LessonPlanSession;
 }
 
+interface LessonPlanConfirmPayload {
+  status: 'CONFIRMED';
+  program: {
+    pre_set: LessonSetItem[];
+    main_set: LessonSetItem[];
+    post_set: LessonSetItem[];
+  };
+}
+
 export const lessonPlanApi = {
   // 수업안(루틴 프로그램) 생성
   createLessonPlan: async (payload: LessonPlanCreatePayload) => {
@@ -50,4 +59,12 @@ export const lessonPlanApi = {
     console.log(response);
     return response.data;
   },
+
+  confirmLessonPlan: async (programId: number, payload: LessonPlanConfirmPayload) => {
+    console.log(payload)
+    const response = await apiClient.patch<LLMCurriculumResponse>(`/program/${programId}/confirm`, payload);
+    console.log(response);
+    return response.data;
+  },
+
 };

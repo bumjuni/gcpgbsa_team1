@@ -4,7 +4,8 @@ from sqlalchemy import select
 
 from models import SwimClass
 from models.enums import ProgramStatusEnum
-from schemas.program import ProgramCreate, ProgramResponse, Program as ProgramSchema
+from schemas.program import ProgramConfirm, ProgramCreate, ProgramResponse, Program as ProgramSchema, SessionSummary
+from models import Program
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
 
@@ -109,3 +110,70 @@ class ProgramService:
 
         # 5. 응답 조립 (LLM 응답 그대로 재사용 - DB 재조회 불필요)
         return response
+
+    async def confirm_program(self, program_id: int, schema: ProgramConfirm) -> ProgramResponse:
+        program = await self.crud.db.get(Program, program_id)
+        if program is None:
+            raise ValueError(f"Program을 찾을 수 없습니다: {program_id}")
+
+        existing_items = await self.crud.get_program_items(program.id)
+        existing_ids = {item.id for item in existing_items}
+
+        phase_groups = {
+            "PRE_SET": schema.program.pre_set,
+            "MAIN_SET": schema.program.main_set,
+            "POST_SET": schema.program.post_set,
+        }
+
+        incoming_ids = set()
+        for phase, items in phase_groups.items():
+            for item in items:
+                item_data = {
+                    "title": item.title,
+                    "detail": item.detail,
+                    "set": item.set,
+                    "distance_m": item.distance_m,
+                    "duration_min": item.duration_min,
+                    "phase": phase,
+                }
+                if item.id is not None and item.id in existing_ids:
+                    # 기존 항목 수정
+                    await self.crud.update_program_item(item.id, item_data)
+                    incoming_ids.add(item.id)
+                else:
+                    # 신규 항목 생성 (id가 없거나, 있어도 이 program 소속이 아니면 새로 생성)
+                    created = await self.crud.create_program_item(
+                        program_item_data={"program_id": program.id, **item_data}
+                    )
+                    incoming_ids.add(created.id)
+
+        # 프론트에서 삭제된 항목(기존엔 있었는데 요청에 없는 id) 정리
+        removed_ids = existing_ids - incoming_ids
+        if removed_ids:
+            await self.crud.delete_program_items_by_ids(list(removed_ids))
+
+        program = await self.crud.confirm_program(
+            program_id=program.id,
+            status=ProgramStatusEnum.CONFIRMED,
+        )
+
+        updated_items = await self.crud.get_program_items(program.id)
+        program_plan = ProgramSchema(
+            pre_set=[i for i in updated_items if i.phase == "PRE_SET"],
+            main_set=[i for i in updated_items if i.phase == "MAIN_SET"],
+            post_set=[i for i in updated_items if i.phase == "POST_SET"],
+        )
+
+        return ProgramResponse(
+            id=program.id,
+            class_id=program.class_id,
+            date=program.date,
+            equipment=program.equipment,
+            request="",
+            created_at=program.created_at,
+            session_summary=SessionSummary(
+                total_min=program.duration_min,
+                total_distance_m=sum(i.set * i.distance_m for i in updated_items),
+            ),
+            program=program_plan,
+        )

@@ -1,6 +1,7 @@
 from datetime import date, datetime
 from typing import List, Optional
 
+from models.enums import ProgramStatusEnum
 from pydantic import BaseModel, Field
 
 
@@ -15,15 +16,20 @@ class ProgramCreate(BaseModel):
 class SessionSummary(BaseModel):
     total_min: int = Field(..., ge=1)  # LLM 실제 응답 키가 total_time_m이 아니라 total_min
     total_distance_m: int = Field(..., ge=1)
-    focus_point: str = Field(..., max_length=100)
+    # focus_point: Optional[str] = Field(..., max_length=100)
 
 
 class ProgramItem(BaseModel):
+    id: Optional[int] = None
     title: str = Field(..., max_length=200)
     set: int = Field(..., ge=1)
     distance_m: int = Field(..., ge=1)
     duration_min: int = Field(..., ge=1)  # LLM의 duration_time -> duration_min으로 매핑
     detail: str = Field(..., max_length=100)
+
+    class Config:
+        from_attributes = True
+
 
 
 class Program(BaseModel):
@@ -31,6 +37,9 @@ class Program(BaseModel):
     main_set: List[ProgramItem] = Field(default_factory=list)
     post_set: List[ProgramItem] = Field(default_factory=list)
 
+class ProgramConfirm(BaseModel):
+    status: ProgramStatusEnum
+    program: Program
 
 class ProgramResponse(ProgramCreate):
     id: int
