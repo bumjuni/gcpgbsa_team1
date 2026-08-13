@@ -33,7 +33,7 @@ const Stack = createNativeStackNavigator<NavStackParamList>();
 export const AppNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="ClassList"
+      initialRouteName="LessonPlanCreate"
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#FFFFFF' },

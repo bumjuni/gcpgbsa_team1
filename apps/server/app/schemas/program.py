@@ -10,11 +10,11 @@ class ProgramCreate(BaseModel):
     class_id: int
     date: date
     equipment: Optional[str] = Field(None, max_length=50)
-    request: Optional[str] = Field(None, max_length=100)
+    request: Optional[str] = Field(None, max_length=200)
 
 
 class SessionSummary(BaseModel):
-    total_time: int = Field(..., ge=1)
+    total_time_m: int = Field(..., ge=1)
     total_distance_m: int = Field(..., ge=1)
     focus_point: str = Field(..., max_length=100)
 
