@@ -13,13 +13,13 @@ import { LessonPlanCompleteScreen } from '../screens/LessonPlanCompleteScreen';
 import { LessonPlanEditItemScreen } from '../screens/LessonPlanEditItemScreen';
 import { ClassListScreen_Filled } from '../screens/ClassListScreen_Filled';
 import { ClassDetailsLessonTabScreen } from '../screens/ClassDetailsLessonTabScreen';
-import { ClassDetailsLessonTabScreen_Full } from '../screens/ClassDetailsLessonTabScreen_Full';
+import { ClassDetailsLessonTabScrollTestScreen } from '../screens/ClassDetailsLessonTabScrollTestScreen';
+import { ClassDetailsLessonTabDraftScreen } from '../screens/ClassDetailsLessonTabDraftScreen';
 import { ClassDetailsLessonTabEmptyScreen } from '../screens/ClassDetailsLessonTabEmptyScreen';
 import { ClassDetailsLessonHistoryScreen } from '../screens/ClassDetailsLessonHistoryScreen';
 import { ClassDetailsInfoTabScreen } from '../screens/ClassDetailsInfoTabScreen';
 import { ClassDetailsInfoEditScreen } from '../screens/ClassDetailsInfoEditScreen';
 import { ClassDetailsMemberTabScreen } from '../screens/ClassDetailsMemberTabScreen';
-import { ClassDetailsMemberTabAddingScreen } from '../screens/ClassDetailsMemberTabAddingScreen';
 import { ClassDetailsMemberDetailScreen } from '../screens/ClassDetailsMemberDetailScreen';
 import { ClassDetailsMemberEditScreen } from '../screens/ClassDetailsMemberEditScreen';
 
@@ -45,13 +45,13 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
       <Stack.Screen name="ClassListFilled" component={ClassListScreen_Filled} />
       <Stack.Screen name="ClassDetailsLessonTab" component={ClassDetailsLessonTabScreen} />
-      <Stack.Screen name="ClassDetailsLessonTabFull" component={ClassDetailsLessonTabScreen_Full} />
+      <Stack.Screen name="ClassDetailsLessonTabScrollTest" component={ClassDetailsLessonTabScrollTestScreen} />
+      <Stack.Screen name="ClassDetailsLessonTabDraft" component={ClassDetailsLessonTabDraftScreen} />
       <Stack.Screen name="ClassDetailsLessonTabEmpty" component={ClassDetailsLessonTabEmptyScreen} />
       <Stack.Screen name="ClassDetailsLessonHistory" component={ClassDetailsLessonHistoryScreen} />
       <Stack.Screen name="ClassDetailsInfoTab" component={ClassDetailsInfoTabScreen} />
       <Stack.Screen name="ClassDetailsInfoEdit" component={ClassDetailsInfoEditScreen} />
       <Stack.Screen name="ClassDetailsMemberTab" component={ClassDetailsMemberTabScreen} />
-      <Stack.Screen name="ClassDetailsMemberTabAdding" component={ClassDetailsMemberTabAddingScreen} />
       <Stack.Screen name="ClassDetailsMemberDetail" component={ClassDetailsMemberDetailScreen} />
       <Stack.Screen name="ClassDetailsMemberEdit" component={ClassDetailsMemberEditScreen} />
     </Stack.Navigator>

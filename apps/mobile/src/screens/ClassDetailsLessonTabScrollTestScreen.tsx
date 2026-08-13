@@ -23,7 +23,7 @@ const UPCOMING_LESSON = {
   totalDistanceM: 1150,
 };
 
-// Max dummy — 8월~5월 스크롤 테스트용 데이터(02-B2/02-B3 max dummy 프로토타입과 같은 용도)
+// 06-1D — Max dummy: 8월~5월 스크롤 테스트용 데이터(02-B2/02-B3 max dummy 프로토타입과 같은 용도)
 const COMPLETED_WEEKS: CompletedLessonWeek[] = [
   {
     weekLabel: '8월 1주차 (8/3~8/9)',
@@ -111,7 +111,7 @@ const COMPLETED_WEEKS: CompletedLessonWeek[] = [
   },
 ];
 
-export const ClassDetailsLessonTabScreen_Full = ({ navigation, route }: any) => {
+export const ClassDetailsLessonTabScrollTestScreen = ({ navigation, route }: any) => {
   const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });

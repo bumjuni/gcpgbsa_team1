@@ -41,6 +41,16 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
     });
   };
 
+  const currentYear = new Date().getFullYear();
+  const age = currentYear - Number(formData.birthYear);
+  const canSave =
+    formData.name.trim().length > 0 &&
+    /^01[0-9]-\d{3,4}-\d{4}$/.test(formData.phone) &&
+    /^\d{4}$/.test(formData.birthYear) &&
+    age >= 0 &&
+    age <= 19 &&
+    Boolean(formData.gender);
+
   const handleCancel = () => {
     navigation?.goBack();
   };
@@ -66,7 +76,7 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
                 <Button label="취소" onPress={handleCancel} variant="secondary" />
               </View>
               <View className="flex-1 ml-xs">
-                <Button label="저장하기" onPress={handleSave} variant="primary" />
+                <Button label="저장하기" onPress={handleSave} variant="primary" disabled={!canSave} />
               </View>
             </View>
             <Button label="회원 삭제하기" onPress={() => setIsDeleteModalOpen(true)} variant="danger" />

@@ -9,15 +9,12 @@ interface ClassInfoEditFormState {
   name: string;
   daysOfWeek: string[];
   startTime: string;
-  duration: string;
+  endTime: string;
   ageGroups: string[];
   level: string;
   goals: string[];
   goalsEtc: string;
 }
-
-const START_TIME_OPTIONS = ['오전 7:00', '오전 9:00', '오후 5:00', '오후 7:00', '오후 8:00'];
-const DURATION_OPTIONS = ['30분', '40분', '50분', '60분', '80분'];
 
 export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
   const { classId, className = '화요일 저녁 초급반' } = route?.params ?? {};
@@ -26,7 +23,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
     name: className,
     daysOfWeek: ['Tue', 'Thu'],
     startTime: '오후 7:00',
-    duration: '50분',
+    endTime: '오후 7:50',
     ageGroups: ['ADULT'],
     level: 'ELEMENTARY',
     goals: ['BASIC_ADAPTATION'],
@@ -44,15 +41,14 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
     });
   };
 
-  const handleCycleStartTime = () => {
-    const nextIndex = (START_TIME_OPTIONS.indexOf(formData.startTime) + 1) % START_TIME_OPTIONS.length;
-    handleFieldChange('startTime', START_TIME_OPTIONS[nextIndex]);
-  };
-
-  const handleCycleDuration = () => {
-    const nextIndex = (DURATION_OPTIONS.indexOf(formData.duration) + 1) % DURATION_OPTIONS.length;
-    handleFieldChange('duration', DURATION_OPTIONS[nextIndex]);
-  };
+  const canSave =
+    formData.name.trim().length > 0 &&
+    formData.daysOfWeek.length >= 1 &&
+    Boolean(formData.startTime) &&
+    Boolean(formData.endTime) &&
+    formData.ageGroups.length >= 1 &&
+    Boolean(formData.level) &&
+    formData.goals.length >= 1;
 
   const handleCancel = () => {
     navigation?.goBack();
@@ -64,7 +60,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
 
   const handleConfirmDelete = () => {
     setIsDeleteModalOpen(false);
-    navigation?.navigate('ClassList', { deletedClassId: classId });
+    navigation?.navigate('ClassListFilled', { deletedClassId: classId });
   };
 
   const showGoalsEtcInput = formData.goals.includes('ETC');
@@ -81,7 +77,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
               <Button label="취소" onPress={handleCancel} variant="secondary" />
             </View>
             <View className="flex-1 ml-xs">
-              <Button label="저장하기" onPress={handleSave} variant="primary" />
+              <Button label="저장하기" onPress={handleSave} variant="primary" disabled={!canSave} />
             </View>
           </View>
           <Button label="반 삭제하기" onPress={() => setIsDeleteModalOpen(true)} variant="danger" />
@@ -121,23 +117,17 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
         <View className="flex-row w-full gap-sm">
           <FormField className="flex-auto">
             <FormField.Label label="시작 시각" required />
-            <Pressable
-              onPress={handleCycleStartTime}
-              className="h-14 px-md rounded-md border border-hairline-border-strong bg-surface-muted flex-row items-center justify-between"
-            >
-              <Text className="text-base text-ink">{formData.startTime}</Text>
-              <Text className="text-ink-tertiary">⌄</Text>
-            </Pressable>
+            <FormField.Select
+              value={formData.startTime}
+              onChange={(val) => handleFieldChange('startTime', val as string)}
+            />
           </FormField>
           <FormField className="flex-auto">
-            <FormField.Label label="수업 길이" required />
-            <Pressable
-              onPress={handleCycleDuration}
-              className="h-14 px-md rounded-md border border-hairline-border-strong bg-surface-muted flex-row items-center justify-between"
-            >
-              <Text className="text-base text-ink">{formData.duration}</Text>
-              <Text className="text-ink-tertiary">⌄</Text>
-            </Pressable>
+            <FormField.Label label="종료 시각" required />
+            <FormField.Select
+              value={formData.endTime}
+              onChange={(val) => handleFieldChange('endTime', val as string)}
+            />
           </FormField>
         </View>
 
@@ -215,7 +205,7 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
     <ConfirmModal
       visible={isDeleteModalOpen}
       title="이 반을 삭제할까요?"
-      description={'삭제하면 홈 목록에서 사라지며\n이 작업은 취소할 수 없어요.'}
+      description={'삭제하면 홈 목록에서 사라져요.\n회원·수업 기록은 남지만 이 반으로는 다시 볼 수 없어요.'}
       confirmText="삭제하기"
       cancelText="취소"
       onConfirm={handleConfirmDelete}

@@ -108,8 +108,8 @@ export const ClassDetailsInfoTabScreen = ({ navigation, route }: any) => {
             <ReadOnlyBox value="오후 7:00" />
           </FormField>
           <FormField className="flex-auto">
-            <FormField.Label label="수업 길이" required />
-            <ReadOnlyBox value="50분" />
+            <FormField.Label label="종료 시각" required />
+            <ReadOnlyBox value="오후 7:50" />
           </FormField>
         </View>
 

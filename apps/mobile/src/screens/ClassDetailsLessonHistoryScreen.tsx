@@ -60,7 +60,7 @@ export const ClassDetailsLessonHistoryScreen = ({ route }: any) => {
                 <View
                   key={`${section.title}-${index}`}
                   className={`flex-row items-center px-4 py-3.5 ${
-                    item.achieved ? 'bg-primary-subtle' : 'bg-canvas'
+                    item.achieved ? 'bg-primary-subtle' : 'bg-canvas opacity-[0.45]'
                   } ${index !== section.items.length - 1 ? 'border-b border-hairline' : ''}`}
                 >
                   <View
@@ -71,11 +71,7 @@ export const ClassDetailsLessonHistoryScreen = ({ route }: any) => {
                     {item.achieved && <Text className="text-white text-xs font-bold">✓</Text>}
                   </View>
                   <View className="flex-1">
-                    <Text
-                      className={`text-body-strong ${item.achieved ? 'text-ink' : 'text-ink-tertiary'}`}
-                    >
-                      {item.name}
-                    </Text>
+                    <Text className="text-body-strong text-ink">{item.name}</Text>
                     <Text className="text-caption text-ink-tertiary mt-0.5">{item.description}</Text>
                   </View>
                 </View>
