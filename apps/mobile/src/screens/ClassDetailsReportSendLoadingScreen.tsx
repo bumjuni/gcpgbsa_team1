@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Card } from '../components/card/Card';
 
@@ -42,7 +42,7 @@ export const ClassDetailsReportSendLoadingScreen = ({ navigation, route }: any) 
       title={`${weekLabel} 리포트`}
       showBackButton
       footer={
-        <View className="bg-primary rounded-md py-4 items-center justify-center opacity-40">
+        <View className="bg-primary rounded-md py-4 items-center justify-center">
           <Text className="text-ink-on-primary text-button">{targetCount}명에게 보내기</Text>
         </View>
       }
@@ -53,7 +53,7 @@ export const ClassDetailsReportSendLoadingScreen = ({ navigation, route }: any) 
             <Text className="text-body-strong text-ink mb-xxs">리포트를 만들고 있어요</Text>
             <Text className="text-caption text-ink-secondary">잠시만 기다려 주세요</Text>
           </View>
-          <ActivityIndicator color="#8B9198" />
+          <Text className="text-xl">🌙</Text>
         </Card>
 
         <Text className="text-base font-bold text-ink mb-sm">발송 대상 ({targetCount}명)</Text>

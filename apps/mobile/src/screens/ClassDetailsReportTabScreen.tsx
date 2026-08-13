@@ -153,7 +153,9 @@ export const ClassDetailsReportTabScreen = ({ navigation, route }: any) => {
                 <Text className="text-title-sm text-ink mb-xxs">
                   {report.weekLabel} ({report.range})
                 </Text>
-                <Text className="text-caption text-ink-secondary">{report.statusText}</Text>
+                <Text className={`text-caption ${report.hasFeedback ? 'text-status-present' : 'text-ink-secondary'}`}>
+                  {report.statusText}
+                </Text>
               </View>
               <Text className="text-caption text-ink-tertiary">발송완료 ›</Text>
             </View>

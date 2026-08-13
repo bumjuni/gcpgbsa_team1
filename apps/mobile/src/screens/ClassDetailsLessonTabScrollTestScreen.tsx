@@ -186,8 +186,8 @@ export const ClassDetailsLessonTabScrollTestScreen = ({ navigation, route }: any
         <Text className="text-base font-bold text-ink mb-sm">종료된 수업</Text>
         {COMPLETED_WEEKS.map((week) => (
           <View key={week.weekLabel} className="mb-md">
-            <Text className="text-label text-ink-tertiary mb-xs">{week.weekLabel}</Text>
             <Card>
+              <Card.Header title={week.weekLabel} />
               {week.lessons.map((lesson, index) => (
                 <Card.Item
                   key={lesson.id}

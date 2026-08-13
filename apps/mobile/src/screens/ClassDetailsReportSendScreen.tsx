@@ -60,7 +60,11 @@ export const ClassDetailsReportSendScreen = ({ navigation, route }: any) => {
       }
     >
       <View className="pt-md pb-xl">
-        <Card onPress={handlePreviewPress} className="flex-row items-center justify-between px-md py-md mb-lg">
+        <Card
+          variant="notice"
+          onPress={handlePreviewPress}
+          className="flex-row items-center justify-between px-md py-md mb-lg"
+        >
           <View>
             <Text className="text-body-strong text-ink mb-xxs">리포트 미리보기</Text>
             <Text className="text-caption text-ink-secondary">

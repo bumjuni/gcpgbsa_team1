@@ -138,10 +138,10 @@ export const ClassDetailsInfoEditScreen = ({ navigation, route }: any) => {
             variant="rounded-square"
             multiple
             options={[
-              { label: '어린이 (5-7세)', value: 'PRESCHOOL' },
-              { label: '초등 (8-13세)', value: 'ELEMENTARY' },
-              { label: '청소년 (14-19세)', value: 'TEEN' },
-              { label: '성인 (20-59세)', value: 'ADULT' },
+              { label: '어린이 (5~7세)', value: 'PRESCHOOL' },
+              { label: '초등 (8~13세)', value: 'ELEMENTARY' },
+              { label: '청소년 (14~19세)', value: 'TEEN' },
+              { label: '성인 (20~59세)', value: 'ADULT' },
               { label: '시니어 (60세~)', value: 'SENIOR' },
             ]}
             value={formData.ageGroups}
