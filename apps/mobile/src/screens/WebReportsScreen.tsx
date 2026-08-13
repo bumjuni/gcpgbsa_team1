@@ -81,8 +81,8 @@ export const WebReportsScreen = ({ route }: any) => {
               </Text>
               <Text className="text-legal text-ink-on-primary opacity-70">총 소비칼로리</Text>
             </View>
-            <View className="w-16 h-16 rounded-full border-2 border-ink-on-primary items-center justify-center">
-              <Text className="text-body-strong text-ink-on-primary">{attendanceRate}%</Text>
+            <View className="w-20 h-20 rounded-full border-2 border-ink-on-primary items-center justify-center">
+              <Text className="text-title-md text-ink-on-primary">{attendanceRate}%</Text>
               <Text className="text-legal text-ink-on-primary opacity-70">
                 참여율 {attendedCount}/{totalCount}
               </Text>
