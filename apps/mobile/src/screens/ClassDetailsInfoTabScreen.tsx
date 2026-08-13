@@ -24,6 +24,7 @@ export const ClassDetailsInfoTabScreen = ({ navigation, route }: any) => {
     if (tab === '반정보') return;
     if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab', { classId, className });
     if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
   };
 
   const handleEdit = () => {

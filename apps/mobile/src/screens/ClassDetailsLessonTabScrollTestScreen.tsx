@@ -120,6 +120,7 @@ export const ClassDetailsLessonTabScrollTestScreen = ({ navigation, route }: any
     if (tab === '수업진행') return;
     if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
     if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
   };
 
   const handleStartLesson = () => {

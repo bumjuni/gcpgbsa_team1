@@ -57,6 +57,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation, route }: any) => {
     if (tab === '명단') return;
     if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab', { classId, className });
     if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
   };
 
   const handleMemberPress = (member: ClassMemberSummary) => {

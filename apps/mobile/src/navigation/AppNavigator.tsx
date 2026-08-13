@@ -22,6 +22,11 @@ import { ClassDetailsInfoEditScreen } from '../screens/ClassDetailsInfoEditScree
 import { ClassDetailsMemberTabScreen } from '../screens/ClassDetailsMemberTabScreen';
 import { ClassDetailsMemberDetailScreen } from '../screens/ClassDetailsMemberDetailScreen';
 import { ClassDetailsMemberEditScreen } from '../screens/ClassDetailsMemberEditScreen';
+import { ClassDetailsReportTabScreen } from '../screens/ClassDetailsReportTabScreen';
+import { ClassDetailsReportSendScreen } from '../screens/ClassDetailsReportSendScreen';
+import { ClassDetailsReportSendLoadingScreen } from '../screens/ClassDetailsReportSendLoadingScreen';
+import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetailsReportHistoryScreen';
+import { WebReportsScreen } from '../screens/WebReportsScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 
@@ -54,6 +59,11 @@ export const AppNavigator = () => {
       <Stack.Screen name="ClassDetailsMemberTab" component={ClassDetailsMemberTabScreen} />
       <Stack.Screen name="ClassDetailsMemberDetail" component={ClassDetailsMemberDetailScreen} />
       <Stack.Screen name="ClassDetailsMemberEdit" component={ClassDetailsMemberEditScreen} />
+      <Stack.Screen name="ClassDetailsReportTab" component={ClassDetailsReportTabScreen} />
+      <Stack.Screen name="ClassDetailsReportSend" component={ClassDetailsReportSendScreen} />
+      <Stack.Screen name="ClassDetailsReportSendLoading" component={ClassDetailsReportSendLoadingScreen} />
+      <Stack.Screen name="ClassDetailsReportHistory" component={ClassDetailsReportHistoryScreen} />
+      <Stack.Screen name="WebReports" component={WebReportsScreen} />
     </Stack.Navigator>
   );
 };
