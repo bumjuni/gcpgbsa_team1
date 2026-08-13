@@ -21,7 +21,6 @@ export type NavStackParamList = {
   ClassDetailsMemberEdit: undefined;
   ClassDetailsReportTab: undefined;
   ClassDetailsReportSend: undefined;
-  ClassDetailsReportSendLoading: undefined;
   ClassDetailsReportHistory: undefined;
   WebReports: undefined;
 };

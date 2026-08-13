@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Card } from '../components/card/Card';
@@ -31,6 +31,7 @@ export const ClassDetailsReportSendScreen = ({ navigation, route }: any) => {
   } = route?.params ?? {};
 
   const [includedIds, setIncludedIds] = useState<string[]>(MEMBERS.map((m) => m.id));
+  const [isSending, setIsSending] = useState(false);
 
   const toggleIncluded = (id: string) => {
     setIncludedIds((prev) => (prev.includes(id) ? prev.filter((v) => v !== id) : [...prev, id]));
@@ -40,39 +41,58 @@ export const ClassDetailsReportSendScreen = ({ navigation, route }: any) => {
   const handlePreviewPress = () => {};
 
   const handleSend = () => {
-    navigation?.navigate('ClassDetailsReportSendLoading', {
-      classId,
-      className,
-      weekLabel,
-      range,
-      targetCount: includedIds.length,
-    });
+    setIsSending(true);
   };
+
+  useEffect(() => {
+    if (!isSending) return;
+    // TODO: 임시 타이머. 실제 리포트 발송 API 연동 시 응답 완료 시점으로 교체 필요
+    const timer = setTimeout(() => {
+      navigation?.navigate('WebReports', { classId, className, weekRangeLabel: weekLabel });
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, [isSending, navigation, classId, className, weekLabel]);
 
   return (
     <ScreenLayout
       title={`${weekLabel} 리포트`}
       showBackButton
       footer={
-        <Pressable onPress={handleSend} className="bg-primary rounded-md py-4 items-center justify-center">
-          <Text className="text-ink-on-primary text-button">{includedIds.length}명에게 보내기</Text>
-        </Pressable>
+        isSending ? (
+          <View className="bg-primary rounded-md py-4 items-center justify-center">
+            <Text className="text-ink-on-primary text-button">{includedIds.length}명에게 보내기</Text>
+          </View>
+        ) : (
+          <Pressable onPress={handleSend} className="bg-primary rounded-md py-4 items-center justify-center">
+            <Text className="text-ink-on-primary text-button">{includedIds.length}명에게 보내기</Text>
+          </Pressable>
+        )
       }
     >
       <View className="pt-md pb-xl">
-        <Card
-          variant="notice"
-          onPress={handlePreviewPress}
-          className="flex-row items-center justify-between px-md py-md mb-lg"
-        >
-          <View>
-            <Text className="text-body-strong text-ink mb-xxs">리포트 미리보기</Text>
-            <Text className="text-caption text-ink-secondary">
-              {weekLabel} ({range}) · {lessonCount}개 수업
-            </Text>
-          </View>
-          <Text className="text-ink-tertiary">›</Text>
-        </Card>
+        {isSending ? (
+          <Card variant="muted" className="flex-row items-center justify-between px-md py-md mb-lg">
+            <View>
+              <Text className="text-body-strong text-ink mb-xxs">리포트를 만들고 있어요</Text>
+              <Text className="text-caption text-ink-secondary">잠시만 기다려 주세요</Text>
+            </View>
+            <Text className="text-xl">🌙</Text>
+          </Card>
+        ) : (
+          <Card
+            variant="notice"
+            onPress={handlePreviewPress}
+            className="flex-row items-center justify-between px-md py-md mb-lg"
+          >
+            <View>
+              <Text className="text-body-strong text-ink mb-xxs">리포트 미리보기</Text>
+              <Text className="text-caption text-ink-secondary">
+                {weekLabel} ({range}) · {lessonCount}개 수업
+              </Text>
+            </View>
+            <Text className="text-ink-tertiary">›</Text>
+          </Card>
+        )}
 
         <Text className="text-base font-bold text-ink mb-sm">발송 대상 ({includedIds.length}명)</Text>
         {MEMBERS.map((member) => {
@@ -90,14 +110,20 @@ export const ClassDetailsReportSendScreen = ({ navigation, route }: any) => {
                   </Text>
                 </View>
               </View>
-              <Pressable
-                onPress={() => toggleIncluded(member.id)}
-                className={`w-7 h-7 rounded-md border items-center justify-center ${
-                  included ? 'bg-primary border-primary' : 'border-hairline-border-strong'
-                }`}
-              >
-                {included && <Text className="text-white text-xs font-bold">✓</Text>}
-              </Pressable>
+              {isSending ? (
+                <View className="w-7 h-7 rounded-md border items-center justify-center bg-primary border-primary">
+                  <Text className="text-white text-xs font-bold">✓</Text>
+                </View>
+              ) : (
+                <Pressable
+                  onPress={() => toggleIncluded(member.id)}
+                  className={`w-7 h-7 rounded-md border items-center justify-center ${
+                    included ? 'bg-primary border-primary' : 'border-hairline-border-strong'
+                  }`}
+                >
+                  {included && <Text className="text-white text-xs font-bold">✓</Text>}
+                </Pressable>
+              )}
             </Card>
           );
         })}
