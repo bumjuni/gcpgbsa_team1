@@ -1,5 +1,5 @@
 import { apiClient } from "./client"
-import { SwimClass } from "./types";
+import { SwimClass } from "../types/classroom";
 
 export const classroomApi = {
   // 강습 목록 조회
@@ -11,7 +11,7 @@ export const classroomApi = {
 
   // 강습 상세정보 조회
   getClassDetail: async (class_id: number) => {
-    const response = await apiClient.get<SwimClass[]>(`/classroom/${class_id}`);
+    const response = await apiClient.get<SwimClass>(`/classroom/${class_id}`);
     console.log(response);
     return response.data;
   },

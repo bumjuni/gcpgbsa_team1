@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_program_service
-from schemas.classroom import (
+from schemas.program import (
     ProgramCreate,
     ProgramResponse,
     ProgramItemCreate,

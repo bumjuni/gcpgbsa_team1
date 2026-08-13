@@ -1,6 +1,5 @@
 from datetime import date, datetime
 from typing import List, Optional, TYPE_CHECKING
-
 from sqlalchemy import (
     Boolean,
     Date,
@@ -10,17 +9,24 @@ from sqlalchemy import (
     Integer,
     SmallInteger,
     String,
+    UniqueConstraint,
+    Index,
+    func,
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base
 from .enums import ProgramPhaseEnum, ProgramStatusEnum
 
-
 if TYPE_CHECKING:
     from .classroom import SwimClass
 
+
 class Program(Base):
     __tablename__ = "program"
+    __table_args__ = (
+        UniqueConstraint("class_id", "date", name="uq_program_class_date"),
+        Index("ix_program_class_id_date", "class_id", "date"),
+    )
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     class_id: Mapped[int] = mapped_column(
@@ -28,12 +34,20 @@ class Program(Base):
     )
     date: Mapped[date] = mapped_column(Date, nullable=False)
     status: Mapped[ProgramStatusEnum] = mapped_column(
-        Enum(ProgramStatusEnum, name="program_status_enum"), nullable=False
+        Enum(ProgramStatusEnum, name="program_status_enum"),
+        nullable=False,
+        server_default=ProgramStatusEnum.DRAFT.value,  # 기본값: DRAFT
     )
     duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     equipment: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
@@ -60,9 +74,15 @@ class ProgramItem(Base):
     set: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     distance_m: Mapped[int] = mapped_column(Integer, nullable=False)
     duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    is_checked: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    is_checked: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     created_at: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), nullable=False
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        nullable=False,
+        server_default=func.now(),
+        onupdate=func.now(),
     )
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True

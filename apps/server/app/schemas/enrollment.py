@@ -6,7 +6,6 @@ from .base import ORMBaseModel
 
 
 class EnrollmentCreate(BaseModel):
-    student_id: int
     class_id: int
     name: str = Field(..., max_length=50)
     phone: Optional[str] = Field(None, max_length=20)
