@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
@@ -8,20 +8,10 @@ import { useLessonPlanStore } from '../stores/useLessonPlanStore';
 
 
 const getSectionTotalMeters = (section: LessonSection): number =>
-  section.items.reduce(
-    (sum, item) => sum + item.distance_m * item.set,
-    0
-  );
+  section.items.reduce((sum, item) => sum + item.distance_m * item.set, 0);
 
-// "4×25m" -> { count: 4, intervalDistance: 25 }, "100m" -> { count: 1, intervalDistance: 100 }
-const parseCountAndDistance = (distance: string): { count: number; intervalDistance: number } => {
-  const match = distance.match(/^(\d+)(?:[×x](\d+))?m$/);
-  if (!match) return { count: 1, intervalDistance: 0 };
-  const [, first, second] = match;
-  return second
-    ? { count: Number(first), intervalDistance: Number(second) }
-    : { count: 1, intervalDistance: Number(first) };
-};
+const getTotalMeters = (sections: LessonSection[]): number =>
+  sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
 
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const result = {
@@ -125,6 +115,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const sections = useLessonPlanStore((s) => s.sections);
   const initSections = useLessonPlanStore((s) => s.initSections);
   const clearSections = useLessonPlanStore((s) => s.clearSections);
+  const totalDistance = useMemo(() => getTotalMeters(sections), [sections]);
 
   useEffect(() => {
     initSections(result);
@@ -163,7 +154,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       <View className="pt-md pb-xl">
         <Card variant="muted" className="items-center pt-md">
           <Text className="text-caption text-ink-secondary">총 운동량</Text>
-          <Text className="text-metric text-ink my-sm">{result.session_summary.total_distance_m}m</Text>
+          <Text className="text-metric text-ink my-sm">{totalDistance}m</Text>
           <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
 
@@ -189,7 +180,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   description={item.detail}
                   rightElement={
                     <View className="items-end flex-col justify-between">
-                      <Text className="text-label text-ink-tertiary">{item.distance_m}m</Text>
+                      <Text className="text-label text-ink-tertiary">{item.set} X {item.distance_m}m</Text>
                       <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>

@@ -3,6 +3,7 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { FormField } from '../components/form/FormField';
 import { Button } from '../components/button/Button';
+import { useLessonPlanStore } from '../stores/useLessonPlanStore';
 
 interface LessonSetItemFormState {
   name: string;
@@ -20,21 +21,21 @@ const DISTANCE_MAX = 400;
 const DISTANCE_STEP = 25;
 
 export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
-  const {
-    sectionTitle = '메인 세트',
-    itemIndex = 0,
-    name = '',
-    description = '',
-    count = COUNT_MIN,
-    intervalDistance = DISTANCE_MIN,
-  } = route?.params ?? {};
+  const { sectionTitle = '메인 세트', itemIndex = 0 } = route?.params ?? {};
 
-  const [formData, setFormData] = useState<LessonSetItemFormState>({
-    name,
-    description,
-    count,
-    intervalDistance,
-  });
+  const item = useLessonPlanStore((s) =>
+    s.sections.find((sec) => sec.title === sectionTitle)?.items[itemIndex]
+  );
+  const updateItem = useLessonPlanStore((s) => s.updateItem);
+
+  // LessonSetItem: { title, set, distance_m, detail }
+  // count/intervalDistance는 파싱 필요 없이 set/distance_m을 그대로 사용
+  const [formData, setFormData] = useState<LessonSetItemFormState>(() => ({
+    name: item?.title ?? '',
+    description: item?.detail ?? '',
+    count: item?.set ?? COUNT_MIN,
+    intervalDistance: item?.distance_m ?? DISTANCE_MIN,
+  }));
   const [, startTransition] = useTransition();
 
   const handleFieldChange = <K extends keyof LessonSetItemFormState>(
@@ -71,9 +72,13 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
   const totalDistance = formData.count * formData.intervalDistance;
 
   const handleSave = () => {
-    navigation?.navigate('LessonPlanConfirm', {
-      editedItem: { sectionTitle, itemIndex, ...formData },
+    updateItem(sectionTitle, itemIndex, {
+      title: formData.name,
+      detail: formData.description,
+      set: formData.count,
+      distance_m: formData.intervalDistance,
     });
+    navigation?.goBack();
   };
 
   return (
