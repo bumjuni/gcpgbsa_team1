@@ -4,7 +4,7 @@ from sqlalchemy import select
 
 from models import SwimClass
 from models.enums import ProgramStatusEnum
-from schemas.program import ProgramConfirm, ProgramCreate, ProgramResponse, Program as ProgramSchema, SessionSummary
+from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary
 from models import Program
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
@@ -177,3 +177,10 @@ class ProgramService:
             ),
             program=program_plan,
         )
+
+    async def get_program_history(self, class_id: int) -> list[ProgramHistoryItem]:
+        programs = await self.crud.get_non_draft_programs_by_class(class_id)
+        return [
+            ProgramHistoryItem(program_id=p.id, status=p.status, date=p.date)
+            for p in programs
+        ]

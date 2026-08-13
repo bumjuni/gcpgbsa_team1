@@ -4,6 +4,7 @@ from api.dependencies import get_program_service
 from schemas.program import (
     ProgramConfirm,
     ProgramCreate,
+    ProgramHistoryItem,
     ProgramResponse,
 )
 from services.program import ProgramService
@@ -48,6 +49,18 @@ async def confirm_program(
     service: ProgramService = Depends(get_program_service),
 ) -> ProgramResponse:
     return await service.confirm_program(program_id, schema)
+
+@router.get(
+    "/{swim_class_id}/programs/history",
+    response_model=list[ProgramHistoryItem],
+    status_code=status.HTTP_200_OK,
+    summary="종료/확정된 수업(프로그램) 목록 조회",
+)
+async def get_program_history(
+    swim_class_id: int,
+    service: ProgramService = Depends(get_program_service),
+) -> list[ProgramHistoryItem]:
+    return await service.get_program_history(swim_class_id)
 
 # # @router.post(
 # #     "/items",

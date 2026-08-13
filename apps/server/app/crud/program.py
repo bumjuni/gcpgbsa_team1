@@ -1,6 +1,7 @@
 from datetime import datetime, date
 from typing import Optional
 
+from apps.server.app.models.enums import ProgramStatusEnum
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -103,3 +104,18 @@ class ProgramCrud:
         await self.db.commit()
         await self.db.refresh(item)
         return item
+
+    async def get_non_draft_programs_by_class(
+        self, class_id: int
+    ) -> list[Program]:
+        stmt = (
+            select(Program)
+            .where(
+                Program.class_id == class_id,
+                Program.status != ProgramStatusEnum.DRAFT,
+                Program.deleted_at.is_(None),
+            )
+            .order_by(Program.date.desc())
+        )
+        result = await self.db.execute(stmt)
+        return result.scalars().all()
