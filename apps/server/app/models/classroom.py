@@ -28,7 +28,7 @@ class SwimClass(Base):
     level: Mapped[LevelEnum] = mapped_column(
         Enum(LevelEnum, name="level_enum"), nullable=False
     )
-    age_groups: Mapped[AgeGroupEnum] = mapped_column(
+    age_group: Mapped[AgeGroupEnum] = mapped_column(
         Enum(AgeGroupEnum, name="age_enum"), nullable=False
     )
     goals: Mapped[str] = mapped_column(String(100), nullable=False)
