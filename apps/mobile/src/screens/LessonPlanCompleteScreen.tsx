@@ -62,7 +62,7 @@ export const LessonPlanCompleteScreen = ({ navigation, route }: any) => {
 
   const handleConfirmFinish = () => {
     setIsFinishModalOpen(false);
-    navigation?.navigate('ClassList');
+    navigation?.navigate('ClassListFilled');
   };
 
   return (
