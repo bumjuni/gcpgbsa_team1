@@ -30,6 +30,8 @@ class SwimClassResponse(ORMBaseModel):
     age_group: AgeGroupEnum
     start_time: time
     end_time: time
+    goals: str
+    goal_etc: Optional[str] = None
     days_of_week: str
     today_program_status: Optional[ProgramStatusEnum] = None
     next_program_status: Optional[ProgramStatusEnum] = None
@@ -37,3 +39,14 @@ class SwimClassResponse(ORMBaseModel):
 class SwimClassDetailResponse(SwimClassCreate, ORMBaseModel):
     id: int
     created_at: datetime
+
+class SwimClassUpdate(BaseModel):
+    name: Optional[str] = None
+    days_of_week: Optional[str] = None
+    start_time: Optional[time] = None
+    end_time: Optional[time] = None
+    capacity: Optional[int] = None
+    age_group: Optional[AgeGroupEnum] = None
+    level: Optional[LevelEnum] = None
+    goals: Optional[str] = None
+    goal_etc: Optional[str] = None

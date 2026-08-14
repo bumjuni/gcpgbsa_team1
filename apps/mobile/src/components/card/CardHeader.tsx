@@ -19,7 +19,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
     >
       <View className="flex-row items-center flex-1 mr-2">
         {icon && <View className="mr-2">{icon}</View>}
-        <Text className={CARD_TITLE_STYLES[variant]}>{title}</Text>
+        <Text className={`text-title-sm ${CARD_TITLE_STYLES[variant]}`}>{title}</Text>
       </View>
       {rightElement && <View>{rightElement}</View>}
     </View>

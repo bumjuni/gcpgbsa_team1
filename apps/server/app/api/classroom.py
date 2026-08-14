@@ -5,6 +5,7 @@ from schemas.classroom import (
     SwimClassCreate,
     SwimClassDetailResponse,
     SwimClassResponse,
+    SwimClassUpdate,
 )
 from services.classroom import ClassroomService
 
@@ -58,31 +59,15 @@ async def delete_swim_class(
     deleted_class = await service.delete_swim_class(swim_class_id)
     return {"id": deleted_class.id}
 
-
-# ----------------------------------------------------------------------
-# 2. Student Endpoints => TODO: 수강생 생성/삭제 앱에서 가능한지 기획팀에 문의
-# ----------------------------------------------------------------------
-# @router.post(
-#     "/students",
-#     response_model=StudentResponse,
-#     status_code=status.HTTP_201_CREATED,
-#     summary="수강생 생성",
-# )
-# async def create_student(
-#     schema: StudentCreate,
-#     service: ClassroomService = Depends(get_classroom_service),
-# ) -> StudentResponse:
-#     return await service.create_student(schema)
-
-
-# @router.delete(
-#     "/students/{student_id}",
-#     response_model=StudentResponse,
-#     status_code=status.HTTP_200_OK,
-#     summary="수강생 삭제(소프트)",
-# )
-# async def delete_student(
-#     student_id: int,
-#     service: ClassroomService = Depends(get_classroom_service),
-# ) -> StudentResponse:
-#     return await service.delete_student(student_id)
+@router.patch(
+    "/{swim_class_id}",
+    response_model=SwimClassResponse,
+    status_code=status.HTTP_200_OK,
+    summary="강습 클래스 정보 수정",
+)
+async def update_swim_class(
+    swim_class_id: int,
+    schema: SwimClassUpdate,
+    service: ClassroomService = Depends(get_classroom_service),
+) -> SwimClassResponse:
+    return await service.update_swim_class(swim_class_id, schema)

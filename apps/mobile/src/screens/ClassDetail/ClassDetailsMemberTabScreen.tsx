@@ -4,6 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
+import { useClassStore } from '../../stores/useClassStore';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -45,8 +46,8 @@ const INITIAL_FORM_STATE: NewMemberFormState = {
   notes: '',
 };
 
-export const ClassDetailsMemberTabScreen = ({ navigation, route }: any) => {
-  const { classId, className = '화요일 저녁 초급반' } = route?.params ?? {};
+export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
+  const { currentClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [isAddingMember, setIsAddingMember] = useState(false);

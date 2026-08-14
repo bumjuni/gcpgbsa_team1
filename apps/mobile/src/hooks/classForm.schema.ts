@@ -5,14 +5,8 @@ export const classFormSchema = z
   .object({
     name: z.string().min(1, '반 이름을 입력해 주세요.'),
     days_of_week: z.array(z.string()).min(1, '수업 요일을 하나 이상 선택해 주세요.'),
-    start_time: z.string({
-      required_error: '시작 시각을 선택해 주세요.',
-      invalid_type_error: '시작 시각을 선택해 주세요.',
-    }),
-    end_time: z.string({
-      required_error: '종료 시각을 선택해 주세요.',
-      invalid_type_error: '종료 시각을 선택해 주세요.',
-    }),
+    start_time: z.string({ required_error: '시작 시각을 선택해 주세요.', invalid_type_error: '시작 시각을 선택해 주세요.' }),
+    end_time: z.string({ required_error: '종료 시각을 선택해 주세요.', invalid_type_error: '종료 시각을 선택해 주세요.' }),
     capacity: z
       .string()
       .min(1, '정원을 입력해 주세요.')
@@ -22,8 +16,9 @@ export const classFormSchema = z
       .custom<AgeGroupType | ''>((val) => typeof val === 'string')
       .refine((val) => val !== '', { message: '나이대를 선택해 주세요.' }),
     level: z.string().min(1, '수준을 선택해 주세요.'),
-    goals: z.array(z.string()).min(1, '수업목표를 하나 이상 선택해 주세요.')
-    })
+    goals: z.array(z.string()).min(1, '수업목표를 하나 이상 선택해 주세요.'),
+    goal_etc: z.string().optional(),
+  })
   .superRefine((data, ctx) => {
     if (data.start_time && data.end_time && data.end_time <= data.start_time) {
       ctx.addIssue({
@@ -34,4 +29,4 @@ export const classFormSchema = z
     }
   });
 
-export type ClassFormValues = z.input<typeof classFormSchema>; // Form 내부 상태 타입
+export type ClassFormValues = z.input<typeof classFormSchema>;

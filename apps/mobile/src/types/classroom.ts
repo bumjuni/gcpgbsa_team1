@@ -9,9 +9,11 @@ export interface SwimClass {
   student_count: number | null;
   capacity: number;
   level: LevelType;
-  age_groups: AgeGroupType;
+  age_group: AgeGroupType;
   start_time: string;
   end_time: string;
+  goals: string;
+  goal_etc: string;
   days_of_week: string;
   today_program_status: ProgramStatusType | null;  // 오늘 program row 없으면 null
   next_program_status: ProgramStatusType | null;    // 미완료 중 가장 이른 program row, 없으면 null("수업안 없음")
@@ -31,6 +33,6 @@ export interface SwimClassCreate {
 // 강습반 상세 정보
 export interface SwimClassDetail extends SwimClass {
   created_at: Date;
-  goal: string;
+  goals: string;
   goal_etc: string;
 }

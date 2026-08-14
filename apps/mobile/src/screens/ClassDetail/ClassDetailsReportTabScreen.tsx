@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Card } from '../../components/card/Card';
+import { useClassStore } from '../../stores/useClassStore';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -44,8 +45,8 @@ const COMPLETED_REPORTS: CompletedReport[] = [
   },
 ];
 
-export const ClassDetailsReportTabScreen = ({ navigation, route }: any) => {
-  const { classId, className = '화요일 저녁 초급반' } = route?.params ?? {};
+export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
+  const { currentClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
 

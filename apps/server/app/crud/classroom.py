@@ -1,3 +1,5 @@
+from optparse import Option
+
 from datetime import datetime, date
 from typing import Optional
 
@@ -102,3 +104,23 @@ class ClassroomCrud:
         )
         result = await self.db.execute(stmt)
         return {row.class_id: row.status for row in result.all()}
+
+
+    async def update_swim_class(
+        self, swim_class_id: int, update_data: dict
+    ) -> Optional[SwimClass]:
+        stmt = select(SwimClass).where(
+            SwimClass.id == swim_class_id,
+            SwimClass.deleted_at.is_(None),
+        )
+        result = await self.db.execute(stmt)
+        swim_class = result.scalar_one_or_none()
+        if swim_class is None:
+            return None
+
+        for field, value in update_data.items():
+            setattr(swim_class, field, value)
+
+        await self.db.commit()
+        await self.db.refresh(swim_class)
+        return swim_class

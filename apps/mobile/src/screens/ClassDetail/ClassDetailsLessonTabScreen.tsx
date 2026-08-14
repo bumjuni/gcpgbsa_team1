@@ -1,63 +1,85 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, Pressable, ScrollView, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
+import { useClassStore } from '../../stores/useClassStore';
+import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { lessonPlanApi } from '../../api/lessonPlan';
+import { LLMCurriculumResponse } from '../../types/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
 const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포트'];
 
 interface CompletedLesson {
-  id: string;
+  id: number;
   label: string;
 }
 
-interface CompletedLessonWeek {
-  weekLabel: string;
-  lessons: CompletedLesson[];
-}
-
-const UPCOMING_LESSON = {
-  dateLabel: '8월 11일 (화) 오후 7:00',
-  totalDistanceM: 1150,
-};
-
-const COMPLETED_WEEKS: CompletedLessonWeek[] = [
-  {
-    weekLabel: '8월 1주차 (8/3~8/9)',
-    lessons: [
-      { id: '2026-08-06', label: '8월 6일 (목) 오후 7:00' },
-      { id: '2026-08-04', label: '8월 4일 (화) 오후 7:00' },
-    ],
-  },
-  {
-    weekLabel: '7월 4주차 (7/27~8/2)',
-    lessons: [
-      { id: '2026-07-30', label: '7월 30일 (목) 오후 7:00' },
-      { id: '2026-07-28', label: '7월 28일 (화) 오후 7:00' },
-    ],
-  },
-];
-
-export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
-  const { className = '화요일 저녁 초급반', classId } = route?.params ?? {};
+export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
+  const { currentClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
+  const [nextProgram, setNextProgram] = useState<LLMCurriculumResponse | null>(null);
+  const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
+
+
+  useEffect(() => {
+    if (!currentClass) return;
+
+    const fetchPrograms = async () => {
+      try {
+        const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
+        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
+        console.log(typeof nextClassDate?.date)
+        const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
+        setProgramHistory(history);
+        setNextProgram(nextProgram);
+      } catch (error) {
+        console.error('수업 기록 조회 실패:', error);
+      }
+    };
+
+    fetchPrograms();
+  }, [currentClass]);
+
+  const completedWeeks = useMemo(
+    () =>
+      programHistory.length > 0 && currentClass
+        ? groupProgramHistoryByWeek(programHistory, currentClass?.start_time)
+        : [],
+    [programHistory, currentClass],
+  );
+
+  if (!currentClass) return null;
+
+  const printNextLesson = () => {
+    const nextLesson = formatNextClassLabel(
+      currentClass?.days_of_week,
+      currentClass?.start_time,
+      currentClass?.today_program_status)
+
+    if (nextLesson.startsWith('다'))
+      return nextLesson.substring(8)
+
+    return nextLesson
+  }
+
 
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '수업진행') return;
-    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
-    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
-    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
+    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab');
+    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab');
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab');
   };
 
   const handleStartLesson = () => {
-    navigation?.navigate('LessonPlanComplete', { classId, className });
+    navigation?.navigate('LessonPlanComplete');
   };
 
   const handleLessonHistoryPress = (lesson: CompletedLesson) => {
-    navigation?.navigate('ClassDetailsLessonHistory', { classId, lessonId: lesson.id, label: lesson.label });
+    navigation?.navigate('ClassDetailsLessonHistory');
   };
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
@@ -72,7 +94,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={className} showBackButton scrollable={false}>
+    <ScreenLayout title={currentClass.name} showBackButton scrollable={false}>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-lg"
         onLayout={handleTabRowLayout}
@@ -103,32 +125,42 @@ export const ClassDetailsLessonTabScreen = ({ navigation, route }: any) => {
       <View className="pb-lg">
         <Text className="text-base font-bold text-ink mb-sm">진행 예정 수업</Text>
         <Card variant="default" className="px-md py-md mb-lg">
-          <Text className="text-title-sm text-ink mb-xxs">{UPCOMING_LESSON.dateLabel}</Text>
-          <Text className="text-caption text-ink-secondary">
-            총 {UPCOMING_LESSON.totalDistanceM.toLocaleString()}m
+          <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
+          <Text className="text-caption text-ink-secondary mt-xxs">
+            {nextProgram ? `총 ${nextProgram?.session_summary.total_distance_m}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
-        <Button label="수업 진행하기" onPress={handleStartLesson} />
+        <Button
+          label={nextProgram ? "수업 진행하기" : "이어서 확정하기"}
+          onPress={handleStartLesson}
+        />
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <Text className="text-base font-bold text-ink mb-sm">종료된 수업</Text>
-        {COMPLETED_WEEKS.map((week) => (
-          <View key={week.weekLabel} className="mb-md">
-            <Card>
-              <Card.Header title={week.weekLabel} />
-              {week.lessons.map((lesson, index) => (
-                <Card.Item
-                  key={lesson.id}
-                  title={lesson.label}
-                  onPress={() => handleLessonHistoryPress(lesson)}
-                  isLast={index === week.lessons.length - 1}
-                  rightElement={<Text className="text-ink-tertiary">›</Text>}
-                />
-              ))}
-            </Card>
-          </View>
-        ))}
+
+        {completedWeeks.length ? (
+          <>
+          {completedWeeks.map((week) => (
+              <View key={week.weekLabel} className="mb-md">
+                <Card>
+                  <Card.Header title={week.weekLabel} />
+                  {week.lessons.map((lesson, index) => (
+                    <Card.Item
+                      key={lesson.id}
+                      title={lesson.label}
+                      onPress={() => handleLessonHistoryPress(lesson)}
+                      isLast={index === week.lessons.length - 1}
+                      rightElement={<Text className="text-ink-tertiary">›</Text>}
+                    />
+                  ))}
+                </Card>
+            </View>
+            ))}
+          </>
+        ) : (
+          <Text className="text-caption text-ink-secondary self-center my-lg">아직 종료된 수업이 없어요</Text>
+        )}
         <View className="pb-xl" />
       </ScrollView>
     </ScreenLayout>

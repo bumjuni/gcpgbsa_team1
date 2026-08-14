@@ -1,10 +1,11 @@
-from datetime import datetime
+from datetime import date, datetime
+from typing import Optional
 
 from sqlalchemy import select
 
 from models import SwimClass
 from models.enums import ProgramStatusEnum
-from schemas.program import ProgramConfirm, ProgramCreate, ProgramResponse, Program as ProgramSchema, SessionSummary
+from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary
 from models import Program
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
@@ -176,4 +177,33 @@ class ProgramService:
                 total_distance_m=sum(i.set * i.distance_m for i in updated_items),
             ),
             program=program_plan,
+        )
+
+    async def get_program_history(self, class_id: int) -> list[ProgramHistoryItem]:
+        programs = await self.crud.get_non_draft_programs_by_class(class_id)
+        return [
+            ProgramHistoryItem(program_id=p.id, status=p.status, date=p.date)
+            for p in programs
+        ]
+
+
+    async def get_program_by_date(self, class_id: int, date: date) -> Optional[ProgramResponse]:
+        program = await self.crud.get_by_class_and_date(class_id, date)
+
+
+        if program is None:
+            return None
+
+        return ProgramResponse(
+            id=program.id,
+            class_id=program.class_id,
+            date=program.date,
+            equipment=program.equipment,
+            request="",
+            created_at=program.created_at,
+            session_summary=SessionSummary(
+                total_min=program.duration_min,
+                total_distance_m=program.duration_min,
+            ),
+            program=ProgramSchema(program),
         )
