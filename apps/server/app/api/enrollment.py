@@ -10,6 +10,19 @@ from services.enrollment import EnrollmentService
 router = APIRouter(prefix="/enrollment", tags=["Enrollment"])
 
 
+@router.get(
+    "/class/{class_id}",
+    response_model=list[EnrollmentResponse],
+    status_code=status.HTTP_200_OK,
+    summary="반별 회원 목록 조회",
+)
+async def get_enrollments_by_class(
+    class_id: int,
+    service: EnrollmentService = Depends(get_enrollment_service),
+) -> list[EnrollmentResponse]:
+    return await service.get_enrollments_by_class(class_id)
+
+
 @router.post(
     "/",
     response_model=EnrollmentResponse,

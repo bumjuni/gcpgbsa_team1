@@ -1,7 +1,9 @@
 from datetime import datetime
 from typing import Optional
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from models.classroom import Enrollment
 
@@ -9,6 +11,17 @@ from models.classroom import Enrollment
 class EnrollmentCrud:
     def __init__(self, db: AsyncSession) -> None:
         self.db = db
+
+
+    async def get_by_class_id(self, class_id: int) -> list[Enrollment]:
+        """반별 활성 소속 목록 조회 (student 정보 함께 로드)"""
+        result = await self.db.execute(
+            select(Enrollment)
+            .where(Enrollment.class_id == class_id, Enrollment.is_active == True)
+            .options(selectinload(Enrollment.student))
+            .order_by(Enrollment.created_at.asc())
+        )
+        return list(result.scalars().all())
 
 
     async def create(self, enrollment_data: dict) -> Enrollment:
