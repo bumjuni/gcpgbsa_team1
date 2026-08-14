@@ -2,7 +2,6 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Card } from '../../components/card/Card';
-import { useClassStore } from '../../stores/useClassStore';
 
 interface LessonHistoryItem {
   name: string;
@@ -39,14 +38,12 @@ const DEFAULT_SECTIONS: LessonHistorySection[] = [
 ];
 
 export const ClassDetailsLessonHistoryScreen = ({ route }: any) => {
-  const { currentClass } = useClassStore();
-
-  // const {
-  //   label = '8월 4일 오후 7:00 수업',
-  //   plannedDistanceM = 1500,
-  //   actualDistanceM = 200,
-  //   sections = DEFAULT_SECTIONS,
-  // } = route?.params ?? {};
+  const {
+    label = '지난 수업',
+    plannedDistanceM = 1500,
+    actualDistanceM = 200,
+    sections = DEFAULT_SECTIONS,
+  } = route?.params ?? {};
 
   return (
     <ScreenLayout title={label} showBackButton>

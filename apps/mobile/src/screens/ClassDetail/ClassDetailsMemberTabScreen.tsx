@@ -5,7 +5,6 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
-import { CurrentRenderContext } from '@react-navigation/native';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -94,7 +93,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={currentClass?.className} showBackButton>
+    <ScreenLayout title={currentClass.name} showBackButton>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-md"
         onLayout={handleTabRowLayout}
