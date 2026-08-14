@@ -171,12 +171,11 @@ export const ClassDetailsInfoTabScreen = ({ navigation }: any) => {
               { label: '기초 적응', value: 'BASIC_ADAPTATION' },
               { label: '기타', value: 'ETC' },
             ]}
-            value="ETC"
-            // value={stringToList(currentClass.goal)}
+            value={stringToList(currentClass.goals) ?? 'ETC'}
             onChange={noop}
           />
 
-          {currentClass.goal.includes('ETC') ? (
+          {currentClass.goals.includes('ETC') ? (
             <>
               <FormField.HelperText type="guide" text="'기타'를 선택하면 아래에 적어주세요" className="mt-xs" />
               <FormField.TextInput placeholder="예: 수중 재활, 다이빙 연습" editable={false} />
