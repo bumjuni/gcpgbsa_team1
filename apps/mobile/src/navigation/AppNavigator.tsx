@@ -2,6 +2,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavStackParamList } from './types';
 
+import { AppSplashScreen } from '../screens/AppSplashScreen';
 import { ClassListScreen } from '../screens/ClassListScreen';
 import { ClassRegisterScreen } from '../screens/ClassRegisterScreen';
 import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScreen';
@@ -31,13 +32,14 @@ const Stack = createNativeStackNavigator<NavStackParamList>();
 export const AppNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName="ClassList"
+      initialRouteName="AppSplash"
 
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: '#FFFFFF' },
       }}
     >
+      <Stack.Screen name="AppSplash" component={AppSplashScreen} />
       <Stack.Screen name="ClassList" component={ClassListScreen} />
       <Stack.Screen name="ClassRegister" component={ClassRegisterScreen} />
       <Stack.Screen name="ClassMember" component={ClassMemberScreen} />
