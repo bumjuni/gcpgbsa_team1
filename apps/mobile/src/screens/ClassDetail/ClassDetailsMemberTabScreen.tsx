@@ -5,6 +5,7 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
+import { CurrentRenderContext } from '@react-navigation/native';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -54,15 +55,17 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const [formData, setFormData] = useState<NewMemberFormState>(INITIAL_FORM_STATE);
   const [, startTransition] = useTransition();
 
+  if (!currentClass) return null;
+
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '명단') return;
-    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab', { classId, className });
-    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
-    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab', { classId, className });
+    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab');
+    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab');
+    if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab');
   };
 
   const handleMemberPress = (member: ClassMemberSummary) => {
-    navigation?.navigate('ClassDetailsMemberDetail', { classId, memberId: member.id });
+    navigation?.navigate('ClassDetailsMemberDetail', { memberId: member.id });
   };
 
   const handleFieldChange = <K extends keyof NewMemberFormState>(key: K, value: string) => {
@@ -91,7 +94,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={className} showBackButton>
+    <ScreenLayout title={currentClass?.className} showBackButton>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-md"
         onLayout={handleTabRowLayout}
