@@ -1,13 +1,10 @@
-from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, Field
 from .base import ORMBaseModel
 
 
 class StudentCreate(BaseModel):
-    student_id: int
     name: str = Field(..., max_length=50)
-    phone: str = Field(..., max_length=20)
-    birth_year: int
-    memo: str
-    created_at: datetime
+    phone: Optional[str] = Field(None, max_length=20)
+    birth_year: Optional[int] = None

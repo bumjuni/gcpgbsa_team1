@@ -1,9 +1,6 @@
-from datetime import datetime
-
-from models.enrollment import Enrollment
 from crud.enrollment import EnrollmentCrud
 from services.student import StudentService
-from schemas.enrollment import EnrollmentCreate
+from schemas.enrollment import EnrollmentCreate, EnrollmentResponse
 
 
 class EnrollmentService:
@@ -11,7 +8,7 @@ class EnrollmentService:
         self.crud = crud
         self.student_service = student_service
 
-    async def create_enrollment(self, schema: EnrollmentCreate) -> Enrollment:
+    async def create_enrollment(self, schema: EnrollmentCreate) -> EnrollmentResponse:
         # 1. 학생 매칭/생성 (StudentService의 책임)
         student = await self.student_service.find_or_create_student(
             name=schema.name,
@@ -27,4 +24,16 @@ class EnrollmentService:
             "memo": schema.memo,
             "is_active": True,
         }
-        return await self.crud.create(enrollment_data=enrollment_data)
+        enrollment = await self.crud.create(enrollment_data=enrollment_data)
+
+        # 3. 응답 조립 (student + enrollment 결합 - FE가 기대하는 형태)
+        return EnrollmentResponse(
+            id=enrollment.id,
+            student_id=enrollment.student_id,
+            class_id=enrollment.class_id,
+            name=student.name,
+            phone=student.phone,
+            birth_year=student.birth_year.year if hasattr(student.birth_year, "year") else student.birth_year,
+            memo=enrollment.memo,
+            created_at=enrollment.created_at,
+        )

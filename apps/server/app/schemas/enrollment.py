@@ -18,5 +18,7 @@ class EnrollmentResponse(ORMBaseModel):
     student_id: int
     class_id: int
     name: str
+    phone: Optional[str] = None
     birth_year: Optional[int] = None
+    memo: Optional[str] = None
     created_at: datetime
