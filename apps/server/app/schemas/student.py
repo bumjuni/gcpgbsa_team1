@@ -16,6 +16,7 @@ class StudentResponse(ORMBaseModel):
     name: str
     phone: Optional[str] = None
     birth_year: Optional[int] = None
+    memo: Optional[str] = None  # Student엔 없는 필드 - class_id로 찾은 Enrollment.memo를 서비스에서 채워줌
     created_at: datetime
 
     @field_validator("birth_year", mode="before")
@@ -29,3 +30,4 @@ class StudentUpdate(BaseModel):
     name: Optional[str] = Field(None, max_length=50)
     phone: Optional[str] = Field(None, max_length=20)
     birth_year: Optional[int] = None
+    memo: Optional[str] = None  # class_id가 함께 오면 해당 Enrollment.memo로 반영됨

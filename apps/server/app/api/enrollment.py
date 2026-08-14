@@ -34,3 +34,16 @@ async def create_enrollment(
     service: EnrollmentService = Depends(get_enrollment_service),
 ) -> EnrollmentResponse:
     return await service.create_enrollment(schema)
+
+
+@router.delete(
+    "/{enrollment_id}",
+    status_code=status.HTTP_200_OK,
+    summary="회원 소속 삭제(비활성화)",
+)
+async def delete_enrollment(
+    enrollment_id: int,
+    service: EnrollmentService = Depends(get_enrollment_service),
+):
+    deactivated = await service.deactivate_enrollment(enrollment_id)
+    return {"id": deactivated.id}

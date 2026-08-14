@@ -1,4 +1,7 @@
+from fastapi import HTTPException, status
+
 from crud.enrollment import EnrollmentCrud
+from models.enrollment import Enrollment
 from services.student import StudentService
 from schemas.enrollment import EnrollmentCreate, EnrollmentResponse
 
@@ -45,3 +48,13 @@ class EnrollmentService:
     async def get_enrollments_by_class(self, class_id: int) -> list[EnrollmentResponse]:
         enrollments = await self.crud.get_by_class_id(class_id)
         return [self._to_response(e, e.student) for e in enrollments]
+
+    async def deactivate_enrollment(self, enrollment_id: int) -> Enrollment:
+        # 반 소속만 비활성화 - Student/다른 반 소속은 건드리지 않음 (06-2C classroom 소프트삭제 패턴과 동일)
+        enrollment = await self.crud.deactivate(enrollment_id)
+        if not enrollment:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Enrollment with ID {enrollment_id} not found.",
+            )
+        return enrollment

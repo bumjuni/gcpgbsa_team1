@@ -37,13 +37,37 @@ class EnrollmentCrud:
         return enrollment
 
 
-    async def delete(self, enrollment_id: int) -> Optional[Enrollment]:
-        """수강 정보 삭제 (soft delete)"""
+    async def get_by_student_and_class(
+        self, student_id: int, class_id: int
+    ) -> Optional[Enrollment]:
+        """특정 학생의 특정 반 소속 조회 (활성인 것만)"""
+        result = await self.db.execute(
+            select(Enrollment).where(
+                Enrollment.student_id == student_id,
+                Enrollment.class_id == class_id,
+                Enrollment.is_active == True,
+            )
+        )
+        return result.scalars().first()
+
+    async def update(self, enrollment_id: int, update_data: dict) -> Optional[Enrollment]:
+        """소속 정보 수정 (예: memo)"""
+        enrollment = await self.db.get(Enrollment, enrollment_id)
+        if enrollment is None:
+            return None
+        for key, value in update_data.items():
+            setattr(enrollment, key, value)
+        await self.db.commit()
+        await self.db.refresh(enrollment)
+        return enrollment
+
+    async def deactivate(self, enrollment_id: int) -> Optional[Enrollment]:
+        """반 소속 비활성화 (소프트 삭제 - enrollment 테이블엔 deleted_at이 없어 is_active를 False로 전환)"""
         enrollment = await self.db.get(Enrollment, enrollment_id)
         if enrollment is None:
             return None
 
-        enrollment.deleted_at = datetime.now()
+        enrollment.is_active = False
         await self.db.commit()
         await self.db.refresh(enrollment)
 

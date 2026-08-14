@@ -2,36 +2,63 @@ from typing import Optional
 
 from fastapi import HTTPException, status
 
+from crud.enrollment import EnrollmentCrud
 from models.student import Student
 from crud.student import StudentCrud
-from schemas.student import StudentCreate, StudentUpdate
+from schemas.student import StudentCreate, StudentResponse, StudentUpdate
 
 
 class StudentService:
-    def __init__(self, crud: StudentCrud) -> None:
+    def __init__(self, crud: StudentCrud, enrollment_crud: Optional[EnrollmentCrud] = None) -> None:
         self.crud = crud
+        self.enrollment_crud = enrollment_crud
 
     async def create_student(self, schema: StudentCreate) -> Student:
         return await self.crud.create(student_data=schema.model_dump())
 
-    async def get_student(self, student_id: int) -> Student:
+    async def _to_response(self, student: Student, class_id: Optional[int]) -> StudentResponse:
+        # memo는 Student에 없는 필드 - class_id가 주어지면 해당 반 소속(Enrollment)의 memo를 찾아 채운다.
+        memo = None
+        if class_id is not None and self.enrollment_crud is not None:
+            enrollment = await self.enrollment_crud.get_by_student_and_class(student.id, class_id)
+            if enrollment is not None:
+                memo = enrollment.memo
+        return StudentResponse(
+            id=student.id,
+            name=student.name,
+            phone=student.phone,
+            birth_year=student.birth_year,
+            memo=memo,
+            created_at=student.created_at,
+        )
+
+    async def get_student(self, student_id: int, class_id: Optional[int] = None) -> StudentResponse:
         student = await self.crud.get_by_id(student_id)
         if not student:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Student with ID {student_id} not found.",
             )
-        return student
+        return await self._to_response(student, class_id)
 
-    async def update_student(self, student_id: int, schema: StudentUpdate) -> Student:
-        update_data = schema.model_dump(exclude_unset=True)
+    async def update_student(
+        self, student_id: int, schema: StudentUpdate, class_id: Optional[int] = None
+    ) -> StudentResponse:
+        update_data = schema.model_dump(exclude_unset=True, exclude={"memo"})
         student = await self.crud.update(student_id, update_data)
         if not student:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail=f"Student with ID {student_id} not found.",
             )
-        return student
+
+        # memo는 Student가 아니라 해당 반 소속(Enrollment)에 반영
+        if "memo" in schema.model_fields_set and class_id is not None and self.enrollment_crud is not None:
+            enrollment = await self.enrollment_crud.get_by_student_and_class(student_id, class_id)
+            if enrollment is not None:
+                await self.enrollment_crud.update(enrollment.id, {"memo": schema.memo})
+
+        return await self._to_response(student, class_id)
 
     async def delete_student(self, student_id: int) -> Student:
         student = await self.crud.delete(student_id)

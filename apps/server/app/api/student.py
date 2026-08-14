@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_student_service
@@ -15,9 +17,10 @@ router = APIRouter(prefix="/student", tags=["Student"])
 )
 async def get_student(
     student_id: int,
+    class_id: Optional[int] = None,
     service: StudentService = Depends(get_student_service),
 ) -> StudentResponse:
-    return await service.get_student(student_id)
+    return await service.get_student(student_id, class_id)
 
 
 @router.patch(
@@ -29,9 +32,10 @@ async def get_student(
 async def update_student(
     student_id: int,
     schema: StudentUpdate,
+    class_id: Optional[int] = None,
     service: StudentService = Depends(get_student_service),
 ) -> StudentResponse:
-    return await service.update_student(student_id, schema)
+    return await service.update_student(student_id, schema, class_id)
 
 
 # 실제 DB 삭제가 다른 작업과 얽힐 수 있어 임시로 잠가둠 - 06-3-1C 확정 시 재활성화 예정
