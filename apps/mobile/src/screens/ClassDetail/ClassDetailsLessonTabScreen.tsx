@@ -4,7 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
-import { formatNextClassLabel, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { lessonPlanApi } from '../../api/lessonPlan';
 import { LLMCurriculumProgram, LLMCurriculumResponse } from '../../types/lessonPlan';
 
@@ -21,7 +21,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const { currentClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
-  const [programToday, setProgramToday] = useState<LLMCurriculumResponse | null>(null);
+  const [nextProgram, setNextProgram] = useState<LLMCurriculumResponse | null>(null);
   const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
 
 
@@ -31,9 +31,11 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const fetchPrograms = async () => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
-        const today = await lessonPlanApi.getLessonPlanToday(currentClass.id);
+        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
+        console.log(typeof nextClassDate?.date)
+        const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
         setProgramHistory(history);
-        setProgramToday(today);
+        setNextProgram(nextProgram);
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
       }
@@ -125,33 +127,40 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
           <Text className="text-caption text-ink-secondary mt-xxs">
-            {programToday ? `총 ${programToday?.session_summary.total_distance_m}m` : `수업안이 아직 확정되지 않았어요`}
+            {nextProgram ? `총 ${nextProgram?.session_summary.total_distance_m}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
         <Button
-          label={programToday ? "수업 진행하기" : "이어서 확정하기"}
+          label={nextProgram ? "수업 진행하기" : "이어서 확정하기"}
           onPress={handleStartLesson}
         />
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <Text className="text-base font-bold text-ink mb-sm">종료된 수업</Text>
-        {completedWeeks.map((week) => (
-          <View key={week.weekLabel} className="mb-md">
-            <Card>
-              <Card.Header title={week.weekLabel} />
-              {week.lessons.map((lesson, index) => (
-                <Card.Item
-                  key={lesson.id}
-                  title={lesson.label}
-                  onPress={() => handleLessonHistoryPress(lesson)}
-                  isLast={index === week.lessons.length - 1}
-                  rightElement={<Text className="text-ink-tertiary">›</Text>}
-                />
-              ))}
-            </Card>
-          </View>
-        ))}
+
+        {completedWeeks.length ? (
+          <>
+          {completedWeeks.map((week) => (
+              <View key={week.weekLabel} className="mb-md">
+                <Card>
+                  <Card.Header title={week.weekLabel} />
+                  {week.lessons.map((lesson, index) => (
+                    <Card.Item
+                      key={lesson.id}
+                      title={lesson.label}
+                      onPress={() => handleLessonHistoryPress(lesson)}
+                      isLast={index === week.lessons.length - 1}
+                      rightElement={<Text className="text-ink-tertiary">›</Text>}
+                    />
+                  ))}
+                </Card>
+            </View>
+            ))}
+          </>
+        ) : (
+          <Text className="text-caption text-ink-secondary self-center my-lg">아직 종료된 수업이 없어요</Text>
+        )}
         <View className="pb-xl" />
       </ScrollView>
     </ScreenLayout>

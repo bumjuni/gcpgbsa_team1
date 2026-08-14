@@ -1,3 +1,5 @@
+from datetime import date, datetime_CAPI
+
 from fastapi import APIRouter, Depends, status
 from typing import Optional
 
@@ -64,16 +66,17 @@ async def get_program_history(
     return await service.get_program_history(swim_class_id)
 
 @router.get(
-    "/{swim_class_id}/programs/today",
+    "/{swim_class_id}/date/{date}",
     response_model=Optional[ProgramResponse],
     status_code=status.HTTP_200_OK,
-    summary="오늘 날짜 수업안 조회"
+    summary="특정 날짜 수업안 조회"
 )
-async def get_today_program(
+async def get_program_by_date(
     swim_class_id: int,
+    date: date,
     service: ProgramService = Depends(get_program_service),
 ) -> ProgramResponse:
-    return await service.get_today_program(swim_class_id)
+    return await service.get_program_by_date(swim_class_id, date)
 
 
 # # @router.post(

@@ -26,11 +26,24 @@ export const isToday = (daysOfWeek: string, now: Date = new Date()): boolean => 
   return parseDaysOfWeek(daysOfWeek).includes(todayIndex);
 };
 
+export function isTimePassed(time: string): boolean {
+  const [hourStr, minuteStr] = time.split(':');
+  const hour = Number(hourStr);
+  const minute = Number(minuteStr);
+
+  const now = new Date();
+  const target = new Date();
+  target.setHours(hour, minute, 0, 0);
+
+  return now.getTime() > target.getTime();
+}
+
 // isTodayClassEnded 삭제. 시각으로 "종료"를 판정하지 않는다 (SRS: completed 여부만 본다).
 
 /**
  * 다음 수업 일시 계산 (SRS 3번 로직)
  * - 오늘이 수업일이고 today_program_status가 completed가 아니면 -> "오늘" (시각 무관)
+ * - 오늘 수업시간이 지나면 종료하는 것으로 상정
  * - 그 외 -> 다음 주기 중 가장 가까운 미래 요일
  */
 export const getNextClassDate = (
@@ -44,7 +57,8 @@ export const getNextClassDate = (
 
   const todayIndex = now.getDay();
   const { hour, minute } = parseTime(startTime);
-  const isTodayCompleted = todayProgramStatus === 'COMPLETED';
+  const isTodayCompleted = isTimePassed(startTime)
+  // const isTodayCompleted = todayProgramStatus === 'COMPLETED';
 
   if (days.includes(todayIndex) && !isTodayCompleted) {
     const todayDate = new Date(now);
