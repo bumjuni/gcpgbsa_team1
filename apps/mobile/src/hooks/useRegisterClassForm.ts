@@ -1,7 +1,7 @@
 import { classroomApi } from '../api/classroom';
 import { classFormSchema, ClassFormValues } from './classForm.schema';
 import { useForm } from './useForm';
-import { formatList } from '../utils/listToString';
+import { formatList } from '../utils/parser';
 import { useClassStore } from '../stores/useClassStore';
 
 const INITIAL_VALUES: ClassFormValues = {

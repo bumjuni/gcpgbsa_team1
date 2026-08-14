@@ -6,7 +6,7 @@ import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { lessonPlanApi } from '../../api/lessonPlan';
-import { LLMCurriculumProgram, LLMCurriculumResponse } from '../../types/lessonPlan';
+import { LLMCurriculumResponse } from '../../types/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
