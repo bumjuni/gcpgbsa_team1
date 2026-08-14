@@ -85,6 +85,7 @@ export const ClassDetailsLessonTabDraftScreen = ({ navigation, route }: any) => 
               onPress={() => handleTabPress(tab)}
               onLayout={active ? handleActiveTabLayout : undefined}
               className="items-center pb-md"
+              hitSlop={{ top: 10, bottom: 10 }}
             >
               <Text className={`text-body-strong ${active ? 'text-primary' : 'text-ink-secondary'}`}>
                 {tab}
