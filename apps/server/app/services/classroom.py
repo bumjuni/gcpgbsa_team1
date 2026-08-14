@@ -8,6 +8,7 @@ from schemas.classroom import (
     SwimClassCreate,
     SwimClassDetailResponse,
     SwimClassResponse,
+    SwimClassUpdate,
 )
 
 KST = ZoneInfo("Asia/Seoul")
@@ -72,3 +73,18 @@ class ClassroomService:
                 detail=f"SwimClass with ID {swim_class_id} not found.",
             )
         return deleted_class
+
+
+    async def update_swim_class(
+        self, swim_class_id: int, schema: SwimClassUpdate
+    ) -> SwimClassResponse:
+        update_data = schema.model_dump(exclude_unset=True)  # 온 필드만 반영
+        updated_class = await self.crud.update_swim_class(swim_class_id, update_data)
+
+        if not updated_class:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"SwimClass with ID {swim_class_id} not found.",
+            )
+
+        return SwimClassResponse.model_validate(updated_class)

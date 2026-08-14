@@ -1,4 +1,3 @@
-from schemas.program import ProgramHistoryItem
 from fastapi import APIRouter, Depends, status
 
 from api.dependencies import get_classroom_service
@@ -6,6 +5,7 @@ from schemas.classroom import (
     SwimClassCreate,
     SwimClassDetailResponse,
     SwimClassResponse,
+    SwimClassUpdate,
 )
 from services.classroom import ClassroomService
 
@@ -58,3 +58,16 @@ async def delete_swim_class(
     service: ClassroomService = Depends(get_classroom_service)):
     deleted_class = await service.delete_swim_class(swim_class_id)
     return {"id": deleted_class.id}
+
+@router.patch(
+    "/{swim_class_id}",
+    response_model=SwimClassResponse,
+    status_code=status.HTTP_200_OK,
+    summary="강습 클래스 정보 수정",
+)
+async def update_swim_class(
+    swim_class_id: int,
+    schema: SwimClassUpdate,
+    service: ClassroomService = Depends(get_classroom_service),
+) -> SwimClassResponse:
+    return await service.update_swim_class(swim_class_id, schema)
