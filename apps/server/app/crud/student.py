@@ -50,3 +50,24 @@ class StudentCrud:
         await self.db.commit()
         await self.db.refresh(student)
         return student
+
+    async def get_by_id(self, student_id: int) -> Optional[Student]:
+        """단건 수강생 조회 (Soft Delete 된 데이터는 제외)"""
+        result = await self.db.execute(
+            select(Student).where(
+                Student.id == student_id,
+                Student.deleted_at.is_(None),
+            )
+        )
+        return result.scalar_one_or_none()
+
+    async def update(self, student_id: int, update_data: dict) -> Optional[Student]:
+        """수강생 정보 수정"""
+        student = await self.db.get(Student, student_id)
+        if student is None:
+            return None
+        for key, value in update_data.items():
+            setattr(student, key, value)
+        await self.db.commit()
+        await self.db.refresh(student)
+        return student

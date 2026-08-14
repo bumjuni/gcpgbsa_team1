@@ -1,8 +1,10 @@
 from typing import Optional
 
+from fastapi import HTTPException, status
+
 from models.student import Student
 from crud.student import StudentCrud
-from schemas.student import StudentCreate
+from schemas.student import StudentCreate, StudentUpdate
 
 
 class StudentService:
@@ -11,6 +13,34 @@ class StudentService:
 
     async def create_student(self, schema: StudentCreate) -> Student:
         return await self.crud.create(student_data=schema.model_dump())
+
+    async def get_student(self, student_id: int) -> Student:
+        student = await self.crud.get_by_id(student_id)
+        if not student:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Student with ID {student_id} not found.",
+            )
+        return student
+
+    async def update_student(self, student_id: int, schema: StudentUpdate) -> Student:
+        update_data = schema.model_dump(exclude_unset=True)
+        student = await self.crud.update(student_id, update_data)
+        if not student:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Student with ID {student_id} not found.",
+            )
+        return student
+
+    async def delete_student(self, student_id: int) -> Student:
+        student = await self.crud.delete(student_id)
+        if not student:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Student with ID {student_id} not found.",
+            )
+        return student
 
     async def find_matching_student(
         self, name: str, phone: Optional[str], birth_year: Optional[int]
