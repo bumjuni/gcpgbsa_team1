@@ -4,6 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
 import { stringToList } from '../../utils/parser';
+import { useClassForm } from '../../hooks/useClassForm';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -21,6 +22,10 @@ export const ClassDetailsInfoTabScreen = ({ navigation }: any) => {
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const { currentClass } = useClassStore();
+
+  const { values, errors, isSubmitting, setFieldValue, handleSubmit } = useClassForm({
+    onSuccess: (classId: number) => navigation?.navigate('ClassMember', { classId })
+  });
 
   if (!currentClass) return null;
 

@@ -29,4 +29,10 @@ export const classroomApi = {
       console.log(response);
       return response.data;
   },
+
+  updateClass: async (class_id: number, classData: Partial<SwimClass>) => {
+    const response = await apiClient.patch<SwimClass>(`/classroom/${class_id}`, classData);
+    console.log(response);
+    return response.data;
+  },
 }

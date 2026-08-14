@@ -55,10 +55,16 @@ export function useForm<T extends Record<string, any>>({
     }
   };
 
+  const setInitValues = useCallback((newValues: T) => {
+    setValues(newValues);
+    setErrors({});
+  }, []);
+
   return {
     values,
     errors,
     isSubmitting,
+    setInitValues,
     setFieldValue,
     handleSubmit,
   };

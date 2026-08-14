@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { FormField } from '../components/form/FormField';
-import { useRegisterClassForm } from '../hooks/useRegisterClassForm';
+import { useClassForm } from '../hooks/useClassForm';
 import { AgeGroupType } from '../types/classroom';
 
 
 export const ClassRegisterScreen = ({ navigation }: any) => {
-  const { values, errors, isSubmitting, setFieldValue, handleSubmit } = useRegisterClassForm({
+  const { values, errors, isSubmitting, setFieldValue, handleSubmit } = useClassForm({
     onSuccess: (classId: number) => navigation?.navigate('ClassMember', { classId })
   });
 
