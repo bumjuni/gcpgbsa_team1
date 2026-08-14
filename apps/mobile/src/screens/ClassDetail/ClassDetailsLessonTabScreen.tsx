@@ -6,6 +6,7 @@ import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
 import { formatNextClassLabel, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { lessonPlanApi } from '../../api/lessonPlan';
+import { LLMCurriculumProgram, LLMCurriculumResponse } from '../../types/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -20,22 +21,25 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const { currentClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
+  const [programToday, setProgramToday] = useState<LLMCurriculumResponse | null>(null);
   const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
 
 
   useEffect(() => {
     if (!currentClass) return;
 
-    const fetchProgramHistory = async () => {
+    const fetchPrograms = async () => {
       try {
-        const data = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
-        setProgramHistory(data);
+        const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
+        const today = await lessonPlanApi.getLessonPlanToday(currentClass.id);
+        setProgramHistory(history);
+        setProgramToday(today);
       } catch (error) {
-        console.error('종료된 수업 목록 조회 실패:', error);
+        console.error('수업 기록 조회 실패:', error);
       }
     };
 
-    fetchProgramHistory();
+    fetchPrograms();
   }, [currentClass]);
 
   const completedWeeks = useMemo(
@@ -62,7 +66,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
 
   const UPCOMING_LESSON = {
     dateLabel: printNextLesson(),
-    totalDistanceM: 1150,
+    totalDistanceM: programToday?.session_summary.total_distance_m,
   };
 
 
@@ -126,7 +130,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{UPCOMING_LESSON.dateLabel}</Text>
           <Text className="text-caption text-ink-secondary">
-            총 {UPCOMING_LESSON.totalDistanceM.toLocaleString()}m
+            총 {UPCOMING_LESSON.totalDistanceM}m
           </Text>
         </Card>
         <Button label="수업 진행하기" onPress={handleStartLesson} />

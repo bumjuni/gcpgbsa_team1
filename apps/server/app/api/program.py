@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, status
+from typing import Optional
 
 from api.dependencies import get_program_service
 from schemas.program import (
@@ -61,6 +62,19 @@ async def get_program_history(
     service: ProgramService = Depends(get_program_service),
 ) -> list[ProgramHistoryItem]:
     return await service.get_program_history(swim_class_id)
+
+@router.get(
+    "/{swim_class_id}/programs/today",
+    response_model=Optional[ProgramResponse],
+    status_code=status.HTTP_200_OK,
+    summary="오늘 날짜 수업안 조회"
+)
+async def get_today_program(
+    swim_class_id: int,
+    service: ProgramService = Depends(get_program_service),
+) -> ProgramResponse:
+    return await service.get_today_program(swim_class_id)
+
 
 # # @router.post(
 # #     "/items",

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import select
 
@@ -179,8 +180,30 @@ class ProgramService:
         )
 
     async def get_program_history(self, class_id: int) -> list[ProgramHistoryItem]:
-        programs = await self.crud.get_non_draft_programs_by_class(class_id)
+        programs = await self.crud.get_completed_programs_by_class(class_id)
         return [
             ProgramHistoryItem(program_id=p.id, status=p.status, date=p.date)
             for p in programs
         ]
+
+
+    async def get_today_program(self, class_id: int) -> Optional[ProgramResponse]:
+        program = await self.crud.get_by_class_and_date(class_id, datetime.now())
+
+
+        if program is None:
+            return None
+
+        return ProgramResponse(
+            id=program.id,
+            class_id=program.class_id,
+            date=program.date,
+            equipment=program.equipment,
+            request="",
+            created_at=program.created_at,
+            session_summary=SessionSummary(
+                total_min=program.duration_min,
+                total_distance_m=program.duration_min,
+            ),
+            program=ProgramSchema(program),
+        )

@@ -72,5 +72,11 @@ export const lessonPlanApi = {
     const response = await apiClient.get<ProgramHistoryItem[]>(`/program/${swimClassId}/programs/history`);
     console.log(response);
     return response.data;
+  },
+
+  getLessonPlanToday: async (swimClassId: number) => {
+    const response = await apiClient.get<LLMCurriculumResponse>(`/program/${swimClassId}/programs/today`);
+    console.log(response);
+    return response.data;
   }
 };

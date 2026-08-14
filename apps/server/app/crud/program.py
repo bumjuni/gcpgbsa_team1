@@ -105,14 +105,14 @@ class ProgramCrud:
         await self.db.refresh(item)
         return item
 
-    async def get_non_draft_programs_by_class(
+    async def get_completed_programs_by_class(
         self, class_id: int
     ) -> list[Program]:
         stmt = (
             select(Program)
             .where(
                 Program.class_id == class_id,
-                Program.status != ProgramStatusEnum.DRAFT,
+                Program.status == ProgramStatusEnum.COMPLETED,
                 Program.deleted_at.is_(None),
             )
             .order_by(Program.date.desc())
