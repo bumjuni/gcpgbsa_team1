@@ -1,6 +1,5 @@
 from optparse import Option
 
-from fastAPI import HTTP
 from datetime import datetime, date
 from typing import Optional
 

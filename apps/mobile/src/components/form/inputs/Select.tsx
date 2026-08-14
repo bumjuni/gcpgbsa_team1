@@ -1,16 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Pressable, Text, View } from 'react-native';
 import { FormFieldSelectProps } from './types';
 import DatePicker from 'react-native-date-picker'
-import { formatTime } from '../../../utils/timeUtils';
+import { formatTime, timeStringToDate } from '../../../utils/timeUtils';
 
 export const FormFieldSelect = React.memo(<T extends string | number | Date>({
   value,
-  placeholder,
   onChange,
 }: FormFieldSelectProps<T>) => {
   const [date, setDate] = useState<Date>(new Date(new Date().setHours(0, 0, 0, 0)))
   const [open, setOpen] = useState<boolean>(false)
+
+  // value prop이 "HH:mm" 문자열로 채워지면 내부 date state에 반영
+  useEffect(() => {
+    if (typeof value === 'string' && value) {
+      setDate(timeStringToDate(value));
+    }
+  }, [value]);
 
   return (
     <>
