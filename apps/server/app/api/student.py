@@ -34,14 +34,15 @@ async def update_student(
     return await service.update_student(student_id, schema)
 
 
-@router.delete(
-    "/{student_id}",
-    status_code=status.HTTP_200_OK,
-    summary="수강생 삭제(소프트)",
-)
-async def delete_student(
-    student_id: int,
-    service: StudentService = Depends(get_student_service),
-):
-    deleted_student = await service.delete_student(student_id)
-    return {"id": deleted_student.id}
+# 실제 DB 삭제가 다른 작업과 얽힐 수 있어 임시로 잠가둠 - 06-3-1C 확정 시 재활성화 예정
+# @router.delete(
+#     "/{student_id}",
+#     status_code=status.HTTP_200_OK,
+#     summary="수강생 삭제(소프트)",
+# )
+# async def delete_student(
+#     student_id: int,
+#     service: StudentService = Depends(get_student_service),
+# ):
+#     deleted_student = await service.delete_student(student_id)
+#     return {"id": deleted_student.id}
