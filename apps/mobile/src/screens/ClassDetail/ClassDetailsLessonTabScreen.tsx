@@ -64,11 +64,6 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     return nextLesson
   }
 
-  const UPCOMING_LESSON = {
-    dateLabel: printNextLesson(),
-    totalDistanceM: programToday?.session_summary.total_distance_m,
-  };
-
 
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '수업진행') return;
@@ -128,12 +123,15 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
       <View className="pb-lg">
         <Text className="text-base font-bold text-ink mb-sm">진행 예정 수업</Text>
         <Card variant="default" className="px-md py-md mb-lg">
-          <Text className="text-title-sm text-ink mb-xxs">{UPCOMING_LESSON.dateLabel}</Text>
-          <Text className="text-caption text-ink-secondary">
-            총 {UPCOMING_LESSON.totalDistanceM}m
+          <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
+          <Text className="text-caption text-ink-secondary mt-xxs">
+            {programToday ? `총 ${programToday?.session_summary.total_distance_m}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
-        <Button label="수업 진행하기" onPress={handleStartLesson} />
+        <Button
+          label={programToday ? "수업 진행하기" : "이어서 확정하기"}
+          onPress={handleStartLesson}
+        />
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
