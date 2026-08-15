@@ -5,6 +5,7 @@ export interface LessonPlanItem {
   id: number;
   title: string;
   set: number;
+  is_checked: boolean;
   distance_m: number;
   duration_time: number;
   detail: string;

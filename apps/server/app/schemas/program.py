@@ -23,6 +23,7 @@ class ProgramItem(BaseModel):
     id: Optional[int] = None
     title: str = Field(..., max_length=200)
     set: int = Field(..., ge=1)
+    is_checked: bool
     distance_m: int = Field(..., ge=1)
     duration_min: int = Field(..., ge=1)  # LLM의 duration_time -> duration_min으로 매핑
     detail: str = Field(..., max_length=100)

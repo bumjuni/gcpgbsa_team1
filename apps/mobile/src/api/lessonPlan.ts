@@ -28,4 +28,10 @@ export const lessonPlanApi = {
     console.log(response);
     return response.data;
   },
+
+  toggleLessonPlanItemChecked: async (lessonPlanItemId: number) => {
+    const response = await apiClient.patch<number>(`/program/${lessonPlanItemId}/check`);
+    console.log(response)
+    return response.data;
+  }
 };
