@@ -28,17 +28,17 @@ async def create_program(
     return await service.create_program(schema)
 
 
-@router.delete(
-    "/{program_id}",
-    response_model=ProgramResponse,
-    status_code=status.HTTP_200_OK,
-    summary="루틴 프로그램 삭제(소프트)",
-)
-async def delete_program(
-    program_id: int,
-    service: ProgramService = Depends(get_program_service),
-) -> ProgramResponse:
-    return await service.delete_program(program_id)
+# @router.delete(
+#     "/{program_id}",
+#     response_model=ProgramResponse,
+#     status_code=status.HTTP_200_OK,
+#     summary="루틴 프로그램 삭제(소프트)",
+# )
+# async def delete_program(
+#     program_id: int,
+#     service: ProgramService = Depends(get_program_service),
+# ) -> ProgramResponse:
+#     return await service.delete_program(program_id)
 
 @router.patch(
     "/{program_id}/confirm",
@@ -54,7 +54,7 @@ async def confirm_program(
     return await service.confirm_program(program_id, schema)
 
 @router.get(
-    "/{swim_class_id}/programs/history",
+    "/{swim_class_id}/history",
     response_model=list[ProgramHistoryItem],
     status_code=status.HTTP_200_OK,
     summary="종료/확정된 수업(프로그램) 목록 조회",
@@ -66,7 +66,7 @@ async def get_program_history(
     return await service.get_program_history(swim_class_id)
 
 @router.get(
-    "/{swim_class_id}/date/{date}",
+    "/{swim_class_id}/{date}",
     response_model=Optional[ProgramResponse],
     status_code=status.HTTP_200_OK,
     summary="특정 날짜 수업안 조회"

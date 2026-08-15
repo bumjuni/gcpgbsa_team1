@@ -24,8 +24,8 @@ export const lessonPlanApi = {
   },
 
   getLessonPlanDate: async (swimClassId: number, date: string) => {
-    const response = await apiClient.get<LessonPlanResponse>(`/program/${swimClassId}/date/${date}`);
+    const response = await apiClient.get<LessonPlanResponse | null>(`/program/${swimClassId}/${date}`);
     console.log(response);
     return response.data;
-  }
+  },
 };

@@ -47,9 +47,10 @@ class ProgramConfirm(BaseModel):
 
 class ProgramResponse(ProgramCreate):
     id: int
-    session_summary: Optional[SessionSummary]
-    program: Optional[Program]
-    created_at: Optional[datetime]
+    status: ProgramStatusEnum
+    session_summary: SessionSummary
+    program: Program
+    created_at: datetime
 
     class Config:
         from_attributes = True
