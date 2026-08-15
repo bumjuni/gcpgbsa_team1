@@ -53,11 +53,11 @@ class ProgramCrud:
 
 
     async def delete_program_items(self, program_id: int) -> None:
-            """재생성 전 기존 ProgramItem을 전부 삭제한다 (하드 삭제 - 재생성 직전 시점 데이터라 이력 보존 불필요하다는 전제)."""
-            await self.db.execute(
-                delete(ProgramItem).where(ProgramItem.program_id == program_id)
-            )
-            await self.db.commit()
+        """재생성 전 기존 ProgramItem을 전부 삭제한다 (하드 삭제 - 재생성 직전 시점 데이터라 이력 보존 불필요하다는 전제)."""
+        await self.db.execute(
+            delete(ProgramItem).where(ProgramItem.program_id == program_id)
+        )
+        await self.db.commit()
 
 
     async def get_by_class_and_date(
@@ -119,3 +119,10 @@ class ProgramCrud:
         )
         result = await self.db.execute(stmt)
         return result.scalars().all()
+
+
+    async def check_program_item(self, program_item_id: int) -> ProgramItem:
+        """프로그램 아이템 체크"""
+        stmt = (select(ProgramItem).where(ProgramItem.id == program_item_id))
+        result = await self.db.execute(stmt)
+        return result

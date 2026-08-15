@@ -8,7 +8,8 @@ import { FormField } from '../../components/form/FormField';
 import { Card } from '../../components/card/Card';
 import { lessonPlanApi } from '../../api/lessonPlan';
 import { useClassStore } from '../../stores/useClassStore';
-import { formatDateToYMD, getNextClassDate } from '../../utils/classSchedule';import { mapLLMCurriculumResponse } from '../../types/lessonPlan';
+import { formatDateToYMD, getNextClassDate } from '../../utils/classSchedule';
+
 
 // ── 장비 enum: 서버 RequestBody의 equipment 값과 1:1 대응 ──
 // 'NONE'은 다른 장비와 함께 선택할 수 없다 (배타 선택)

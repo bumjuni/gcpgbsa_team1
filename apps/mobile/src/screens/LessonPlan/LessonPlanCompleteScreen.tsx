@@ -96,11 +96,11 @@ export const LessonPlanCompleteScreen = ({ navigation, route }: any) => {
                       onPress={() => toggleItem(key)}
                       leftElement={
                         <View
-                          className={`w-6 h-6 rounded-sm border items-center justify-center ${
+                          className={`w-xl h-xl rounded-sm border items-center justify-center mr-xxs ${
                             checked ? 'bg-primary border-primary' : 'border-hairline-border-strong'
                           }`}
                         >
-                          {checked && <Text className="text-white text-xs font-bold">✓</Text>}
+                          {checked && <Text className="text-white text-2xl font-bold">✓</Text>}
                         </View>
                       }
                     />

@@ -15,112 +15,15 @@ const getTotalMeters = (sections: LessonSection[]): number =>
   sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
 
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
-  const result = {
-    id: 1,
-    class_id: 1,
-    created_at: "2026-08-13T13:15:08",
-    date: "2026-08-13",
-    equipment: "PADDLE",
-    request: "",
-    session_summary: {
-      total_min: 60,
-      total_distance_m: 650,
-      focus_point:
-        "자유형의 기본 자세와 스트로크 효율성을 높이고, 배영의 몸통 회전 감각을 익힙니다.",
-    },
-    program: {
-      pre_set: [
-        {
-          title: "WARM UP FREE",
-          set: 4,
-          distance_m: 25,
-          duration_min: 5,
-          detail: "가볍게 자유형으로 몸을 풀며 호흡 리듬을 맞춥니다.",
-        },
-        {
-          title: "KICK DRILL",
-          set: 4,
-          distance_m: 25,
-          duration_min: 5,
-          detail: "킥판을 잡고 발차기로 하체 근력과 리듬감을 깨웁니다.",
-        },
-        {
-          title: "EASY BACK",
-          set: 3,
-          distance_m: 25,
-          duration_min: 4,
-          detail: "편안한 배영으로 몸통 회전 감각을 미리 익힙니다.",
-        },
-      ],
-      main_set: [
-        {
-          title: "SHORT PADDLE",
-          set: 4,
-          distance_m: 25,
-          duration_min: 10,
-          detail:
-            "패들을 손목 가까이 잡고 자유형을 하며 팔꿈치를 높게 유지하는 얼리 버티컬 포암 자세를 연습합니다.",
-        },
-        {
-          title: "1 STROKE + 6 KICKS",
-          set: 4,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "배영 한 스트로크 후 6번 킥을 차며 옆으로 길게 자세를 유지하고 몸통 회전을 느낍니다.",
-        },
-        {
-          title: "1 BACK + 1 FREE",
-          set: 3,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "한 팔로 배영과 자유형 스트로크를 번갈아 하며 팔꿈치를 구부리는 동작과 몸통 회전을 연습합니다.",
-        },
-        {
-          title: "GLIDE AWAY",
-          set: 3,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "평영 스트로크 수를 세면서 매 랩마다 스트로크 수를 줄여 효율적인 글라이드와 추진력을 만듭니다.",
-        },
-        {
-          title: "888 DRILL",
-          set: 2,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "접영 한 팔, 다른 팔, 양 팔 순서로 스트로크하며 팔 동작과 웨이브의 연결감을 익힙니다.",
-        },
-      ],
-      post_set: [
-        {
-          title: "COOL DOWN FREE",
-          set: 2,
-          distance_m: 25,
-          duration_min: 3,
-          detail: "가벼운 자유형으로 심박수를 서서히 낮춥니다.",
-        },
-        {
-          title: "STRETCH SWIM",
-          set: 2,
-          distance_m: 25,
-          duration_min: 3,
-          detail: "천천히 스트로크하며 어깨와 몸통을 이완시킵니다.",
-        },
-      ],
-    },
-  };
-  // const { result } = route?.params ?? {};
+  const { result } = route?.params ?? {};
   const sections = useLessonPlanStore((s) => s.sections);
-  const initSections = useLessonPlanStore((s) => s.initSections);
+  const setSections = useLessonPlanStore((s) => s.setSections);
   const clearSections = useLessonPlanStore((s) => s.clearSections);
   const totalDistance = useMemo(() => getTotalMeters(sections), [sections]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    initSections(result);
+    setSections(result);
     return () => {
       clearSections(); // 화면 unmount 시 정리
     };

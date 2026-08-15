@@ -79,6 +79,20 @@ async def get_program_by_date(
     return await service.get_program_by_date(swim_class_id, date)
 
 
+@router.patch(
+    "/{program_item_id}/check",
+    response_model=Optional[int],
+    status_code=status.HTTP_200_OK,
+    summary="특정 프로그램 아이템 체크",
+)
+async def check_program_item(
+    program_item_id: int,
+    service: ProgramService = Depends(get_program_service),
+) -> int:
+    return await service.check_program_item(program_item_id)
+
+
+
 # # @router.post(
 # #     "/items",
 # #     response_model=ProgramItemResponse,

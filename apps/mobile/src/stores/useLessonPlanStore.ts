@@ -3,20 +3,22 @@ import { LessonSection, LessonSetItem } from "../types/lessonPlan";
 
 interface LessonPlanStore {
   sections: LessonSection[];
-  initSections: (result: any) => void;
+  setSections: (program: { pre_set: LessonSetItem[]; main_set: LessonSetItem[]; post_set: LessonSetItem[] } | null) => void;
   updateItem: (sectionTitle: string, itemIndex: number, newItem: LessonSetItem) => void;
   clearSections: () => void;
 }
 
 export const useLessonPlanStore = create<LessonPlanStore>((set) => ({
   sections: [],
-  initSections: (result) =>
+  setSections: (program) =>
     set({
-      sections: [
-        { title: 'Pre-Set', items: result.program.pre_set },
-        { title: 'Main-Set', items: result.program.main_set },
-        { title: 'Post-Set', items: result.program.post_set },
-      ],
+      sections: program
+        ? [
+            { title: 'Pre-Set', items: program.pre_set },
+            { title: 'Main-Set', items: program.main_set },
+            { title: 'Post-Set', items: program.post_set },
+          ]
+        : [],
     }),
   updateItem: (sectionTitle, itemIndex, newItem) =>
     set((state) => ({
@@ -29,5 +31,5 @@ export const useLessonPlanStore = create<LessonPlanStore>((set) => ({
             }
       ),
     })),
-    clearSections: () => set({ sections: [] }),
+  clearSections: () => set({ sections: [] }),
 }));

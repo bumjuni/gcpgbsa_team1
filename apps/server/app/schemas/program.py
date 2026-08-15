@@ -37,6 +37,10 @@ class Program(BaseModel):
     main_set: List[ProgramItem] = Field(default_factory=list)
     post_set: List[ProgramItem] = Field(default_factory=list)
 
+    class Config:
+        from_attributes = True
+
+
 class ProgramConfirm(BaseModel):
     status: ProgramStatusEnum
     program: Program
