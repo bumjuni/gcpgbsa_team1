@@ -9,19 +9,10 @@ import { Card } from '../../components/card/Card';
 import { lessonPlanApi } from '../../api/lessonPlan';
 import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, getNextClassDate } from '../../utils/classSchedule';
+import { EquipmentValue } from '../../types/lessonPlan';
+import { EQUIPMENT_OPTIONS } from '../../constants/lessonPlanLabels';
 
 
-// ── 장비 enum: 서버 RequestBody의 equipment 값과 1:1 대응 ──
-// 'NONE'은 다른 장비와 함께 선택할 수 없다 (배타 선택)
-type EquipmentValue = 'FINS' | 'BOARD' | 'PADDLE' | 'PULLBUOY' | 'NONE';
-
-const EQUIPMENT_OPTIONS: { label: string; value: EquipmentValue }[] = [
-  { label: '오리발', value: 'FINS' },
-  { label: '킥판', value: 'BOARD' },
-  { label: '패들', value: 'PADDLE' },
-  { label: '풀부이', value: 'PULLBUOY' },
-  { label: '없음', value: 'NONE' },
-];
 
 const REQUEST_MAX_LENGTH = 200;
 

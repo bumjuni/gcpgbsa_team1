@@ -3,15 +3,15 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
-import { LessonSection, LessonSetItem } from '../../types/lessonPlan';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { LessonPlanItem, LessonPlanSet } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
 
 
-const getSectionTotalMeters = (section: LessonSection): number =>
+const getSectionTotalMeters = (section: LessonPlanSet): number =>
   section.items.reduce((sum, item) => sum + item.distance_m * item.set, 0);
 
-const getTotalMeters = (sections: LessonSection[]): number =>
+const getTotalMeters = (sections: LessonPlanSet[]): number =>
   sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
 
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
@@ -27,6 +27,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     return () => {
       clearSections(); // 화면 unmount 시 정리
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleRetry = () => {
@@ -85,7 +86,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
         <Text className="text-caption font-bold text-ink my-sm">수업 구성</Text>
 
 
-        {sections.map((section: LessonSection) => (
+        {sections.map((section: LessonPlanSet) => (
           <View key={section.title} className="mb-lg">
 
             <Card>
@@ -97,7 +98,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   </View>
                 }
               />
-              {section.items.map((item: LessonSetItem, index) =>
+              {section.items.map((item: LessonPlanItem, index) =>
                 <Card.Item
                   key={`${section.title}-${index}`}
                   title={item.title}
