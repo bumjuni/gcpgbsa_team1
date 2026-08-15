@@ -9,8 +9,6 @@ from .base import ORMBaseModel
 
 class SwimClassCreate(BaseModel):
     name: str = Field(..., max_length=100)
-    capacity: int = Field(..., ge=1)
-    # student_count: int
     level: LevelEnum
     age_group: AgeGroupEnum      # AgeGroupEnum
     goals: str = Field(..., min=1)
@@ -25,7 +23,6 @@ class SwimClassResponse(ORMBaseModel):
     id: int
     name: str
     student_count: Optional[int] = None
-    capacity: int
     level: LevelEnum
     age_group: AgeGroupEnum
     start_time: time
@@ -45,7 +42,6 @@ class SwimClassUpdate(BaseModel):
     days_of_week: Optional[str] = None
     start_time: Optional[time] = None
     end_time: Optional[time] = None
-    capacity: Optional[int] = None
     age_group: Optional[AgeGroupEnum] = None
     level: Optional[LevelEnum] = None
     goals: Optional[str] = None
