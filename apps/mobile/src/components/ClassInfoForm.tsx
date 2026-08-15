@@ -19,7 +19,7 @@ interface ClassInfoFormProps {
 const noop = () => {};
 
 export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
-  const { currentClass } = useClassStore();
+  const { currentClass, clearClass } = useClassStore();
   const isReadOnly = mode === 'view';
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
@@ -66,10 +66,15 @@ export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
 
   const handleConfirmDelete = async () => {
     setIsDeleteModalOpen(false);
-    if (currentClass) {
+
+    try {
+      if (currentClass)
       await classroomApi.deleteClass(currentClass.id);
+      clearClass();
+    } catch (error) {
+      console.error('반 삭제 실패:', error);
     }
-    navigation?.navigate('ClassListFilled', { deletedClassId: currentClass?.id });
+    navigation?.navigate('ClassList');
   };
 
   const fields = (
