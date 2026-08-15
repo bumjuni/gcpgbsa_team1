@@ -19,7 +19,3 @@ export interface LessonPlanResponse {
   session_summary: LessonPlanSessionSummary;
   lesson_plan: LessonPlanSets;
 }
-
-export const mapLLMCurriculumResponse = (
-  raw: LessonPlanResponse
-): LessonPlanResponse => raw;
