@@ -6,7 +6,7 @@ import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
-import { calculateTotalDistance } from '../../utils/calculator';
+import { calculateTotalDistance } from '../../utils/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';

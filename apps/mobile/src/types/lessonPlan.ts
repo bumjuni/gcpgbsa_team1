@@ -19,6 +19,7 @@ export interface LessonPlanSessionSummary {
 }
 
 export interface LessonPlanSet {
+  key: LessonPlanSetKey;
   title: string;
   items: LessonPlanItem[];
 }

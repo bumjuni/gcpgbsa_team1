@@ -1,11 +1,12 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
-import { LessonPlanItem, LessonPlanResponse, LessonPlanSet } from '../../types/lessonPlan';
+import { LessonPlanItem, LessonPlanSet, LessonPlanSetKey } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { toLessonPlanSets } from '../../utils/lessonPlan';
 
 
 const getSectionTotalMeters = (section: LessonPlanSet): number =>
@@ -23,6 +24,8 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   }, []);
 
   if (!lessonPlan) return null;
+
+  const sections = toLessonPlanSets(lessonPlan.lesson_plan);
 
   const handleRetry = () => {
     navigation?.goBack();
@@ -49,9 +52,10 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     }
   };
 
-  const handleEditItem = (sectionTitle: string, itemIndex: number) => {
-    navigation?.navigate('LessonPlanEditItem', { sectionTitle, itemIndex });
+  const handleEditItem = (setKey: LessonPlanSetKey, itemIndex: number) => {
+    navigation?.navigate('LessonPlanEditItem', { setKey, itemIndex });
   };
+
 
   return (
     <ScreenLayout
@@ -75,26 +79,26 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
           <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
         <Text className="text-caption font-bold text-ink my-sm">수업 구성</Text>
-        {sections.map((section) => (
+        {sections.map((section: LessonPlanSet) => (
           <View key={section.title} className="mb-lg">
             <Card>
-              <Card.Header className="flex-row items-center justify-between mb-xs"
+              <Card.Header
+                className="flex-row items-center justify-between mb-xs"
                 title={section.title}
                 rightElement={
                   <View className="bg-canvas px-md py-xs rounded-full">
                     <Text className="text-caption-strong text-ink">{`${getSectionTotalMeters(section)}m`}</Text>
                   </View>
                 }
-              />
-              {section.items.map((item: LessonPlanItem, index: number) => (
+              />              {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
-                  key={`${section.title}-${index}`}
+                  key={`${section.key}-${index}`}
                   title={item.title}
                   description={item.detail}
                   rightElement={
                     <View className="items-end flex-col justify-between">
                       <Text className="text-label text-ink-tertiary">{item.set} X {item.distance_m}m</Text>
-                      <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
+                      <Pressable onPress={() => handleEditItem(section.key, index)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>
                     </View>
