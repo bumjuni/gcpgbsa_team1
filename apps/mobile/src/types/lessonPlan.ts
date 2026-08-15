@@ -49,7 +49,7 @@ export interface LessonPlanCreatePayload {
   request?: string;
 }
 
-export interface LessonPlanConfirmPayload {
-  status: 'CONFIRMED';
+export interface LessonPlanStatusPayload {
+  status: LessonPlanStatus;
   program: LessonPlanSession;
 }

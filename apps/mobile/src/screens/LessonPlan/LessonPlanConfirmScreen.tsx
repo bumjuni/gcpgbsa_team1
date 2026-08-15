@@ -90,7 +90,8 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                     <Text className="text-caption-strong text-ink">{`${getSectionTotalMeters(section)}m`}</Text>
                   </View>
                 }
-              />              {section.items.map((item: LessonPlanItem, index: number) => (
+              />
+              {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
                   key={`${section.key}-${index}`}
                   title={item.title}

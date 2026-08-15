@@ -1,4 +1,4 @@
-import { LessonPlanConfirmPayload, LessonPlanCreatePayload, LessonPlanResponse } from '../types/lessonPlan';
+import { LessonPlanConfirmPayload, LessonPlanCreatePayload, LessonPlanResponse, LessonPlanStatusPayload } from '../types/lessonPlan';
 import { ProgramHistoryItem } from '../utils/classSchedule';
 import { apiClient } from './client';
 
@@ -10,7 +10,7 @@ export const lessonPlanApi = {
     return response.data;
   },
 
-  confirmLessonPlan: async (programId: number, payload: LessonPlanConfirmPayload) => {
+  confirmLessonPlan: async (programId: number, payload: LessonPlanStatusPayload) => {
     console.log(payload)
     const response = await apiClient.patch<LessonPlanResponse>(`/program/${programId}/confirm`, payload);
     console.log(response);
@@ -33,5 +33,13 @@ export const lessonPlanApi = {
     const response = await apiClient.patch<number>(`/program/${lessonPlanItemId}/check`);
     console.log(response)
     return response.data;
-  }
+  },
+
+  completeLessonPlan: async (programId: number, payload: LessonPlanStatusPayload) => {
+    console.log(payload)
+    const response = await apiClient.patch<LessonPlanResponse>(`/program/${programId}/complete`, payload);
+    console.log(response);
+    return response.data;
+  },
+
 };
