@@ -1,4 +1,5 @@
 export interface LessonPlanItem {
+  id: number;
   title: string;
   set: number;
   distance_m: number;
@@ -16,6 +17,7 @@ export interface LessonPlanSets {
   post_set: LessonPlanItem[];
 }
 export interface LessonPlanResponse {
+  id: number;
   session_summary: LessonPlanSessionSummary;
   lesson_plan: LessonPlanSets;
 }
