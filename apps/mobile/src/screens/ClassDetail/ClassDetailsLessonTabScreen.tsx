@@ -20,7 +20,7 @@ interface CompletedLesson {
 
 export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const currentClass = useClassStore((s) => s.currentClass);
-  const {sections, setSections} = useLessonPlanStore();
+  const { lessonPlan, setLessonPlan } = useLessonPlanStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
@@ -36,13 +36,14 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
         setProgramHistory(history);
-        setSections(nextProgram?.program ?? null);
+        nextProgram && setLessonPlan(nextProgram);
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
       }
     };
 
     fetchPrograms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentClass]);
 
   const completedWeeks = useMemo(
@@ -135,19 +136,16 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
           <Text className="text-caption text-ink-secondary mt-xxs">
-            {sections.length ? `총 ${calculateTotalDistance(sections)}m` : `수업안이 아직 확정되지 않았어요`}
+            {lessonPlan ? `총 ${calculateTotalDistance(lessonPlan.lesson_plan)}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
-        {sections.length ? (
-          <Button
-            label={"수업 진행하기"}
-            onPress={handleStartLesson}
-          />
+
+        {!lessonPlan ? (
+          <Button label="수업안 만들기" onPress={handleCreateLesson} />
+        ) : lessonPlan?.status === 'DRAFT' ? (
+          <Button label="이어서 확정하기" onPress={handleConfirmLesson} />
         ) : (
-          <Button
-            label={"수업안 만들기"}
-            onPress={handleCreateLesson}
-          />
+          <Button label="수업 진행하기" onPress={handleStartLesson} />
         )}
       </View>
 

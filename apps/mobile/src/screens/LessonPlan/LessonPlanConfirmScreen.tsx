@@ -3,51 +3,43 @@ import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
-import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
-import { LessonPlanItem, LessonPlanSet } from '../../types/lessonPlan';
+import { LessonPlanItem, LessonPlanResponse, LessonPlanSet } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
+import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
 
 
 const getSectionTotalMeters = (section: LessonPlanSet): number =>
   section.items.reduce((sum, item) => sum + item.distance_m * item.set, 0);
 
-const getTotalMeters = (sections: LessonPlanSet[]): number =>
-  sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
-
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const { result } = route?.params ?? {};
-  const sections = useLessonPlanStore((s) => s.sections);
-  const setSections = useLessonPlanStore((s) => s.setSections);
-  const clearSections = useLessonPlanStore((s) => s.clearSections);
-  const totalDistance = useMemo(() => getTotalMeters(sections), [sections]);
+  const { lessonPlan, setLessonPlan, clearLessonPlan } = useLessonPlanStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setSections(result);
-    return () => {
-      clearSections(); // 화면 unmount 시 정리
-    };
+    setLessonPlan(result ?? null);
+    return () => clearLessonPlan();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!lessonPlan) return null;
 
   const handleRetry = () => {
     navigation?.goBack();
   };
 
   const handleConfirm = async () => {
-    if (isLoading) return;
+    if (isLoading || !lessonPlan) return;
     setIsLoading(true);
     try {
-      await lessonPlanApi.confirmLessonPlan(result.id, {
+      await lessonPlanApi.confirmLessonPlan(lessonPlan.id, {
         status: 'CONFIRMED',
         program: {
-          pre_set: sections.find((s) => s.title === 'Pre-Set')?.items ?? [],
-          main_set: sections.find((s) => s.title === 'Main-Set')?.items ?? [],
-          post_set: sections.find((s) => s.title === 'Post-Set')?.items ?? [],
+          pre_set: lessonPlan.lesson_plan.pre_set,
+          main_set: lessonPlan.lesson_plan.main_set,
+          post_set: lessonPlan.lesson_plan.post_set,
         },
       });
-
-      clearSections();
       navigation?.navigate('ClassList');
     } catch (error) {
       console.error(error);
@@ -79,16 +71,12 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       <View className="pt-md pb-xl">
         <Card variant="muted" className="items-center pt-md">
           <Text className="text-caption text-ink-secondary">총 운동량</Text>
-          <Text className="text-metric text-ink my-sm">{totalDistance}m</Text>
+          <Text className="text-metric text-ink my-sm">{lessonPlan.session_summary.total_distance_m}m</Text>
           <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
-
         <Text className="text-caption font-bold text-ink my-sm">수업 구성</Text>
-
-
-        {sections.map((section: LessonPlanSet) => (
+        {sections.map((section) => (
           <View key={section.title} className="mb-lg">
-
             <Card>
               <Card.Header className="flex-row items-center justify-between mb-xs"
                 title={section.title}
@@ -98,7 +86,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   </View>
                 }
               />
-              {section.items.map((item: LessonPlanItem, index) =>
+              {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
                   key={`${section.title}-${index}`}
                   title={item.title}
@@ -111,12 +99,10 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                       </Pressable>
                     </View>
                   }
-                  isLast={(index === section.items.length) ? true : false}
+                  isLast={index === section.items.length - 1}
                 />
-              )}
+              ))}
             </Card>
-
-
           </View>
         ))}
       </View>

@@ -1,4 +1,4 @@
-export type LessonPlanSetKey = 'PRE_SET' | 'MAIN_SET' | 'POST_SET';
+export type LessonPlanSetKey = 'pre_set' | 'main_set' | 'post_set';
 export type EquipmentValue = 'FINS' | 'BOARD' | 'PADDLE' | 'PULLBUOY' | 'NONE';
 export type LessonPlanStatus = 'DRAFT' | 'CONFIRMED' | 'COMPLETED';
 

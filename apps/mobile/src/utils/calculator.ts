@@ -1,11 +1,10 @@
-import { LessonPlanSet } from "../types/lessonPlan";
+import { LessonPlanSession } from "../types/lessonPlan";
 
-export function calculateTotalDistance(sections: LessonPlanSet[]): number {
-  return sections.reduce((sectionSum, section) => {
-    const sectionDistance = section.items.reduce(
-      (itemSum, item) => itemSum + item.distance_m * item.set,
-      0
-    );
-    return sectionSum + sectionDistance;
-  }, 0);
+export function calculateTotalDistance(lessonPlan: LessonPlanSession): number {
+  const allItems = [
+    ...lessonPlan.pre_set,
+    ...lessonPlan.main_set,
+    ...lessonPlan.post_set,
+  ];
+  return allItems.reduce((sum, item) => sum + item.distance_m * item.set, 0);
 }
