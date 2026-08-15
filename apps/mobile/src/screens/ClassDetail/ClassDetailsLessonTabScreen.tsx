@@ -25,7 +25,6 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
 
-
   useEffect(() => {
     if (!currentClass) return;
 
@@ -86,7 +85,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   }
 
   const handleLessonHistoryPress = (lesson: CompletedLesson) => {
-    navigation?.navigate('ClassDetailsLessonHistory');
+    navigation?.navigate('ClassDetailsLessonHistory', { label: lesson.label });
   };
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
@@ -116,6 +115,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
               onPress={() => handleTabPress(tab)}
               onLayout={active ? handleActiveTabLayout : undefined}
               className="items-center pb-md"
+              hitSlop={{ top: 10, bottom: 10 }}
             >
               <Text className={`text-body-strong ${active ? 'text-primary' : 'text-ink-secondary'}`}>
                 {tab}

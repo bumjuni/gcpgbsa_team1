@@ -50,17 +50,17 @@ export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
 
+  if (!currentClass) return null;
+
   const handleTabPress = (tab: ClassDetailsTab) => {
     if (tab === '리포트') return;
-    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab', { classId, className });
-    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab', { classId, className });
-    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab', { classId, className });
+    if (tab === '수업진행') navigation?.navigate('ClassDetailsLessonTab');
+    if (tab === '반정보') navigation?.navigate('ClassDetailsInfoTab');
+    if (tab === '명단') navigation?.navigate('ClassDetailsMemberTab');
   };
 
   const handleSendReport = (report: PendingReport) => {
     navigation?.navigate('ClassDetailsReportSend', {
-      classId,
-      className,
       weekLabel: report.weekLabel,
       range: report.range,
       targetCount: report.targetCount,
@@ -69,8 +69,6 @@ export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
 
   const handleViewHistory = (report: CompletedReport) => {
     navigation?.navigate('ClassDetailsReportHistory', {
-      classId,
-      className,
       weekLabel: report.weekLabel,
       range: report.range,
     });
@@ -88,7 +86,7 @@ export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
 
   return (
-    <ScreenLayout title={className} showBackButton>
+    <ScreenLayout title={currentClass.name} showBackButton>
       <View
         className="relative -mx-md px-md pt-md flex-row justify-between border-b border-hairline mb-md"
         onLayout={handleTabRowLayout}
@@ -101,6 +99,7 @@ export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
               onPress={() => handleTabPress(tab)}
               onLayout={active ? handleActiveTabLayout : undefined}
               className="items-center pb-md"
+              hitSlop={{ top: 10, bottom: 10 }}
             >
               <Text className={`text-body-strong ${active ? 'text-primary' : 'text-ink-secondary'}`}>
                 {tab}
