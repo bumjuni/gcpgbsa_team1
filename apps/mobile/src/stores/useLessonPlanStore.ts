@@ -1,33 +1,38 @@
 import { create } from "zustand";
-import { LessonSection, LessonSetItem } from "../types/lessonPlan";
+import { LessonPlanItem, LessonPlanResponse, LessonPlanSetKey } from "../types/lessonPlan";
+
 
 interface LessonPlanStore {
-  sections: LessonSection[];
-  initSections: (result: any) => void;
-  updateItem: (sectionTitle: string, itemIndex: number, newItem: LessonSetItem) => void;
-  clearSections: () => void;
+  lessonPlan: LessonPlanResponse | null;
+  setLessonPlan: (lessonPlan: LessonPlanResponse) => void;
+  updateItem: (
+    setKey: LessonPlanSetKey,
+    itemIndex: number,
+    newItem: LessonPlanItem
+  ) => void;
+  clearLessonPlan: () => void;
 }
 
 export const useLessonPlanStore = create<LessonPlanStore>((set) => ({
-  sections: [],
-  initSections: (result) =>
-    set({
-      sections: [
-        { title: 'Pre-Set', items: result.program.pre_set },
-        { title: 'Main-Set', items: result.program.main_set },
-        { title: 'Post-Set', items: result.program.post_set },
-      ],
+  lessonPlan: null,
+
+  setLessonPlan: (lessonPlan) => set({ lessonPlan }),
+
+  updateItem: (setKey, itemIndex, newItem) =>
+    set((state) => {
+      if (!state.lessonPlan) return state;
+      return {
+        lessonPlan: {
+          ...state.lessonPlan,
+          lesson_plan: {
+            ...state.lessonPlan.lesson_plan,
+            [setKey]: state.lessonPlan.lesson_plan[setKey].map((it, i) =>
+              i !== itemIndex ? it : newItem
+            ),
+          },
+        },
+      };
     }),
-  updateItem: (sectionTitle, itemIndex, newItem) =>
-    set((state) => ({
-      sections: state.sections.map((section) =>
-        section.title !== sectionTitle
-          ? section
-          : {
-              ...section,
-              items: section.items.map((it, i) => (i !== itemIndex ? it : newItem)),
-            }
-      ),
-    })),
-    clearSections: () => set({ sections: [] }),
+
+  clearLessonPlan: () => set({ lessonPlan: null }),
 }));

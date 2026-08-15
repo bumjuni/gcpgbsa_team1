@@ -1,3 +1,5 @@
+from fastapi import HTTPException, status
+
 from datetime import date, datetime
 from typing import Optional
 
@@ -189,7 +191,7 @@ class ProgramService:
 
     async def get_program_by_date(self, class_id: int, date: date) -> Optional[ProgramResponse]:
         program = await self.crud.get_by_class_and_date(class_id, date)
-
+        print(program)
 
         if program is None:
             return None
@@ -205,5 +207,16 @@ class ProgramService:
                 total_min=program.duration_min,
                 total_distance_m=program.duration_min,
             ),
-            program=ProgramSchema(program),
+            program=ProgramSchema.model_validate(program),
         )
+
+    async def check_program_item(self, program_item_id: int) -> int:
+        checked_program_item = await self.crud.check_program_item(program_item_id)
+
+        if not checked_program_item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"SwimClass with ID {program_item_id} not found.",
+            )
+
+        return checked_program_item.id

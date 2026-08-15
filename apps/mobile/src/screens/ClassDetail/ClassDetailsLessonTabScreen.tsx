@@ -5,8 +5,9 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { calculateTotalDistance, toLessonPlanSets } from '../../utils/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
-import { LLMCurriculumResponse } from '../../types/lessonPlan';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -18,10 +19,10 @@ interface CompletedLesson {
 }
 
 export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
-  const { currentClass } = useClassStore();
+  const currentClass = useClassStore((s) => s.currentClass);
+  const { lessonPlan, setLessonPlan } = useLessonPlanStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
-  const [nextProgram, setNextProgram] = useState<LLMCurriculumResponse | null>(null);
   const [programHistory, setProgramHistory] = useState<ProgramHistoryItem[]>([]);
 
   useEffect(() => {
@@ -31,16 +32,17 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
         const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
-        console.log(typeof nextClassDate?.date)
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
+
         setProgramHistory(history);
-        setNextProgram(nextProgram);
+        nextProgram && setLessonPlan(nextProgram);
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
       }
     };
 
     fetchPrograms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentClass]);
 
   const completedWeeks = useMemo(
@@ -74,8 +76,13 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   };
 
   const handleStartLesson = () => {
+
     navigation?.navigate('LessonPlanComplete');
   };
+
+  const handleCreateLesson = () => {
+    navigation?.navigate('LessonPlanCreate');
+  }
 
   const handleLessonHistoryPress = (lesson: CompletedLesson) => {
     navigation?.navigate('ClassDetailsLessonHistory', { label: lesson.label });
@@ -88,6 +95,8 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const handleActiveTabLayout = (e: LayoutChangeEvent) => {
     setActiveTabLayout({ x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width });
   };
+
+  const handleConfirmLesson = () => { };
 
   const indicatorWidth = tabRowWidth * 0.25;
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
@@ -127,13 +136,17 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
           <Text className="text-caption text-ink-secondary mt-xxs">
-            {nextProgram ? `총 ${nextProgram?.session_summary.total_distance_m}m` : `수업안이 아직 확정되지 않았어요`}
+            {lessonPlan ? `총 ${calculateTotalDistance(toLessonPlanSets(lessonPlan.lesson_plan))}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
-        <Button
-          label={nextProgram ? "수업 진행하기" : "이어서 확정하기"}
-          onPress={handleStartLesson}
-        />
+
+        {!lessonPlan ? (
+          <Button label="수업안 만들기" onPress={handleCreateLesson} />
+        ) : lessonPlan?.status === 'DRAFT' ? (
+          <Button label="이어서 확정하기" onPress={handleConfirmLesson} />
+        ) : (
+          <Button label="수업 진행하기" onPress={handleStartLesson} />
+        )}
       </View>
 
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>

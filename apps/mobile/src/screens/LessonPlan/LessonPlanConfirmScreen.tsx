@@ -1,149 +1,48 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
-import { LessonSection, LessonSetItem } from '../../types/lessonPlan';
-import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { LessonPlanItem, LessonPlanSet, LessonPlanSetKey } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
+import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { toLessonPlanSets } from '../../utils/lessonPlan';
 
 
-const getSectionTotalMeters = (section: LessonSection): number =>
+const getSectionTotalMeters = (section: LessonPlanSet): number =>
   section.items.reduce((sum, item) => sum + item.distance_m * item.set, 0);
 
-const getTotalMeters = (sections: LessonSection[]): number =>
-  sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
-
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
-  const result = {
-    id: 1,
-    class_id: 1,
-    created_at: "2026-08-13T13:15:08",
-    date: "2026-08-13",
-    equipment: "PADDLE",
-    request: "",
-    session_summary: {
-      total_min: 60,
-      total_distance_m: 650,
-      focus_point:
-        "자유형의 기본 자세와 스트로크 효율성을 높이고, 배영의 몸통 회전 감각을 익힙니다.",
-    },
-    program: {
-      pre_set: [
-        {
-          title: "WARM UP FREE",
-          set: 4,
-          distance_m: 25,
-          duration_min: 5,
-          detail: "가볍게 자유형으로 몸을 풀며 호흡 리듬을 맞춥니다.",
-        },
-        {
-          title: "KICK DRILL",
-          set: 4,
-          distance_m: 25,
-          duration_min: 5,
-          detail: "킥판을 잡고 발차기로 하체 근력과 리듬감을 깨웁니다.",
-        },
-        {
-          title: "EASY BACK",
-          set: 3,
-          distance_m: 25,
-          duration_min: 4,
-          detail: "편안한 배영으로 몸통 회전 감각을 미리 익힙니다.",
-        },
-      ],
-      main_set: [
-        {
-          title: "SHORT PADDLE",
-          set: 4,
-          distance_m: 25,
-          duration_min: 10,
-          detail:
-            "패들을 손목 가까이 잡고 자유형을 하며 팔꿈치를 높게 유지하는 얼리 버티컬 포암 자세를 연습합니다.",
-        },
-        {
-          title: "1 STROKE + 6 KICKS",
-          set: 4,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "배영 한 스트로크 후 6번 킥을 차며 옆으로 길게 자세를 유지하고 몸통 회전을 느낍니다.",
-        },
-        {
-          title: "1 BACK + 1 FREE",
-          set: 3,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "한 팔로 배영과 자유형 스트로크를 번갈아 하며 팔꿈치를 구부리는 동작과 몸통 회전을 연습합니다.",
-        },
-        {
-          title: "GLIDE AWAY",
-          set: 3,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "평영 스트로크 수를 세면서 매 랩마다 스트로크 수를 줄여 효율적인 글라이드와 추진력을 만듭니다.",
-        },
-        {
-          title: "888 DRILL",
-          set: 2,
-          distance_m: 25,
-          duration_min: 8,
-          detail:
-            "접영 한 팔, 다른 팔, 양 팔 순서로 스트로크하며 팔 동작과 웨이브의 연결감을 익힙니다.",
-        },
-      ],
-      post_set: [
-        {
-          title: "COOL DOWN FREE",
-          set: 2,
-          distance_m: 25,
-          duration_min: 3,
-          detail: "가벼운 자유형으로 심박수를 서서히 낮춥니다.",
-        },
-        {
-          title: "STRETCH SWIM",
-          set: 2,
-          distance_m: 25,
-          duration_min: 3,
-          detail: "천천히 스트로크하며 어깨와 몸통을 이완시킵니다.",
-        },
-      ],
-    },
-  };
-  // const { result } = route?.params ?? {};
-  const sections = useLessonPlanStore((s) => s.sections);
-  const initSections = useLessonPlanStore((s) => s.initSections);
-  const clearSections = useLessonPlanStore((s) => s.clearSections);
-  const totalDistance = useMemo(() => getTotalMeters(sections), [sections]);
+  const { result } = route?.params ?? {};
+  const { lessonPlan, setLessonPlan, clearLessonPlan } = useLessonPlanStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    initSections(result);
-    return () => {
-      clearSections(); // 화면 unmount 시 정리
-    };
+    setLessonPlan(result ?? null);
+    return () => clearLessonPlan();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!lessonPlan) return null;
+
+  const sections = toLessonPlanSets(lessonPlan.lesson_plan);
 
   const handleRetry = () => {
     navigation?.goBack();
   };
 
   const handleConfirm = async () => {
-    if (isLoading) return;
+    if (isLoading || !lessonPlan) return;
     setIsLoading(true);
     try {
-      await lessonPlanApi.confirmLessonPlan(result.id, {
+      await lessonPlanApi.confirmLessonPlan(lessonPlan.id, {
         status: 'CONFIRMED',
         program: {
-          pre_set: sections.find((s) => s.title === 'Pre-Set')?.items ?? [],
-          main_set: sections.find((s) => s.title === 'Main-Set')?.items ?? [],
-          post_set: sections.find((s) => s.title === 'Post-Set')?.items ?? [],
+          pre_set: lessonPlan.lesson_plan.pre_set,
+          main_set: lessonPlan.lesson_plan.main_set,
+          post_set: lessonPlan.lesson_plan.post_set,
         },
       });
-
-      clearSections();
       navigation?.navigate('ClassList');
     } catch (error) {
       console.error(error);
@@ -153,9 +52,10 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
     }
   };
 
-  const handleEditItem = (sectionTitle: string, itemIndex: number) => {
-    navigation?.navigate('LessonPlanEditItem', { sectionTitle, itemIndex });
+  const handleEditItem = (setKey: LessonPlanSetKey, itemIndex: number) => {
+    navigation?.navigate('LessonPlanEditItem', { setKey, itemIndex });
   };
+
 
   return (
     <ScreenLayout
@@ -175,18 +75,15 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       <View className="pt-md pb-xl">
         <Card variant="muted" className="items-center pt-md">
           <Text className="text-caption text-ink-secondary">총 운동량</Text>
-          <Text className="text-metric text-ink my-sm">{totalDistance}m</Text>
+          <Text className="text-metric text-ink my-sm">{lessonPlan.session_summary.total_distance_m}m</Text>
           <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
-
         <Text className="text-caption font-bold text-ink my-sm">수업 구성</Text>
-
-
-        {sections.map((section: LessonSection) => (
+        {sections.map((section: LessonPlanSet) => (
           <View key={section.title} className="mb-lg">
-
             <Card>
-              <Card.Header className="flex-row items-center justify-between mb-xs"
+              <Card.Header
+                className="flex-row items-center justify-between mb-xs"
                 title={section.title}
                 rightElement={
                   <View className="bg-canvas px-md py-xs rounded-full">
@@ -194,25 +91,23 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
                   </View>
                 }
               />
-              {section.items.map((item: LessonSetItem, index) =>
+              {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
-                  key={`${section.title}-${index}`}
+                  key={`${section.key}-${index}`}
                   title={item.title}
                   description={item.detail}
                   rightElement={
                     <View className="items-end flex-col justify-between">
                       <Text className="text-label text-ink-tertiary">{item.set} X {item.distance_m}m</Text>
-                      <Pressable onPress={() => handleEditItem(section.title, index)} hitSlop={8}>
+                      <Pressable onPress={() => handleEditItem(section.key, index)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>
                     </View>
                   }
-                  isLast={(index === section.items.length) ? true : false}
+                  isLast={index === section.items.length - 1}
                 />
-              )}
+              ))}
             </Card>
-
-
           </View>
         ))}
       </View>
