@@ -6,7 +6,7 @@ import { Card } from '../../components/card/Card';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
 import { toLessonPlanSets } from '../../utils/lessonPlan';
-import { LessonPlanSet, LessonPlanSetKey, LessonPlanStatus } from '../../types/lessonPlan';
+import { LessonPlanSet, LessonPlanSetKey } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
 
 export const LessonPlanCompleteScreen = ({ navigation }: any) => {
@@ -40,7 +40,11 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
       if (!lessonPlan || isSubmitting) return;
       setIsSubmitting(true);
       try {
-        await lessonPlanApi.completeLessonPlan(lessonPlan.id, { status: 'COMPLETED' as LessonPlanStatus });
+        await lessonPlanApi.completeLessonPlan(
+          lessonPlan.id, {
+          status: 'COMPLETED',
+          program: lessonPlan.lesson_plan
+        });
         setIsFinishModalOpen(false);
         navigation?.navigate('ClassList');
       } catch (error) {
