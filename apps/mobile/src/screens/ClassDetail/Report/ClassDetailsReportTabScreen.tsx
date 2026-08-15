@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
-import { ScreenLayout } from '../../components/ScreenLayout';
-import { Card } from '../../components/card/Card';
-import { useClassStore } from '../../stores/useClassStore';
+import { ScreenLayout } from '../../../components/ScreenLayout';
+import { Card } from '../../../components/card/Card';
+import { useClassStore } from '../../../stores/useClassStore';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 

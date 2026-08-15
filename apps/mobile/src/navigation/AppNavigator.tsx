@@ -22,9 +22,9 @@ import { ClassDetailsInfoEditScreen } from '../screens/ClassDetail/ClassDetailsI
 import { ClassDetailsMemberTabScreen } from '../screens/ClassDetail/ClassDetailsMemberTabScreen';
 import { ClassDetailsMemberDetailScreen } from '../screens/ClassDetail/ClassDetailsMemberDetailScreen';
 import { ClassDetailsMemberEditScreen } from '../screens/ClassDetail/ClassDetailsMemberEditScreen';
-import { ClassDetailsReportTabScreen } from '../screens/ClassDetail/ClassDetailsReportTabScreen';
-import { ClassDetailsReportSendScreen } from '../screens/ClassDetail/ClassDetailsReportSendScreen';
-import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetail/ClassDetailsReportHistoryScreen';
+import { ClassDetailsReportTabScreen } from '../screens/ClassDetail/report/ClassDetailsReportTabScreen';
+import { ClassDetailsReportSendScreen } from '../screens/ClassDetail/report/ClassDetailsReportSendScreen';
+import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetail/report/ClassDetailsReportHistoryScreen';
 import { WebReportsScreen } from '../screens/WebReportsScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
