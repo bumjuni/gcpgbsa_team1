@@ -1,58 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Card } from '../../components/card/Card';
+import { lessonPlanApi } from '../../api/lessonPlan';
+import { LessonPlanResponse, LessonPlanSet } from '../../types/lessonPlan';
+import { calculateCheckedDistance, toLessonPlanSets } from '../../utils/lessonPlan';
 
-interface LessonHistoryItem {
-  name: string;
-  description: string;
-  achieved: boolean;
-}
+export const ClassDetailsLessonHistoryScreen = ({ navigation, route }: any) => {
+  const { classId, date } = route?.params ?? {};
+  const [lessonPlan, setLessonPlan] = useState<LessonPlanResponse | null>(null)
 
-interface LessonHistorySection {
-  title: string;
-  items: LessonHistoryItem[];
-}
+  useEffect(() => {
+    const fetchLessonPlan = async () => {
+      try {
+        const result = await lessonPlanApi.getLessonPlanDate(classId, date);
+        setLessonPlan(result)
+      } catch (error) {
+        console.error('수업 조회 실패:', error);
+      }
+    };
+    fetchLessonPlan();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lessonPlan]);
 
-const DEFAULT_SECTIONS: LessonHistorySection[] = [
-  {
-    title: 'Pre-Set',
-    items: [
-      { name: '1 x 100m 자유형', description: '멈추지 않고 편하게', achieved: true },
-      { name: '1 x 100m 배영', description: '편하게', achieved: true },
-    ],
-  },
-  {
-    title: 'Main-Set',
-    items: [
-      { name: '4×25m 자유형 킥', description: '강도 점점 높이며 마지막은 대쉬', achieved: false },
-      { name: '2×100m 자유형 풀', description: '풀부이 끼고', achieved: false },
-      { name: '4 x 200m 자유형 2-4-6 호흡', description: '호흡을 2번, 4번, 6번에 한번씩 하기', achieved: false },
-      { name: '4×25m 접영 (90%)', description: '파워풀하게', achieved: false },
-    ],
-  },
-  {
-    title: 'Post-Set',
-    items: [{ name: '1 x 100m 자유형', description: '천천히', achieved: false }],
-  },
-];
+  if (!lessonPlan) return null;
+  const lessonSection = toLessonPlanSets(lessonPlan.lesson_plan);
 
-export const ClassDetailsLessonHistoryScreen = ({ route }: any) => {
-  const {
-    label = '지난 수업',
-    plannedDistanceM = 1500,
-    actualDistanceM = 200,
-    sections = DEFAULT_SECTIONS,
-  } = route?.params ?? {};
 
   return (
-    <ScreenLayout title={label} showBackButton>
+    <ScreenLayout title={date} showBackButton>
       <View className="pt-md pb-xl">
         <Text className="text-sm text-ink-secondary mb-lg">
-          계획 {plannedDistanceM.toLocaleString()}m 중 실제 {actualDistanceM.toLocaleString()}m 진행
+          계획 {lessonPlan?.lesson_plan.toLocaleString()}m 중 실제 {calculateCheckedDistance(lessonPlan)}m 진행
         </Text>
 
-        {sections.map((section: LessonHistorySection) => (
+        {lessonSection.map((section: LessonPlanSet) => (
           <View key={section.title} className="mb-lg">
             <Card>
               <Card.Header title={section.title} />
@@ -60,19 +42,19 @@ export const ClassDetailsLessonHistoryScreen = ({ route }: any) => {
                 <View
                   key={`${section.title}-${index}`}
                   className={`flex-row items-center px-4 py-3.5 ${
-                    item.achieved ? 'bg-primary-subtle' : 'bg-canvas opacity-[0.45]'
+                    item.is_checked ? 'bg-primary-subtle' : 'bg-canvas opacity-[0.45]'
                   } ${index !== section.items.length - 1 ? 'border-b border-hairline' : ''}`}
                 >
                   <View
                     className={`w-6 h-6 rounded-sm border items-center justify-center mr-3 ${
-                      item.achieved ? 'bg-primary border-primary' : 'border-hairline-border-strong'
+                      item.is_checked ? 'bg-primary border-primary' : 'border-hairline-border-strong'
                     }`}
                   >
-                    {item.achieved && <Text className="text-white text-xs font-bold">✓</Text>}
+                    {item.is_checked && <Text className="text-white text-xs font-bold">✓</Text>}
                   </View>
                   <View className="flex-1">
-                    <Text className="text-body-strong text-ink">{item.name}</Text>
-                    <Text className="text-caption text-ink-tertiary mt-0.5">{item.description}</Text>
+                    <Text className="text-body-strong text-ink">{item.title}</Text>
+                    <Text className="text-caption text-ink-tertiary mt-0.5">{item.detail}</Text>
                   </View>
                 </View>
               ))}

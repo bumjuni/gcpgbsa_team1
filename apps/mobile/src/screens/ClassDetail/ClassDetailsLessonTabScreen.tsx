@@ -13,10 +13,6 @@ type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
 const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포트'];
 
-interface CompletedLesson {
-  id: number;
-  label: string;
-}
 
 export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
   const currentClass = useClassStore((s) => s.currentClass);
@@ -84,8 +80,8 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     navigation?.navigate('LessonPlanCreate');
   }
 
-  const handleLessonHistoryPress = (lesson: CompletedLesson) => {
-    navigation?.navigate('ClassDetailsLessonHistory', { label: lesson.label });
+  const handleLessonHistoryPress = (lessonDate: string, ) => {
+    navigation?.navigate('ClassDetailsLessonHistory', { classId: currentClass.id, date: lessonDate });
   };
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
@@ -162,7 +158,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
                     <Card.Item
                       key={lesson.id}
                       title={lesson.label}
-                      onPress={() => handleLessonHistoryPress(lesson)}
+                      onPress={() => handleLessonHistoryPress(lesson.date)}
                       isLast={index === week.lessons.length - 1}
                       rightElement={<Text className="text-ink-tertiary">›</Text>}
                     />

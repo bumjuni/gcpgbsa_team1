@@ -1,4 +1,4 @@
-import { LessonPlanSession, LessonPlanSet, LessonPlanSetKey } from "../types/lessonPlan";
+import { LessonPlanResponse, LessonPlanSession, LessonPlanSet, LessonPlanSetKey } from "../types/lessonPlan";
 
 // export function calculateTotalDistance(lessonPlan: LessonPlanSession): number {
 //   const allItems = [
@@ -29,4 +29,13 @@ export function getSectionTotalMeters(section: LessonPlanSet): number {
 
 export function calculateTotalDistance(sections: LessonPlanSet[]): number {
   return sections.reduce((sum, section) => sum + getSectionTotalMeters(section), 0);
+}
+
+export function calculateCheckedDistance(response: LessonPlanResponse): number {
+  const { pre_set, main_set, post_set } = response.lesson_plan;
+  const allItems = [...pre_set, ...main_set, ...post_set];
+
+  return allItems
+    .filter((item) => item.is_checked)
+    .reduce((sum, item) => sum + item.distance_m * item.set, 0);
 }
