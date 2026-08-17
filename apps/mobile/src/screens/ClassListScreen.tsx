@@ -55,7 +55,7 @@ export const ClassListScreen = ({ navigation }: any) => {
   );
 
   const renderStudentCount = (item: SwimClass) =>
-    `${item.student_count ?? '0'}/${item.capacity}명`;
+    `${item.student_count ?? '0'}명`;
 
   return (
     <ScreenLayout

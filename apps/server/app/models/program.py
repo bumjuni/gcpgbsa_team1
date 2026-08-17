@@ -59,6 +59,30 @@ class Program(Base):
         "ProgramItem", back_populates="program"
     )
 
+    @property
+    def pre_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.PRE_SET and item.deleted_at is None
+        ]
+
+    @property
+    def main_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.MAIN_SET and item.deleted_at is None
+        ]
+
+    @property
+    def post_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.POST_SET and item.deleted_at is None
+        ]
+
 
 class ProgramItem(Base):
     __tablename__ = "program_item"

@@ -14,18 +14,22 @@ const getSectionTotalMeters = (section: LessonPlanSet): number =>
 
 export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const { result } = route?.params ?? {};
-  const { lessonPlan, setLessonPlan, clearLessonPlan } = useLessonPlanStore();
+  const { lessonPlan, setLessonPlan } = useLessonPlanStore();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    setLessonPlan(result ?? null);
-    return () => clearLessonPlan();
+    console.log(result)
+    if (result) {
+      setLessonPlan(result);
+    }
+    // cleanup 함수
+    // return () => clearLessonPlan();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [result]);
 
   if (!lessonPlan) return null;
 
-  const sections = toLessonPlanSets(lessonPlan.lesson_plan);
+  const sections = toLessonPlanSets(lessonPlan.program);
 
   const handleRetry = () => {
     navigation?.goBack();
@@ -38,9 +42,9 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       await lessonPlanApi.confirmLessonPlan(lessonPlan.id, {
         status: 'CONFIRMED',
         program: {
-          pre_set: lessonPlan.lesson_plan.pre_set,
-          main_set: lessonPlan.lesson_plan.main_set,
-          post_set: lessonPlan.lesson_plan.post_set,
+          pre_set: lessonPlan.program.pre_set,
+          main_set: lessonPlan.program.main_set,
+          post_set: lessonPlan.program.post_set,
         },
       });
       navigation?.navigate('ClassList');

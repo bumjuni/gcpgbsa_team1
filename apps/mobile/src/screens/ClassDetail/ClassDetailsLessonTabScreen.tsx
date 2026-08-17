@@ -92,7 +92,9 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     setActiveTabLayout({ x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width });
   };
 
-  const handleConfirmLesson = () => { };
+  const handleConfirmLesson = () => {
+    navigation?.navigate('LessonPlanConfirm', {result: lessonPlan});
+  };
 
   const indicatorWidth = tabRowWidth * 0.25;
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
