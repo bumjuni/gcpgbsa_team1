@@ -8,6 +8,10 @@ const DAY_LABEL_MAP: Record<number, string> = {
   0: '일', 1: '월', 2: '화', 3: '수', 4: '목', 5: '금', 6: '토',
 };
 
+export const LEVEL_MAP: Record<string, string> = {
+  BEGINNER: '신규', ELEMENTARY: '초급', INTERMEDIATE: '중급', ADVANCED: '고급', MASTER: '마스터즈'
+};
+
 export const parseDaysOfWeek = (daysOfWeek: string): number[] => {
   return daysOfWeek
     .split(',')

@@ -4,6 +4,7 @@ import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { classroomApi } from '../api/classroom';
 import { SwimClass } from '../types/classroom';
+import { LEVEL_MAP } from '../utils/classSchedule';
 
 export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
   const classId = route?.params?.classId;
@@ -22,7 +23,7 @@ export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
     fetchClasses();
   }, []);
 
-  const summaryText = `${classData?.name} · 인원 ${classData?.student_count}명 · ${classData?.level}`;
+  const summaryText = `${classData?.name} · 인원 ${classData?.student_count}명 · ${LEVEL_MAP[classData?.level]}`;
 
   const handleCreateLessonPlan = () => {
     navigation?.navigate('LessonPlanCreate');
