@@ -1,10 +1,8 @@
-from optparse import Option
-
 from datetime import datetime, date
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 
 from models.classroom import SwimClass, Program
 from models.enums import ProgramStatusEnum
@@ -124,3 +122,19 @@ class ClassroomCrud:
         await self.db.commit()
         await self.db.refresh(swim_class)
         return swim_class
+
+    async def increment_student_count(self, class_id: int) -> None:
+        """
+        student_count를 원자적으로 +1 한다.
+        SELECT 후 +1해서 UPDATE하면 동시성 문제(lost update)가 생길 수 있으므로
+        DB 레벨에서 atomic increment로 처리한다.
+        """
+        stmt = (
+            update(SwimClass)
+            .where(SwimClass.id == class_id)
+            .values(student_count=SwimClass.student_count + 1)
+            .returning(SwimClass)
+        )
+        result = await self.db.execute(stmt)
+
+        return result.scalar_one_or_none()

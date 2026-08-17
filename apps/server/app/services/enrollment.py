@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from services.classroom import ClassroomService
 from schemas.student import Student
 from models.enrollment import Enrollment
 from crud.enrollment import EnrollmentCrud
@@ -8,11 +9,11 @@ from schemas.enrollment import EnrollmentCreate
 
 
 class EnrollmentService:
-    def __init__(self, crud: EnrollmentCrud, student_service: StudentService) -> None:
+    def __init__(self, crud: EnrollmentCrud, student_service: StudentService, classroom_service: ClassroomService) -> None:
         self.crud = crud
         self.student_service = student_service
+        self.classroom_service = classroom_service
 
- # Todo: args 타입 확인(EnrollmentCreate 수정)
     async def create_enrollment(self, schema: EnrollmentCreate) -> Enrollment:
         # 1. 학생 매칭/생성 (StudentService의 책임)
         student = await self.student_service.find_or_create_student(
@@ -30,4 +31,8 @@ class EnrollmentService:
             "class_id": schema.class_id,
             "memo": schema.memo,
         }
+
+        # 3. swim_class의 student_count++
+        await self.classroom_service.increment_student_count(schema.class_id)
+
         return await self.crud.create(enrollment_data=enrollment_data)
