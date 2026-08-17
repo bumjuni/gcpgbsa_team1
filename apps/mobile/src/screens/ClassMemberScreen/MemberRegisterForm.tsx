@@ -6,9 +6,11 @@ import { Button } from "../../components/button/Button"
 import { useMemo } from "react"
 import { useForm } from "../../hooks/useForm"
 import { memberFormSchema, MemberFormValues } from "../../hooks/memberForm.schema"
+import { GenderType } from "../../types/member"
 
 const INITIAL_VALUES: MemberFormValues = {
   name: '',
+  gender: 'NONE',
   birthYear: '',
   phone: '',
   notes: '',
@@ -60,14 +62,29 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
           />
         </FormField>
       </View>
-      <FormField>
-        <FormField.Label label='전화번호' />
-        <FormField.TextInput
-          placeholder='010-0000-0000'
-          value={values.phone}
-          onChangeText={(text) => setFieldValue('phone', text)}
-        />
-      </FormField>
+      <View className="flex-row gap-sm">
+
+        <FormField>
+          <FormField.Label label='전화번호' />
+          <FormField.TextInput
+            placeholder='010-0000-0000'
+            value={values.phone}
+            onChangeText={(text) => setFieldValue('phone', text)}
+          />
+        </FormField>
+        <FormField>
+          <FormField.Label label="성별" required />
+          <FormField.ChipGroup
+            variant="rounded-square"
+            options={[
+              { label: '남', value: 'MALE' },
+              { label: '여', value: 'FEMALE' },
+            ]}
+            value={values.gender}
+            onChange={(val) => setFieldValue('gender', val as GenderType)}
+          />
+        </FormField>
+      </View>
       <FormField>
         <FormField.Label label='비고' />
         <FormField.TextInput

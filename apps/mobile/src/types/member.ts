@@ -1,7 +1,10 @@
 import { MemberFormValues } from "../hooks/memberForm.schema";
 
+export type GenderType = 'FEMALE' | 'MALE' | 'NONE';
+
 export interface MemberFormState {
   name: string;
+  gender: GenderType;
   birthYear: string;
   phone: string;
   notes: string;
