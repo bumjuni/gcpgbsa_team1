@@ -25,8 +25,8 @@ export const useLessonPlanStore = create<LessonPlanStore>((set) => ({
         lessonPlan: {
           ...state.lessonPlan,
           lesson_plan: {
-            ...state.lessonPlan.lesson_plan,
-            [setKey]: state.lessonPlan.lesson_plan[setKey].map((it, i) =>
+            ...state.lessonPlan.program,
+            [setKey]: state.lessonPlan.program[setKey].map((it, i) =>
               i !== itemIndex ? it : newItem
             ),
           },

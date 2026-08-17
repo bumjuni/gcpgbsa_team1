@@ -1,13 +1,13 @@
 from datetime import datetime
-from enum import Enum
 from typing import List, Optional, TYPE_CHECKING
 
-from apps.server.app.models.enums import GenderEnum
+from models.enums import GenderEnum
 from sqlalchemy import (
     Date,
     DateTime,
     Integer,
     String,
+    Enum
 )
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base

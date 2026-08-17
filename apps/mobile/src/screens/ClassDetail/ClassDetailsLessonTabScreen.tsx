@@ -132,7 +132,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
           <Text className="text-caption text-ink-secondary mt-xxs">
-            {lessonPlan ? `총 ${calculateTotalDistance(toLessonPlanSets(lessonPlan.lesson_plan))}m` : `수업안이 아직 확정되지 않았어요`}
+            {lessonPlan ? `총 ${calculateTotalDistance(toLessonPlanSets(lessonPlan.program))}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
 

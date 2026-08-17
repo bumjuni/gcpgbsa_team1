@@ -32,7 +32,7 @@ export function calculateTotalDistance(sections: LessonPlanSet[]): number {
 }
 
 export function calculateCheckedDistance(response: LessonPlanResponse): number {
-  const { pre_set, main_set, post_set } = response.lesson_plan;
+  const { pre_set, main_set, post_set } = response.program;
   const allItems = [...pre_set, ...main_set, ...post_set];
 
   return allItems

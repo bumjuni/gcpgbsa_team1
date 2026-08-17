@@ -18,7 +18,7 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
 
   const toggleItem = async (setKey: LessonPlanSetKey, index: number) => {
     if (!lessonPlan) return;
-    const item = lessonPlan.lesson_plan[setKey][index];
+    const item = lessonPlan.program[setKey][index];
     if (!item) return;
 
     const prevChecked = item.is_checked;
@@ -43,7 +43,7 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
         await lessonPlanApi.completeLessonPlan(
           lessonPlan.id, {
           status: 'COMPLETED',
-          program: lessonPlan.lesson_plan
+          program: lessonPlan.program
         });
         setIsFinishModalOpen(false);
         navigation?.navigate('ClassList');
@@ -57,7 +57,7 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
 
 
   if (!lessonPlan) return null;
-  const sections = toLessonPlanSets(lessonPlan.lesson_plan);
+  const sections = toLessonPlanSets(lessonPlan.program);
 
   return (
     <>

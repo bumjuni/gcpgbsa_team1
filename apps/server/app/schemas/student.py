@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from apps.server.app.models.enums import GenderEnum
+from models.enums import GenderEnum
 from pydantic import BaseModel, Field
 
 
@@ -15,7 +15,7 @@ class Student(BaseModel):
         from_attributes = True
 
 
-class StudentResponse(BaseModel, Student):
+class StudentResponse(Student):
     student_id: int
     memo: Optional[int]
     created_at: datetime

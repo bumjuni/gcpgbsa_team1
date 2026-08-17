@@ -13,7 +13,7 @@ export interface LessonPlanItem {
 }
 
 export interface LessonPlanSessionSummary {
-  total_time_m: number;
+  total_min: number;
   total_distance_m: number;
   focus_point: string;
 }
@@ -39,7 +39,7 @@ export interface LessonPlanResponse {
   created_at: string;
   status: LessonPlanStatus;
   session_summary: LessonPlanSessionSummary;
-  lesson_plan: LessonPlanSession;
+  program: LessonPlanSession;
 }
 
 export interface LessonPlanCreatePayload {

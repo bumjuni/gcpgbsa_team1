@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 
-from apps.server.app.schemas.student import Student
+from schemas.student import Student
 from pydantic import BaseModel, Field
 
 
@@ -17,6 +17,6 @@ class Enrollment(BaseModel):
         from_attributes = True
 
 
-class EnrollmentCreate(BaseModel, Student):
+class EnrollmentCreate(Student):
     class_id: int
     memo: Optional[str] = None

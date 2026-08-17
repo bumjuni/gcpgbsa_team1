@@ -39,6 +39,7 @@ class Program(Base):
         server_default=ProgramStatusEnum.DRAFT.value,  # 기본값: DRAFT
     )
     duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    total_distance_m: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     equipment: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
