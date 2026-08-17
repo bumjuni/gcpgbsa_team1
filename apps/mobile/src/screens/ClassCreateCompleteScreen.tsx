@@ -1,18 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
+import { classroomApi } from '../api/classroom';
+import { SwimClass } from '../types/classroom';
 
 export const ClassCreateCompleteScreen = ({ navigation, route }: any) => {
-  const {
-    day = '화요일',
-    timeOfDay = '저녁',
-    className = '초급반',
-    memberCount = 8,
-    level = '초급',
-  } = route?.params ?? {};
+  const classId = route?.params?.classId;
+  const [classData, setClassData] = useState<SwimClass>();
 
-  const summaryText = `${day} ${timeOfDay} ${className} · 인원 ${memberCount}명 · ${level}`;
+  const fetchClasses = async () => {
+    try {
+      const data = await classroomApi.getClassDetail(classId);
+      setClassData(data);
+    } catch (err: any) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchClasses();
+  }, []);
+
+  const summaryText = `${classData?.name} · 인원 ${classData?.student_count}명 · ${classData?.level}`;
 
   const handleCreateLessonPlan = () => {
     navigation?.navigate('LessonPlanCreate');
