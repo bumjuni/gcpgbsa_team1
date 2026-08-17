@@ -1,6 +1,8 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional, TYPE_CHECKING
 
+from apps.server.app.models.enums import GenderEnum
 from sqlalchemy import (
     Date,
     DateTime,
@@ -19,6 +21,11 @@ class Student(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     phone: Mapped[Optional[str]] = mapped_column(String(20), nullable=True)
+    gender: Mapped[Optional[GenderEnum]] = mapped_column(
+        Enum(GenderEnum, name="gender_enum"),
+        nullable=True,
+        server_default=None,
+    )
     birth_year: Mapped[Optional[int]] = mapped_column(Date, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
