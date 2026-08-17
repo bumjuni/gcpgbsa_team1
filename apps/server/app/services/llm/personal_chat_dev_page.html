@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>personal_chat_ver1 CHAT 파이프라인 테스터</title>
+<style>
+  :root {
+    --bg:#0f1115; --panel:#171a21; --border:#2a2f3a; --text:#e6e6e6; --muted:#8a8f98;
+    --blue:#4c8dff; --green:#3ecf8e; --red:#ff5c5c; --amber:#ffb020;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family: -apple-system, "Malgun Gothic", "Apple SD Gothic Neo", sans-serif;
+         background:var(--bg); color:var(--text); }
+  header { padding:20px 32px; border-bottom:1px solid var(--border); }
+  header h1 { font-size:18px; margin:0; }
+  header p { margin:6px 0 0; color:var(--muted); font-size:13px; }
+  main { max-width:1000px; margin:0 auto; padding:24px 32px 80px; }
+  h2 { font-size:13px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin:32px 0 12px; }
+  h2:first-child { margin-top:0; }
+  h3 { font-size:14px; margin:0 0 10px; }
+  section.panel { background:var(--panel); border:1px solid var(--border); border-radius:10px; padding:20px; }
+
+  /* ---- flowchart ---- */
+  .flow-row { display:flex; align-items:flex-start; }
+  .flow-branch { display:flex; gap:20px; }
+  .node { border:2px solid var(--border); border-radius:8px; padding:12px 16px;
+          background:#1d212b; min-width:210px; transition:.25s ease; }
+  .node .label { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em; }
+  .node .title { font-size:14px; font-weight:600; margin-top:2px; font-family: ui-monospace, monospace; }
+  .node .detail { font-size:12px; color:var(--muted); margin-top:4px; line-height:1.4; }
+  .node.active-pass { border-color:var(--green); box-shadow:0 0 0 3px rgba(62,207,142,.15); }
+  .node.active-fail { border-color:var(--red); box-shadow:0 0 0 3px rgba(255,92,92,.15); }
+  .node.active { border-color:var(--blue); box-shadow:0 0 0 3px rgba(76,141,255,.15); }
+  .arrow-down { width:2px; height:22px; background:var(--border); margin-left:20px; }
+  .arrow-down.active { background:var(--blue); }
+  .branch-label { font-size:11px; color:var(--muted); margin-bottom:4px; }
+
+  /* ---- result cards ---- */
+  .stage-card { border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:12px; }
+  .chip { display:inline-block; padding:2px 8px; border-radius:12px; background:#26304a;
+          color:#9ec1ff; font-size:12px; margin:2px 4px 2px 0; }
+  .rag-row { display:grid; grid-template-columns:28px 1fr 120px 60px; gap:10px; align-items:center;
+             padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+  .rag-row:last-child { border-bottom:none; }
+  .score-bar-track { position:relative; height:8px; background:#262b36; border-radius:4px; }
+  .score-bar-fill { position:absolute; top:0; left:0; height:100%; border-radius:4px; background:var(--red); }
+  .score-bar-fill.pass { background:var(--green); }
+  .threshold-mark { position:absolute; top:-3px; width:2px; height:14px; background:var(--amber); }
+  .reply-bubble { background:#1d2b22; border:1px solid #2c4a37; border-radius:10px; padding:14px 16px;
+                  white-space:pre-wrap; line-height:1.5; }
+  textarea#msgInput { width:100%; min-height:70px; background:#12151b; color:var(--text);
+                       border:1px solid var(--border); border-radius:8px; padding:10px; font-size:14px;
+                       font-family: inherit; resize:vertical; }
+  button { background:var(--blue); color:#fff; border:none; border-radius:6px; padding:10px 18px;
+           font-size:14px; cursor:pointer; }
+  button.ghost { background:transparent; border:1px solid var(--border); color:var(--text); font-size:12px;
+                 padding:6px 12px; }
+  button:hover { opacity:.9; }
+  .muted { color:var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>personal_chat_ver1 — CHAT 파이프라인 로컬 테스터</h1>
+  <p>chat_reply()의 실제 함수를 그대로 호출합니다 — Vertex AI에 실제 요청이 나갑니다.</p>
+</header>
+<main>
+
+  <h2>1. 파이프라인 구조 (정적 설명)</h2>
+  <section class="panel">
+    <div id="flowDiagram">
+      <div class="flow-row"><div class="node" id="node-input"><div class="label">INPUT</div><div class="title">사용자 메시지</div></div></div>
+      <div class="arrow-down" id="arrow-1"></div>
+      <div class="flow-row"><div class="node" id="node-gate">
+        <div class="label">STAGE 1 · 키워드 게이트</div>
+        <div class="title">_looks_swim_related()</div>
+        <div class="detail">STROKE/SKILL/FOCUS 키워드 substring 매치 (LLM 호출 없음)</div>
+      </div></div>
+      <div class="arrow-down" id="arrow-2"></div>
+
+      <div class="flow-branch">
+        <div><div class="branch-label">✗ 매치 없음</div>
+          <div class="node" id="node-no-rag"><div class="title">RAG 생략</div><div class="detail">theory_context = ""</div></div></div>
+        <div><div class="branch-label">✓ 매치됨</div>
+          <div class="node" id="node-rag"><div class="label">STAGE 2 · RAG 검색</div>
+            <div class="title">pdf_db.similarity_search_with_relevance_scores()</div>
+            <div class="detail">k=4 후보 조회</div></div></div>
+      </div>
+
+      <div class="flow-row" style="padding-left:230px;"><div class="arrow-down" id="arrow-3"></div></div>
+      <div class="flow-row" style="padding-left:230px;">
+        <div class="node" id="node-threshold"><div class="label">STAGE 2b · 임계값 필터</div>
+          <div class="title">score ≥ 0.5</div>
+          <div class="detail">통과 후보만 채택, 앞 80자 기준 중복 제거</div></div>
+      </div>
+
+      <div class="arrow-down" id="arrow-4"></div>
+      <div class="flow-row"><div class="node" id="node-prompt">
+        <div class="label">STAGE 3 · 프롬프트 구성</div>
+        <div class="title">그라운딩 여부에 따라 system prompt 분기</div>
+        <div class="detail">이론 근거 있으면 "[기술 이론 자료]" 블록 주입</div></div></div>
+      <div class="arrow-down" id="arrow-5"></div>
+      <div class="flow-row"><div class="node" id="node-llm">
+        <div class="label">STAGE 4 · 응답 생성</div><div class="title">chat_llm.invoke(messages)</div>
+        <div class="detail">ChatVertexAI, temperature=0.5</div></div></div>
+      <div class="arrow-down" id="arrow-6"></div>
+      <div class="flow-row"><div class="node" id="node-output"><div class="label">OUTPUT</div><div class="title">코치 응답 텍스트</div></div></div>
+    </div>
+  </section>
+
+  <h2>2. 테스트 실행</h2>
+  <section class="panel">
+    <button class="ghost" onclick="fillExample('swim')">예시: 평영 질문</button>
+    <button class="ghost" onclick="fillExample('smalltalk')">예시: 잡담</button>
+    <button class="ghost" onclick="fillExample('boundary')">예시: 경계 케이스</button>
+    <textarea id="msgInput" style="margin-top:10px;" placeholder="예: 평영 팔동작이 자꾸 헷갈려요"></textarea>
+    <div style="margin-top:10px;">
+      <button onclick="runAnalyze()">테스트 실행 →</button>
+      <span id="statusText" class="muted" style="margin-left:10px; font-size:13px;"></span>
+    </div>
+  </section>
+
+  <h2>3. 실행 결과</h2>
+  <section id="results" class="panel" style="display:none;">
+    <div class="stage-card"><h3>Stage 1 · 키워드 게이트</h3><div id="stage1Out"></div></div>
+    <div class="stage-card"><h3>Stage 2 · RAG 후보 (통과/미통과 모두 표시)</h3><div id="stage2Out"></div></div>
+    <div class="stage-card"><h3>Stage 3 · 그라운딩 여부</h3><div id="stage3Out"></div></div>
+    <div class="stage-card"><h3>Stage 4 · 최종 응답</h3><div id="stage4Out"></div></div>
+    <details style="margin-top:10px;"><summary style="cursor:pointer; color:var(--muted);">raw JSON</summary>
+      <pre id="rawJson" style="max-height:300px; overflow:auto; background:#0d0f13; padding:12px; border-radius:8px; font-size:11px;"></pre>
+    </details>
+  </section>
+</main>
+<script>
+const EXAMPLES = {
+  swim: "평영 팔동작이 자꾸 헷갈려요",
+  smalltalk: "오늘 컨디션이 좀 별로예요",
+  boundary: "그냥 힘이 좀 없는 것 같아요",
+};
+function fillExample(k) { document.getElementById('msgInput').value = EXAMPLES[k]; }
+function resetDiagram() { document.querySelectorAll('.node, .arrow-down').forEach(el => el.classList.remove('active','active-pass','active-fail')); }
+function setActive(id, cls) { const el = document.getElementById(id); if (el) el.classList.add(cls || 'active'); }
+function escapeHtml(s) { return (s ?? '').toString().replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+async function runAnalyze() {
+  const msg = document.getElementById('msgInput').value.trim();
+  if (!msg) return;
+  const statusEl = document.getElementById('statusText');
+  statusEl.textContent = '실행 중... (실제 Vertex AI 호출, 수 초 소요될 수 있음)';
+  resetDiagram();
+  setActive('node-input'); setActive('arrow-1');
+
+  let data;
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message: msg}),
+    });
+    data = await res.json();
+  } catch (e) {
+    statusEl.textContent = '오류: ' + e;
+    return;
+  }
+
+  statusEl.textContent = '';
+  document.getElementById('results').style.display = 'block';
+  document.getElementById('rawJson').textContent = JSON.stringify(data, null, 2);
+  renderStage1(data.stage1_keyword_gate);
+  renderStage2(data.stage2_rag_search);
+  renderStage3(data.stage3_grounding);
+  renderStage4(data.stage4_llm_response);
+}
+
+function renderStage1(s1) {
+  setActive('node-gate'); setActive('arrow-2');
+  setActive('node-gate', s1.gate_passed ? 'active-pass' : 'active-fail');
+  s1.gate_passed ? setActive('node-rag') : setActive('node-no-rag', 'active-fail');
+  const chips = [...s1.matched_stroke_skill_keywords, ...(s1.matched_extra_keywords || []), ...s1.matched_focus_terms]
+    .map(k => `<span class="chip">${escapeHtml(k)}</span>`).join('') || '<span class="chip">(매치 없음)</span>';
+  document.getElementById('stage1Out').innerHTML =
+    `<div>게이트 결과: <b style="color:${s1.gate_passed ? 'var(--green)' : 'var(--red)'}">${s1.gate_passed ? 'PASS (수영 관련)' : 'FAIL (일반 대화)'}</b></div>
+     <div style="margin-top:6px;">매치된 키워드: ${chips}</div>`;
+}
+
+function renderStage2(s2) {
+  if (!s2.attempted) {
+    document.getElementById('stage2Out').innerHTML = '<div class="muted">Stage 1 게이트 미통과 — RAG 검색이 실행되지 않았습니다.</div>';
+    return;
+  }
+  setActive('arrow-3'); setActive('node-threshold');
+  if (s2.error) {
+    document.getElementById('stage2Out').innerHTML = `<div style="color:var(--red);">RAG 조회 오류: ${escapeHtml(s2.error)}</div>`;
+    return;
+  }
+  const thr = s2.relevance_threshold;
+  const rows = s2.candidates.map(c => `
+    <div class="rag-row">
+      <div>#${c.rank}</div>
+      <div>${escapeHtml(c.content_preview)}...</div>
+      <div class="score-bar-track">
+        <div class="score-bar-fill ${c.passed_threshold ? 'pass' : ''}" style="width:${Math.max(0, Math.min(100, c.score * 100))}%"></div>
+        <div class="threshold-mark" style="left:${thr * 100}%"></div>
+      </div>
+      <div style="color:${c.passed_threshold ? 'var(--green)' : 'var(--red)'}">${c.score.toFixed(3)}</div>
+    </div>`).join('');
+  document.getElementById('stage2Out').innerHTML =
+    `<div class="muted" style="font-size:12px; margin-bottom:6px;">임계값 ${thr} (황색 선) · ${s2.num_passed}/${s2.candidates.length}개 통과</div>${rows || '<div class="muted">후보 없음</div>'}`;
+}
+
+function renderStage3(s3) {
+  setActive('arrow-4'); setActive('node-prompt', s3.grounding_used ? 'active-pass' : 'active');
+  document.getElementById('stage3Out').innerHTML =
+    `<div>그라운딩 사용: <b style="color:${s3.grounding_used ? 'var(--green)' : 'var(--muted)'}">${s3.grounding_used ? '예 — 이론 자료가 프롬프트에 주입됨' : '아니오 — 기존과 동일한 프롬프트'}</b></div>
+     ${s3.grounding_used ? `<div class="muted" style="margin-top:6px; font-size:12px;">주입된 이론 자료 (${s3.theory_context_char_count}자)</div>
+     <pre style="white-space:pre-wrap; font-size:12px;">${escapeHtml(s3.theory_context_text)}</pre>` : ''}`;
+}
+
+function renderStage4(s4) {
+  setActive('arrow-5'); setActive('node-llm'); setActive('arrow-6');
+  setActive('node-output', s4.error ? 'active-fail' : 'active-pass');
+  document.getElementById('stage4Out').innerHTML = s4.error
+    ? `<div style="color:var(--red); white-space:pre-wrap;">오류: ${escapeHtml(s4.error)}</div>`
+    : `<div class="reply-bubble">${escapeHtml(s4.reply)}</div>`;
+}
+</script>
+</body>
+</html>
