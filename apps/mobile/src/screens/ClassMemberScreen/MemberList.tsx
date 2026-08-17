@@ -1,11 +1,11 @@
 import { Text, View } from "react-native"
 import { Badge } from "../../components/badge/Badge"
 import { Card } from "../../components/card/Card"
-import { Member } from "../../types/member";
+import { MemberFormValues } from "../../hooks/memberForm.schema";
 
 interface MemberListProps {
-  members: Member[];
-  onDelete: (id: string) => void; // 원본 타입이 () => {} 였던 오타 수정
+  members: MemberFormValues[];
+  onDelete: (deleteMember: MemberFormValues) => void; // 원본 타입이 () => {} 였던 오타 수정
 }
 
 export const MemberList = ({ members, onDelete }: MemberListProps) => {
@@ -29,7 +29,7 @@ export const MemberList = ({ members, onDelete }: MemberListProps) => {
               </Text>
             </View>
           </View>
-          <Badge variant='danger' onPress={() => onDelete(member.id)} text='삭제' />
+          <Badge variant='danger' onPress={() => onDelete(member)} text='삭제' />
         </Card>
       ))}
     </>

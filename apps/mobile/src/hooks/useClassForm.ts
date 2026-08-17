@@ -3,7 +3,6 @@ import { classFormSchema, ClassFormValues } from './classForm.schema';
 import { useForm } from './useForm';
 import { formatList, stringToList } from '../utils/parser';
 import { useClassStore } from '../stores/useClassStore';
-import { useEffect } from 'react';
 
 const DEFAULT_VALUES: ClassFormValues = {
   name: '',

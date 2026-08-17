@@ -23,7 +23,6 @@ class SwimClass(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    capacity: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     student_count: Mapped[int] = mapped_column(SmallInteger, nullable=True)
     level: Mapped[LevelEnum] = mapped_column(
         Enum(LevelEnum, name="level_enum"), nullable=False

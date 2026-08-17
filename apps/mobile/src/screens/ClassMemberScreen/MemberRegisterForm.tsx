@@ -10,7 +10,7 @@ import { GenderType } from "../../types/member"
 
 const INITIAL_VALUES: MemberFormValues = {
   name: '',
-  gender: 'NONE',
+  gender: undefined,
   birthYear: '',
   phone: '',
   notes: '',
@@ -28,7 +28,7 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
     schema: memberFormSchema,
     onSubmit: async (validatedData) => {
       onComplete(validatedData);
-    },
+    }
   });
 
   // 버튼 활성화 여부만 실시간으로 필요해서 별도 safeParse (useForm 내부 상태는 건드리지 않음)
@@ -80,7 +80,7 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
               { label: '남', value: 'MALE' },
               { label: '여', value: 'FEMALE' },
             ]}
-            value={values.gender}
+            value={values.gender as string}
             onChange={(val) => setFieldValue('gender', val as GenderType)}
           />
         </FormField>

@@ -1,3 +1,4 @@
+import { GenderType } from '../types/member';
 import { apiClient } from './client'; // 실제 경로에 맞게 조정 필요
 
 // student_id는 백엔드가 name/phone/birth_year 기준으로 내부에서 매칭/생성한다고 가정
@@ -5,6 +6,7 @@ import { apiClient } from './client'; // 실제 경로에 맞게 조정 필요
 export interface EnrollmentCreate {
   class_id: number;
   name: string;
+  gender?: GenderType;
   phone?: string;
   birth_year?: number;
   memo?: string;
@@ -15,6 +17,7 @@ export interface EnrollmentResponse {
   student_id: number;
   class_id: number;
   name: string;
+  gender?: GenderType;
   phone?: string;
   birth_year?: number;
   memo?: string;

@@ -6,72 +6,57 @@ import { Button } from '../../components/button/Button';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Card } from '../../components/card/Card';
 import { MemberFormValues } from '../../hooks/memberForm.schema'; // 추가
-import { Member } from '../../types/member';
+import { GenderType } from '../../types/member';
 import { enrollmentApi } from '../../api/enrollment';
 
 const MAX_MEMBERS = 50; // 사진 간 (0/50) vs (1/10) 불일치 - 확인 후 확정 필요
 
 export const ClassMemberScreen = ({ navigation, route }: any) => {
   const classId = route?.params?.classId; // 이전 단계에서 이미 생성된 반의 id
-  const [members, setMembers] = useState<Member[]>([]);
+  const [members, setMembers] = useState<MemberFormValues[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(true); // 진입 시 첫 폼 기본 노출
   const [isSubmitting, setIsSubmitting] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
   const isMemberLimitReached = members.length >= MAX_MEMBERS;
 
-  const handleCompleteEntry = (formData: MemberFormValues) => { // MemberFormState -> MemberFormValues
-    const newMember: Member = { id: `${Date.now()}-${Math.random()}`, ...formData };
-    setMembers((prev) => [...prev, newMember]);
-    setIsFormOpen(false);
+ const handleCompleteEntry = async (formData: MemberFormValues) => {
+    if (!classId) {
+      console.error('classId가 없습니다. 이전 단계(반 생성)가 정상적으로 완료되었는지 확인해주세요.');
+      return;
+    }
+    try {
+      const response = await enrollmentApi.createEnrollment({
+        class_id: classId,
+        name: formData.name,
+        gender: formData.gender ? formData.gender as GenderType : undefined,
+        phone: formData.phone,
+        birth_year: formData.birthYear ? Number(formData.birthYear) : undefined,
+        memo: formData.notes,
+      });
+      setMembers((prev) => [...prev, response]);
+    } catch (err) {
+      console.error(`${formData.name} 회원 등록 실패`, err);
+    } finally {
+      setIsSubmitting(true);
+      setIsFormOpen(false);
+    }
   };
 
   const handleDeleteForm = () => {
     setIsFormOpen(false);
   };
 
-  const handleDeleteMember = (id: string) => {
-    setMembers((prev) => prev.filter((member) => member.id !== id));
+  const handleDeleteMember = (deleteMember: MemberFormValues) => {
+    setMembers((prev) => prev.filter((member) => member !== deleteMember));
   };
 
   const handleAddMember = () => {
     setIsFormOpen(true);
   };
 
-  // 네트워크 오류 시 1회만 재시도
-  const enrollWithRetry = async (member: Member) => {
-    const payload = {
-      class_id: classId,
-      name: member.name,
-      phone: member.phone || undefined,
-      birth_year: member.birthYear ? Number(member.birthYear) : undefined,
-      memo: member.notes || undefined,
-    };
-    try {
-      await enrollmentApi.createEnrollment(payload);
-    } catch {
-      await enrollmentApi.createEnrollment(payload); // 재시도 1회
-    }
-  };
-
   const handleCreateClass = async () => {
-    if (!classId) {
-      console.error('classId가 없습니다. 이전 단계(반 생성)가 정상적으로 완료되었는지 확인해주세요.');
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      for (const member of members) {
-        try {
-          await enrollWithRetry(member);
-        } catch (err) {
-          console.error(`${member.name} 회원 등록 실패 (재시도 후에도 실패):`, err);
-        }
-      }
       navigation?.navigate('ClassCreateComplete', { classId });
-    } finally {
-      setIsSubmitting(false);
-    }
   };
 
   return (
