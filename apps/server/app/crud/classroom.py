@@ -123,18 +123,18 @@ class ClassroomCrud:
         await self.db.refresh(swim_class)
         return swim_class
 
-    async def increment_student_count(self, class_id: int) -> None:
-        """
-        student_count를 원자적으로 +1 한다.
-        SELECT 후 +1해서 UPDATE하면 동시성 문제(lost update)가 생길 수 있으므로
-        DB 레벨에서 atomic increment로 처리한다.
-        """
+    async def increment_student_count(self, class_id: int) -> SwimClass | None:
         stmt = (
             update(SwimClass)
             .where(SwimClass.id == class_id)
             .values(student_count=SwimClass.student_count + 1)
-            .returning(SwimClass)
         )
         result = await self.db.execute(stmt)
 
-        return result.scalar_one_or_none()
+        if result.rowcount == 0:
+            return None
+
+        # 같은 트랜잭션 내에서 갱신된 row를 다시 조회
+        select_stmt = select(SwimClass).where(SwimClass.id == class_id)
+        select_result = await self.db.execute(select_stmt)
+        return select_result.scalar_one_or_none()

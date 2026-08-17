@@ -11,7 +11,7 @@ import { GenderType } from "../../types/member"
 const INITIAL_VALUES: MemberFormValues = {
   name: '',
   gender: undefined,
-  birthYear: '',
+  birth_year: '',
   phone: '',
   notes: '',
 };
@@ -57,14 +57,14 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
           <FormField.TextInput
             placeholder='1990'
             keyboardType='numeric'
-            value={values.birthYear}
-            onChangeText={(text) => setFieldValue('birthYear', text)}
+            value={values.birth_year}
+            onChangeText={(text) => setFieldValue('birth_year', text)}
           />
         </FormField>
       </View>
       <View className="flex-row gap-sm">
 
-        <FormField>
+        <FormField className="flex-auto">
           <FormField.Label label='전화번호' />
           <FormField.TextInput
             placeholder='010-0000-0000'
@@ -72,8 +72,8 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
             onChangeText={(text) => setFieldValue('phone', text)}
           />
         </FormField>
-        <FormField>
-          <FormField.Label label="성별" required />
+        <FormField className="flex-auto">
+          <FormField.Label label="성별" />
           <FormField.ChipGroup
             variant="rounded-square"
             options={[

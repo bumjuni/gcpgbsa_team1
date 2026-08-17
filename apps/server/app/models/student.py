@@ -26,7 +26,7 @@ class Student(Base):
         nullable=True,
         server_default=None,
     )
-    birth_year: Mapped[Optional[int]] = mapped_column(Date, nullable=True)
+    birth_year: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )

@@ -25,20 +25,31 @@ export const ClassMemberScreen = ({ navigation, route }: any) => {
       console.error('classId가 없습니다. 이전 단계(반 생성)가 정상적으로 완료되었는지 확인해주세요.');
       return;
     }
-    try {
+   try {
+      setIsSubmitting(true)
       const response = await enrollmentApi.createEnrollment({
         class_id: classId,
         name: formData.name,
         gender: formData.gender ? formData.gender as GenderType : undefined,
         phone: formData.phone,
-        birth_year: formData.birthYear ? Number(formData.birthYear) : undefined,
+        birth_year: formData.birth_year ? Number(formData.birth_year) : undefined,
         memo: formData.notes,
       });
-      setMembers((prev) => [...prev, response]);
+      console.log("ClassMemberScreen: ",response)
+      setMembers((prev) => [
+        ...prev,
+        {
+          name: response.student.name,
+          gender: response.student.gender ?? "",
+          birth_year: response.student.birth_year?.toString() ?? "",
+          phone: response.student.phone ?? "",
+          notes: "", // EnrollmentStudent엔 없는 필드라면 기본값
+        },
+      ]);
     } catch (err) {
       console.error(`${formData.name} 회원 등록 실패`, err);
     } finally {
-      setIsSubmitting(true);
+      setIsSubmitting(false);
       setIsFormOpen(false);
     }
   };

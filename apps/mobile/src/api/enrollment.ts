@@ -12,20 +12,31 @@ export interface EnrollmentCreate {
   memo?: string;
 }
 
-export interface EnrollmentResponse {
-  id: number;
-  student_id: number;
-  class_id: number;
+export interface EnrollmentStudent {
   name: string;
   gender?: GenderType;
   phone?: string;
   birth_year?: number;
+}
+
+export interface EnrollmentDetail {
+  id: number;
+  student_id: number;
+  class_id: number;
   memo?: string;
+  created_at: string;
+  deleted_at: string | null;
+}
+
+export interface EnrollmentResponse {
+  student: EnrollmentStudent;
+  enrollment: EnrollmentDetail;
 }
 
 export const enrollmentApi = {
   createEnrollment: async (data: EnrollmentCreate) => {
     const response = await apiClient.post<EnrollmentResponse>('/enrollment', data);
+    console.log(response)
     return response.data;
   },
 };

@@ -20,3 +20,9 @@ class Enrollment(BaseModel):
 class EnrollmentCreate(Student):
     class_id: int
     memo: Optional[str] = None
+
+
+class EnrollmentResponse(BaseModel):
+    """enrollment 생성 시 student + enrollment 정보를 함께 반환"""
+    student: Student
+    enrollment: Enrollment
