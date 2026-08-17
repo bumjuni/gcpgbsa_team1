@@ -48,7 +48,6 @@ export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
         days_of_week: stringToList(currentClass?.days_of_week ?? ''),
         start_time: currentClass?.start_time?.substring(0, 5) ?? '',
         end_time: currentClass?.end_time?.substring(0, 5) ?? '',
-        capacity: String(currentClass?.capacity ?? ''),
         age_group: currentClass?.age_group ?? '',
         level: currentClass?.level ?? '',
         goals: stringToList(currentClass?.goals ?? ''),
@@ -159,20 +158,6 @@ export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
       </View>
       {errors.start_time && <FormField.HelperText type="error" text={errors.start_time} />}
       {errors.end_time && <FormField.HelperText type="error" text={errors.end_time} />}
-
-      {mode !== 'view' && (
-        <FormField>
-          <FormField.Label label="정원" required />
-          <FormField.TextInput
-            placeholder="예: 10 (최대 인원)"
-            suffix="명"
-            keyboardType="numeric"
-            value={values.capacity}
-            onChangeText={(text) => setFieldValue('capacity', text)}
-          />
-          {errors.capacity && <FormField.HelperText type="error" text={errors.capacity} />}
-        </FormField>
-      )}
 
       <FormField>
         <FormField.Label label="나이대" required />

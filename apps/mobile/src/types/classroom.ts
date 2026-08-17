@@ -7,7 +7,6 @@ export interface SwimClass {
   id: number;
   name: string;
   student_count: number | null;
-  capacity: number;
   level: LevelType;
   age_group: AgeGroupType;
   start_time: string;
@@ -22,7 +21,6 @@ export interface SwimClass {
 // 반 등록 시 클라이언트가 실제로 입력/전송하는 필드만
 export interface SwimClassCreate {
   name: string;
-  capacity: number;
   level: LevelType;
   age_groups: AgeGroupType;
   start_time: string;

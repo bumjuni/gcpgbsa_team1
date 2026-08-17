@@ -9,8 +9,7 @@ const DEFAULT_VALUES: ClassFormValues = {
   days_of_week: [],
   start_time: '00:00',
   end_time: '00:00',
-  capacity: '',
-  age_group: '', // age_groups(배열) -> age_group(단일값)
+  age_group: '',
   level: '',
   goals: [],
   goal_etc: '',
@@ -33,7 +32,6 @@ export const useClassForm = (options?: UseClassFormOptions) => {
             days_of_week: stringToList(currentClass.days_of_week),
             start_time: currentClass.start_time,
             end_time: currentClass.end_time,
-            capacity: String(currentClass.capacity),
             age_group: currentClass.age_group,
             level: currentClass.level,
             goals: stringToList(currentClass.goals),
@@ -57,29 +55,6 @@ export const useClassForm = (options?: UseClassFormOptions) => {
       options?.onSuccess?.(response.id);
     },
   });
-
-  // 수정 모드일 때 기존 데이터 불러와서 폼 채우기
-  // useEffect(() => {
-  //   if (!options?.classId) return;
-  //   const fetchAndFillForm = async () => {
-  //     try {
-  //       const detail = await classroomApi.getClassDetail(options.classId!);
-  //       form.setInitValues({
-  //         name: detail.name,
-  //         days_of_week: stringToList(detail.days_of_week),
-  //         start_time: detail.start_time,
-  //         end_time: detail.end_time,
-  //         capacity: String(detail.capacity),
-  //         age_group: detail.age_group,
-  //         level: detail.level,
-  //         goals: stringToList(detail.goals),
-  //       });
-  //     } catch (error) {
-  //       console.error('강습반 정보 조회 실패:', error);
-  //     }
-  //   };
-  //   fetchAndFillForm();
-  // }, [options?.classId]);
 
   return { ...form, isEditMode };
 };
