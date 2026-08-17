@@ -1,24 +1,22 @@
 from datetime import datetime
 from typing import Optional
 
-from apps.server.app.models.enums import GenderEnum
+from apps.server.app.schemas.student import Student
 from pydantic import BaseModel, Field
-from .base import ORMBaseModel
 
 
-class EnrollmentCreate(BaseModel):
-    class_id: int
-    name: str = Field(..., max_length=50)
-    phone: Optional[str] = Field(None, max_length=20)
-    gender: Optional[GenderEnum] = None
-    birth_year: Optional[int] = None
-    memo: Optional[str] = None
-
-
-class EnrollmentResponse(ORMBaseModel):
+class Enrollment(BaseModel):
     id: int
     student_id: int
     class_id: int
-    name: str
-    birth_year: Optional[int] = None
+    memo: Optional[str] = Field(..., max_length=200)
     created_at: datetime
+    deleted_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
+class EnrollmentCreate(BaseModel, Student):
+    class_id: int
+    memo: Optional[str] = None
