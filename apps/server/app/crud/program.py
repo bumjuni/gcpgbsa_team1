@@ -126,11 +126,15 @@ class ProgramCrud:
         return result.scalars().all()
 
 
-    async def check_program_item(self, program_item_id: int) -> ProgramItem:
-        """프로그램 아이템 체크"""
-        stmt = (select(ProgramItem).where(ProgramItem.id == program_item_id))
-        result = await self.db.execute(stmt)
-        return result
+    async def check_program_item(self, program_item_id: int) -> Optional[ProgramItem]:
+        """프로그램 아이템 체크 상태 토글"""
+        item = await self.db.get(ProgramItem, program_item_id)
+        if not item:
+            return None
+        item.is_checked = not item.is_checked
+        await self.db.commit()
+        await self.db.refresh(item)
+        return item
 
     async def update_program(
         self, program_id: int, update_data: dict
