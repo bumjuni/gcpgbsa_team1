@@ -68,7 +68,7 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
     // LessonPlanCreate 스키마에 맞춘 페이로드.
     // class_name/days_of_week/start_time 등 반 상세 정보는 서버가 DB에서 직접 조립한다.
-    const nextClass = getNextClassDate(currentClass.days_of_week, currentClass?.start_time, null);
+    const nextClass = getNextClassDate(currentClass.days_of_week, currentClass?.start_time, currentClass?.end_time, null);
 
     if (!nextClass) {
       setErrorMessage('다음 수업일을 계산할 수 없어요.');

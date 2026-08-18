@@ -28,14 +28,14 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const fetchPrograms = async () => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
-        const pastPrograms = filterPassedLessonPlans(history, currentClass.start_time);
-        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
+        const pastPrograms = filterPassedLessonPlans(history, currentClass.end_time);
+        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.end_time, currentClass.today_program_status);
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
         setProgramHistory(pastPrograms);
 
         if (nextProgram) {
-          const programTime = new Date(`${nextProgram.date}T${currentClass.start_time}`);
+          const programTime = new Date(`${nextProgram.date}T${currentClass.end_time}`);
           if (programTime > new Date()) {
             setLessonPlan(nextProgram);
           }
@@ -63,6 +63,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const nextLesson = formatNextClassLabel(
       currentClass?.days_of_week,
       currentClass?.start_time,
+      currentClass?.end_time,
       currentClass?.today_program_status)
 
     if (nextLesson.startsWith('다'))

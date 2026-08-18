@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
@@ -136,6 +136,7 @@ export const ClassListScreen = ({ navigation }: any) => {
                     {formatNextClassLabel(
                       item.days_of_week,
                       item.start_time,
+                      item.end_time,
                       item.today_program_status,
                       now
                     )}
