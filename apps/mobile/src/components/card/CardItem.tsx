@@ -21,7 +21,7 @@ export const CardItem: React.FC<CardItemProps> = ({
     >
       <View className="flex-row items-center flex-1 mr-3">
         {leftElement && <View className="mr-3">{leftElement}</View>}
-        <View className="flex-col justify-between">
+        <View className="flex-col justify-between flex-1">
           <Text className="text-body text-ink">{title}</Text>
           {description && (
             <Text className="text-caption text-ink-secondary mt-xs">{description}</Text>
