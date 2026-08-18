@@ -5,6 +5,8 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { ConfirmModal } from '../../components/ConfirmModal';
+import { enrollmentApi, EnrollmentDetail, EnrollmentStudent } from '../../api/enrollment';
+import { studentApi } from '../../api/student';
 
 interface MemberEditFormState {
   name: string;
@@ -14,23 +16,20 @@ interface MemberEditFormState {
   notes: string;
 }
 
+interface RouteParams {
+  student?: EnrollmentStudent;
+  enrollment?: EnrollmentDetail;
+}
+
 export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
-  const {
-    classId,
-    memberId,
-    name = '김수영',
-    birthYear = '2018',
-    phone = '010-1234-5678',
-    gender = 'M',
-    notes = '물을 무서워해요',
-  } = route?.params ?? {};
+  const { student, enrollment } = route?.params ?? {} as RouteParams;
 
   const [formData, setFormData] = useState<MemberEditFormState>({
-    name,
-    birthYear: String(birthYear),
-    phone,
-    gender,
-    notes,
+    name: student.name,
+    birthYear: String(student.birth_year),
+    phone: student.phone ?? "",
+    gender: student.gender ?? "",
+    notes: enrollment.memo ?? "",
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [, startTransition] = useTransition();
@@ -55,13 +54,47 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
     navigation?.goBack();
   };
 
-  const handleSave = () => {
-    navigation?.navigate('ClassDetailsMemberDetail', { classId, memberId, ...formData });
+  const handleSave = async () => {
+    try {
+      let enrollmentResult;
+      if (enrollment.memo !== formData.notes) {
+        const payload: EnrollmentDetail = {
+          ...enrollment,
+          memo: formData.notes
+        }
+        enrollmentResult = await enrollmentApi.updateEnrollment(enrollment.id, payload);
+      }
+
+      const isStudentChanged =
+            student.name !== formData.name ||
+            student.gender !== formData.gender ||
+            student.phone !== formData.phone ||
+            student.birth_year !== formData.birthYear;
+
+      if (isStudentChanged) {
+        const payload: EnrollmentStudent = {
+          ...student,
+          name: formData.name,
+          gender: formData.gender,
+          phone: formData.phone,
+          birth_year: formData.birthYear,
+        };
+        await studentApi.updateStudent(student.id, payload);
+      }
+
+      navigation?.navigate('ClassDetailsMemberDetail', {
+            studentId: student.id,
+            enrollment: enrollmentResult ?? enrollment,
+      });
+    } catch (error) {
+        console.error('수정 중 오류 발생:', error);
+    }
   };
 
   const handleConfirmDelete = () => {
     setIsDeleteModalOpen(false);
-    navigation?.navigate('ClassDetailsMemberTab', { classId });
+    enrollmentApi.deleteEnrollment(enrollment.id);
+    navigation?.navigate('ClassDetailsMemberTab');
   };
 
   return (
