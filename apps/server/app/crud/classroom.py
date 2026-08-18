@@ -147,3 +147,23 @@ class ClassroomCrud:
         select_stmt = select(SwimClass).where(SwimClass.id == class_id)
         select_result = await self.db.execute(select_stmt)
         return select_result.scalar_one_or_none()
+
+    async def decrement_student_count(self, class_id: int) -> Optional[SwimClass]:
+            stmt = (
+                update(SwimClass)
+                .where(
+                    SwimClass.id == class_id,
+                    SwimClass.student_count > 0  # 음수(0 미만)가 되지 않도록 안전 처리
+                )
+                .values(student_count=SwimClass.student_count - 1)
+            )
+            result = await self.db.execute(stmt)
+
+            if result.rowcount == 0:
+                # class_id가 없거나 이미 student_count가 0인 경우
+                return None
+
+            # 같은 트랜잭션 내에서 갱신된 row를 다시 조회
+            select_stmt = select(SwimClass).where(SwimClass.id == class_id)
+            select_result = await self.db.execute(select_stmt)
+            return select_result.scalar_one_or_none()
