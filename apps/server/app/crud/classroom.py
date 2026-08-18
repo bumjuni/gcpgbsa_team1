@@ -1,10 +1,8 @@
-from optparse import Option
-
 from datetime import datetime, date
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 
 from models.classroom import SwimClass, Program
 from models.enums import ProgramStatusEnum
@@ -97,11 +95,19 @@ class ClassroomCrud:
     ) -> dict[int, ProgramStatusEnum]:
         if not class_ids:
             return {}
+        now_time = datetime.now().time()
+
         stmt = select(Program.class_id, Program.status).where(
             Program.class_id.in_(class_ids),
             Program.date == today,
+            Program.start_time >= now_time,
             Program.deleted_at.is_(None),
         )
+        # stmt = select(Program.class_id, Program.status).where(
+        #     Program.class_id.in_(class_ids),
+        #     Program.date == today,
+        #     Program.deleted_at.is_(None),
+        # )
         result = await self.db.execute(stmt)
         return {row.class_id: row.status for row in result.all()}
 
@@ -124,3 +130,19 @@ class ClassroomCrud:
         await self.db.commit()
         await self.db.refresh(swim_class)
         return swim_class
+
+    async def increment_student_count(self, class_id: int) -> SwimClass | None:
+        stmt = (
+            update(SwimClass)
+            .where(SwimClass.id == class_id)
+            .values(student_count=SwimClass.student_count + 1)
+        )
+        result = await self.db.execute(stmt)
+
+        if result.rowcount == 0:
+            return None
+
+        # 같은 트랜잭션 내에서 갱신된 row를 다시 조회
+        select_stmt = select(SwimClass).where(SwimClass.id == class_id)
+        select_result = await self.db.execute(select_stmt)
+        return select_result.scalar_one_or_none()

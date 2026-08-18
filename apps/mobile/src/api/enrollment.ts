@@ -1,3 +1,4 @@
+import { GenderType } from '../types/member';
 import { apiClient } from './client'; // 실제 경로에 맞게 조정 필요
 
 // student_id는 백엔드가 name/phone/birth_year 기준으로 내부에서 매칭/생성한다고 가정
@@ -5,24 +6,37 @@ import { apiClient } from './client'; // 실제 경로에 맞게 조정 필요
 export interface EnrollmentCreate {
   class_id: number;
   name: string;
+  gender?: GenderType;
   phone?: string;
   birth_year?: number;
   memo?: string;
 }
 
-export interface EnrollmentResponse {
+export interface EnrollmentStudent {
+  name: string;
+  gender?: GenderType;
+  phone?: string;
+  birth_year?: number;
+}
+
+export interface EnrollmentDetail {
   id: number;
   student_id: number;
   class_id: number;
-  name: string;
-  phone?: string;
-  birth_year?: number;
   memo?: string;
+  created_at: string;
+  deleted_at: string | null;
+}
+
+export interface EnrollmentResponse {
+  student: EnrollmentStudent;
+  enrollment: EnrollmentDetail;
 }
 
 export const enrollmentApi = {
   createEnrollment: async (data: EnrollmentCreate) => {
     const response = await apiClient.post<EnrollmentResponse>('/enrollment', data);
+    console.log(response)
     return response.data;
   },
 };

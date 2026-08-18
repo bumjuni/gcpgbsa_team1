@@ -23,8 +23,8 @@ class ProgramItem(BaseModel):
     id: Optional[int] = None
     title: str = Field(..., max_length=200)
     set: int = Field(..., ge=1)
-    is_checked: bool
-    distance_m: int = Field(..., ge=1)
+    is_checked: bool = Field(default=False)
+    distance_m: int
     duration_min: int = Field(..., ge=1)  # LLM의 duration_time -> duration_min으로 매핑
     detail: str = Field(..., max_length=100)
 
@@ -48,7 +48,7 @@ class ProgramConfirm(BaseModel):
 
 class ProgramResponse(ProgramCreate):
     id: int
-    status: ProgramStatusEnum
+    status: ProgramStatusEnum = Field(default='DRAFT')
     session_summary: SessionSummary
     program: Program
     created_at: datetime

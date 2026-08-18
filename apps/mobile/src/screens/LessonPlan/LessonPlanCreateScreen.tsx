@@ -11,7 +11,7 @@ import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, getNextClassDate } from '../../utils/classSchedule';
 import { EquipmentValue } from '../../types/lessonPlan';
 import { EQUIPMENT_OPTIONS } from '../../constants/lessonPlanLabels';
-
+import { LEVEL_MAP } from '../../utils/classSchedule';
 
 
 const REQUEST_MAX_LENGTH = 200;
@@ -115,7 +115,7 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
             </Text>
           </View>
           <Text className="text-caption text-ink-secondary mt-1">
-            인원 {currentClass?.student_count || 0}명 · {currentClass?.level}
+            인원 {currentClass?.student_count || 0}명 · {LEVEL_MAP[currentClass?.level]}
           </Text>
         </Card>
 

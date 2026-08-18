@@ -4,7 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
-import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { filterPassedLessonPlans, formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
 import { calculateTotalDistance, toLessonPlanSets } from '../../utils/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
@@ -27,11 +27,20 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const fetchPrograms = async () => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
+        const pastPrograms = filterPassedLessonPlans(history, currentClass.start_time);
         const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
-        setProgramHistory(history);
-        nextProgram && setLessonPlan(nextProgram);
+        setProgramHistory(pastPrograms);
+
+        if (nextProgram) {
+          const programTime = new Date(`${nextProgram.date}T${currentClass.start_time}`);
+
+          // 프로그램 시간이 현재 시간보다 이후(더 뒤)인 경우에만 state 변경
+          if (programTime > new Date()) {
+            setLessonPlan(nextProgram);
+          }
+        }
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
       }
@@ -92,7 +101,9 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     setActiveTabLayout({ x: e.nativeEvent.layout.x, width: e.nativeEvent.layout.width });
   };
 
-  const handleConfirmLesson = () => { };
+  const handleConfirmLesson = () => {
+    navigation?.navigate('LessonPlanConfirm', {result: lessonPlan});
+  };
 
   const indicatorWidth = tabRowWidth * 0.25;
   const indicatorLeft = activeTabLayout.x + activeTabLayout.width / 2 - indicatorWidth / 2;
@@ -132,7 +143,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         <Card variant="default" className="px-md py-md mb-lg">
           <Text className="text-title-sm text-ink mb-xxs">{printNextLesson()}</Text>
           <Text className="text-caption text-ink-secondary mt-xxs">
-            {lessonPlan ? `총 ${calculateTotalDistance(toLessonPlanSets(lessonPlan.lesson_plan))}m` : `수업안이 아직 확정되지 않았어요`}
+            {lessonPlan ? `총 ${calculateTotalDistance(toLessonPlanSets(lessonPlan.program))}m` : `수업안이 아직 확정되지 않았어요`}
           </Text>
         </Card>
 

@@ -14,8 +14,6 @@ import { LessonPlanCompleteScreen } from '../screens/LessonPlan/LessonPlanComple
 import { LessonPlanEditItemScreen } from '../screens/LessonPlan/LessonPlanEditItemScreen';
 import { ClassDetailsLessonTabScreen } from '../screens/ClassDetail/ClassDetailsLessonTabScreen';
 import { ClassDetailsLessonTabScrollTestScreen } from '../screens/ClassDetail/ClassDetailsLessonTabScrollTestScreen';
-import { ClassDetailsLessonTabDraftScreen } from '../screens/ClassDetail/ClassDetailsLessonTabDraftScreen';
-import { ClassDetailsLessonTabEmptyScreen } from '../screens/ClassDetail/ClassDetailsLessonTabEmptyScreen';
 import { ClassDetailsLessonHistoryScreen } from '../screens/ClassDetail/ClassDetailsLessonHistoryScreen';
 import { ClassDetailsInfoTabScreen } from '../screens/ClassDetail/ClassDetailsInfoTabScreen';
 import { ClassDetailsInfoEditScreen } from '../screens/ClassDetail/ClassDetailsInfoEditScreen';
@@ -51,8 +49,6 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
       <Stack.Screen name="ClassDetailsLessonTab" component={ClassDetailsLessonTabScreen} />
       <Stack.Screen name="ClassDetailsLessonTabScrollTest" component={ClassDetailsLessonTabScrollTestScreen} />
-      <Stack.Screen name="ClassDetailsLessonTabDraft" component={ClassDetailsLessonTabDraftScreen} />
-      <Stack.Screen name="ClassDetailsLessonTabEmpty" component={ClassDetailsLessonTabEmptyScreen} />
       <Stack.Screen name="ClassDetailsLessonHistory" component={ClassDetailsLessonHistoryScreen} />
       <Stack.Screen name="ClassDetailsInfoTab" component={ClassDetailsInfoTabScreen} />
       <Stack.Screen name="ClassDetailsInfoEdit" component={ClassDetailsInfoEditScreen} />

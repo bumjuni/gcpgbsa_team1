@@ -27,3 +27,8 @@ class ProgramPhaseEnum(str, enum.Enum):
     PRE_SET = "PRE_SET"             # 웜업
     MAIN_SET = "MAIN_SET"                   # 메인
     POST_SET = "POST_SET"         # 쿨다운
+
+
+class GenderEnum(str, enum.Enum):
+    FEMALE = "FEMALE"
+    MALE = "MALE"

@@ -31,9 +31,11 @@ class Enrollment(Base):
         Integer, ForeignKey("swim_class.id"), nullable=False
     )
     memo: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
+    )
+    deleted_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=True
     )
 
     student: Mapped["Student"] = relationship("Student", back_populates="enrollments")

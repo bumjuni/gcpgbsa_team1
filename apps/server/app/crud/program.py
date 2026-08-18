@@ -2,8 +2,9 @@ from datetime import datetime, date
 from typing import Optional
 
 from models.enums import ProgramStatusEnum
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from models.program import Program, ProgramItem
 
@@ -65,7 +66,11 @@ class ProgramCrud:
         ) -> Optional[Program]:
             """class_id + date로 기존 Program row를 조회한다 (uq_program_class_date 유니크 제약과 짝)."""
             result = await self.db.execute(
-                select(Program).where(
+                select(Program)
+                .options(
+                    selectinload(Program.program_items)
+                )  # program_items를 함께 가져옴
+                .where(
                     Program.class_id == class_id,
                     Program.date == date,
                     Program.deleted_at.is_(None),
@@ -126,3 +131,23 @@ class ProgramCrud:
         stmt = (select(ProgramItem).where(ProgramItem.id == program_item_id))
         result = await self.db.execute(stmt)
         return result
+
+    async def update_program(
+        self, program_id: int, update_data: dict
+    ) -> Optional[Program]:
+        """프로그램 정보를 업데이트하고 갱신된 객체를 반환합니다."""
+        # 1. Update 수행
+        stmt = (
+            update(Program)
+            .where(Program.id == program_id)
+            .values(**update_data)
+            .execution_options(synchronize_session="fetch")
+        )
+        await self.db.execute(stmt)
+        await self.db.commit()
+
+        # 2. 갱신된 객체 조회 후 반환
+        result = await self.db.execute(
+            select(Program).where(Program.id == program_id)
+        )
+        return result.scalar_one_or_none()

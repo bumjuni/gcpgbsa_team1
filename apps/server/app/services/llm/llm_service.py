@@ -54,7 +54,6 @@ def build_request_body(swim_class, equipment: str, request: str) -> dict:
         "days_of_week": days_str,
         "start_time": swim_class.start_time.strftime("%H:%M"),
         "duration_min": duration_min,
-        "capacity": swim_class.capacity,
         "age_group": swim_class.age_group,
         "level": swim_class.level,
         "goal": swim_class.goals,

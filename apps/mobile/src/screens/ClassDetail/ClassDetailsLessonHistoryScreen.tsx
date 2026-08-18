@@ -21,17 +21,17 @@ export const ClassDetailsLessonHistoryScreen = ({ navigation, route }: any) => {
     };
     fetchLessonPlan();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lessonPlan]);
+  }, []);
 
   if (!lessonPlan) return null;
-  const lessonSection = toLessonPlanSets(lessonPlan.lesson_plan);
+  const lessonSection = toLessonPlanSets(lessonPlan.program);
 
 
   return (
     <ScreenLayout title={date} showBackButton>
       <View className="pt-md pb-xl">
         <Text className="text-sm text-ink-secondary mb-lg">
-          계획 {lessonPlan?.lesson_plan.toLocaleString()}m 중 실제 {calculateCheckedDistance(lessonPlan)}m 진행
+          계획 {lessonPlan?.session_summary.total_distance_m.toLocaleString()}m 중 실제 {calculateCheckedDistance(lessonPlan)}m 진행
         </Text>
 
         {lessonSection.map((section: LessonPlanSet) => (

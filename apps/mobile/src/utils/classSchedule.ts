@@ -8,6 +8,10 @@ const DAY_LABEL_MAP: Record<number, string> = {
   0: '일', 1: '월', 2: '화', 3: '수', 4: '목', 5: '금', 6: '토',
 };
 
+export const LEVEL_MAP: Record<string, string> = {
+  BEGINNER: '신규', ELEMENTARY: '초급', INTERMEDIATE: '중급', ADVANCED: '고급', MASTER: '마스터즈'
+};
+
 export const parseDaysOfWeek = (daysOfWeek: string): number[] => {
   return daysOfWeek
     .split(',')
@@ -307,3 +311,18 @@ export function formatTimeToAmPm(time: string): string {
 
   return `${period} ${hour12}:${minute}`;
 }
+
+export const filterPassedLessonPlans = (
+  historyList: ProgramHistoryItem[],
+  startTime: string,
+): ProgramHistoryItem[] => {
+  const now = new Date();
+
+  return historyList.filter((item) => {
+    // 'YYYY-MM-DDTHH:mm' 포맷으로 Date 객체 생성
+    const itemDateTime = new Date(`${item.date}T${startTime}`);
+
+    // 유효한 날짜이고, 해당 수업 시작 시간이 현재 시간보다 같거나 이전인 경우만 남김
+    return !isNaN(itemDateTime.getTime()) && itemDateTime <= now;
+  });
+};

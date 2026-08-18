@@ -23,8 +23,9 @@ class SwimClass(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     name: Mapped[str] = mapped_column(String(100), nullable=False)
-    capacity: Mapped[int] = mapped_column(SmallInteger, nullable=False)
-    student_count: Mapped[int] = mapped_column(SmallInteger, nullable=True)
+    student_count: Mapped[int] = mapped_column(
+        SmallInteger, nullable=False, server_default="0"
+    )
     level: Mapped[LevelEnum] = mapped_column(
         Enum(LevelEnum, name="level_enum"), nullable=False
     )
@@ -36,7 +37,6 @@ class SwimClass(Base):
     start_time: Mapped[time] = mapped_column(Time, nullable=False)
     end_time: Mapped[time] = mapped_column(Time, nullable=False)
     days_of_week: Mapped[str] = mapped_column(String(20), nullable=False)
-    is_active: Mapped[bool] = mapped_column(Boolean, nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False
     )
