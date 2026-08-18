@@ -6,7 +6,7 @@ import { Card } from '../../components/card/Card';
 import { LessonPlanItem, LessonPlanSet, LessonPlanSetKey } from '../../types/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
-import { toLessonPlanSets } from '../../utils/lessonPlan';
+import { calculateTotalDistance, toLessonPlanSets } from '../../utils/lessonPlan';
 
 
 const getSectionTotalMeters = (section: LessonPlanSet): number =>
@@ -79,7 +79,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
       <View className="pt-md pb-xl">
         <Card variant="muted" className="items-center pt-md">
           <Text className="text-caption text-ink-secondary">총 운동량</Text>
-          <Text className="text-metric text-ink my-sm">{lessonPlan.session_summary.total_distance_m}m</Text>
+          <Text className="text-metric text-ink my-sm">{calculateTotalDistance(toLessonPlanSets(lessonPlan.program))}m</Text>
           <Text className="text-legal text-ink-tertiary">Pre-Set · Main-Set · Post-Set 거리를 더한 값이에요</Text>
         </Card>
         <Text className="text-caption font-bold text-ink my-sm">수업 구성</Text>
