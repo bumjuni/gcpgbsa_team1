@@ -1,7 +1,24 @@
 from fastapi import FastAPI
+from contextlib import asynccontextmanager
+from core.database import engine
+from api import classroom, enrollment, program
+from models import Base
 
-app = FastAPI()
+# DB 생성
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # 비동기 엔진을 사용하여 테이블 생성
+    async with engine.begin() as conn:
+        # run_sync를 통해 동기 함수인 create_all을 비동기 환경에서 실행
+        await conn.run_sync(Base.metadata.create_all)
 
+    yield  # 이 시점부터 서버가 정상적으로 요청을 받습니다.
+
+app = FastAPI(lifespan=lifespan)
+
+app.include_router(classroom.router)
+app.include_router(enrollment.router)
+app.include_router(program.router)
 
 @app.get("/")
 def read_root():

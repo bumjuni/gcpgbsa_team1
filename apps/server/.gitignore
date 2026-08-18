@@ -9,3 +9,10 @@ my_rag_db/
 # 설치 파일 및 SDK
 google-cloud-sdk/
 *.tar.gz
+
+# 환경 변수
+.env
+.env.dev
+
+# rag_db
+*.sqlite3
