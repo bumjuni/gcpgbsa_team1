@@ -4,7 +4,7 @@
 # RequestBody 11개 키를 조립하고 generate_curriculum을 호출한다.
 # 이 서비스는 DB에 접근하지 않는다 (DB 조회는 ProgramService의 책임).
 
-from services.llm.rag_service_ver4 import generate_curriculum
+from .rag.teamprogram_ver1 import generate_curriculum
 from schemas.program import Program as ProgramSchema, SessionSummary
 
 
