@@ -52,4 +52,10 @@ export const enrollmentApi = {
     console.log(response);
     return response.data;
   },
+
+  getEnrollments: async (classId: number) => {
+    const response = await apiClient.get<EnrollmentResponse[]>(`/enrollment/class/${classId}`);
+    console.log(response)
+    return response.data;
+  },
 };

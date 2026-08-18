@@ -5,7 +5,7 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { ConfirmModal } from '../../components/ConfirmModal';
-import { enrollmentApi, EnrollmentCreate, EnrollmentDetail, EnrollmentStudent } from '../../api/enrollment';
+import { enrollmentApi, EnrollmentDetail, EnrollmentStudent } from '../../api/enrollment';
 import { studentApi } from '../../api/student';
 
 interface MemberEditFormState {

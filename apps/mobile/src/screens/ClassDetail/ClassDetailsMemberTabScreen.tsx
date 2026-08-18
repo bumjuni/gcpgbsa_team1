@@ -1,10 +1,13 @@
-import React, { useState, useTransition } from 'react';
+import React, { useCallback, useState, useTransition } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
+import { enrollmentApi, EnrollmentResponse, EnrollmentStudent } from '../../api/enrollment';
+import { useFocusEffect } from '@react-navigation/native';
+import { GenderType, MemberFormState } from '../../types/member';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -12,27 +15,9 @@ const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포�
 
 const MAX_MEMBERS = 10;
 
-interface ClassMemberSummary {
-  id: string;
-  name: string;
-  genderLabel: string;
-  age: number;
-}
-
-const MEMBERS: ClassMemberSummary[] = [
-  { id: '1', name: '김수영', genderLabel: '남', age: 8 },
-  { id: '2', name: '이도윤', genderLabel: '여', age: 9 },
-  { id: '3', name: '박서준', genderLabel: '남', age: 7 },
-  { id: '4', name: '최윤아', genderLabel: '여', age: 10 },
-  { id: '5', name: '정하은', genderLabel: '남', age: 8 },
-  { id: '6', name: '강민준', genderLabel: '여', age: 9 },
-  { id: '7', name: '조서연', genderLabel: '남', age: 6 },
-  { id: '8', name: '윤지호', genderLabel: '여', age: 11 },
-];
-
 interface NewMemberFormState {
   name: string;
-  birthYear: string;
+  birth_year: string;
   phone: string;
   gender: string;
   notes: string;
@@ -40,7 +25,7 @@ interface NewMemberFormState {
 
 const INITIAL_FORM_STATE: NewMemberFormState = {
   name: '',
-  birthYear: '',
+  birth_year: '',
   phone: '',
   gender: '',
   notes: '',
@@ -54,6 +39,26 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const [formData, setFormData] = useState<NewMemberFormState>(INITIAL_FORM_STATE);
   const [, startTransition] = useTransition();
 
+  const [enrollment, setEnrollments] = useState<EnrollmentResponse[]>([]);
+
+  const fetchEnrollments = async () => {
+    try {
+      if (!currentClass) return;
+        const data = await enrollmentApi.getEnrollments(currentClass.id);
+        setEnrollments(data);
+      } catch (err: any) {
+        console.error(err);
+      }
+    };
+
+    // 2. useEffect 대신 useFocusEffect와 useCallback 사용
+    useFocusEffect(
+      useCallback(() => {
+        fetchEnrollments();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+      }, [])
+    );
+
   if (!currentClass) return null;
 
   const handleTabPress = (tab: ClassDetailsTab) => {
@@ -63,8 +68,8 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
     if (tab === '리포트') navigation?.navigate('ClassDetailsReportTab');
   };
 
-  const handleMemberPress = (member: ClassMemberSummary) => {
-    navigation?.navigate('ClassDetailsMemberDetail', { memberId: member.id });
+  const handleMemberPress = (studentId: number) => {
+    navigation?.navigate('ClassDetailsMemberDetail', { studentId: studentId, enrollment });
   };
 
   const handleFieldChange = <K extends keyof NewMemberFormState>(key: K, value: string) => {
@@ -73,11 +78,34 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
     });
   };
 
-  const handleSubmitNewMember = () => {
-    // TODO: enrollmentApi.createEnrollment 연동 필요
-    setIsAddingMember(false);
-    setFormData(INITIAL_FORM_STATE);
-  };
+  const handleSubmitNewMember = async () => {
+     if (!currentClass) {
+       console.error('classId가 없습니다. 이전 단계(반 생성)가 정상적으로 완료되었는지 확인해주세요.');
+       return;
+     }
+    try {
+       setIsAddingMember(true)
+       const response = await enrollmentApi.createEnrollment({
+         class_id: currentClass.id,
+         name: formData.name,
+         gender: formData.gender ? formData.gender as GenderType : undefined,
+         phone: formData.phone,
+         birth_year: formData.birth_year ? Number(formData.birth_year) : undefined,
+         memo: formData.notes,
+       });
+       console.log("ClassDetailsMemberTabScreen: ",response)
+       setEnrollments((prev) => [
+         ...prev,
+         response,
+       ]);
+     } catch (err) {
+       console.error(`${formData.name} 회원 등록 실패`, err);
+     } finally {
+       setIsAddingMember(false);
+       setFormData(INITIAL_FORM_STATE);
+     }
+   };
+
 
   const isMemberLimitReached = MEMBERS.length >= MAX_MEMBERS;
 
@@ -123,12 +151,12 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
       </View>
 
       <View className="pb-xl">
-        <Text className="text-base font-bold text-ink mb-sm">현재 인원 {MEMBERS.length}명</Text>
+        <Text className="text-base font-bold text-ink mb-sm">현재 인원 {enrollment.length}명</Text>
 
-        {MEMBERS.map((member) => (
+        {enrollment.map((item) => (
           <Card
-            key={member.id}
-            onPress={() => handleMemberPress(member)}
+            key={item.student.id}
+            onPress={() => handleMemberPress(item.student.id)}
             className="flex-row items-center justify-between px-md py-sm mb-md"
           >
             <View className="flex-row items-center flex-1">
@@ -136,9 +164,9 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
                 <Text className="text-sm font-bold text-status-present">✓</Text>
               </View>
               <View>
-                <Text className="text-body-strong text-ink">{member.name}</Text>
+                <Text className="text-body-strong text-ink">{item.student.name}</Text>
                 <Text className="text-caption text-ink-secondary mt-0.5">
-                  {member.genderLabel} · {member.age}세
+                  {item.student.gender} · {new Date().getFullYear() - Number(item.student.birth_year)}세
                 </Text>
               </View>
             </View>
@@ -162,8 +190,8 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
                 <FormField.TextInput
                   placeholder="예: 1990"
                   keyboardType="numeric"
-                  value={formData.birthYear}
-                  onChangeText={(text) => handleFieldChange('birthYear', text)}
+                  value={formData.birth_year}
+                  onChangeText={(text) => handleFieldChange('birth_year', text)}
                 />
               </FormField>
             </View>
@@ -203,8 +231,9 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
             <Button label="추가하기" variant="secondary" onPress={handleSubmitNewMember} />
           </Card>
         ) : (
-          <Button
-            label={`+ 회원 추가하기 (${MEMBERS.length}/${MAX_MEMBERS})`}
+            <Button
+              label={`+ 회원 추가하기`}
+            // label={`+ 회원 추가하기 (${MEMBERS.length}/${MAX_MEMBERS})`}
             variant={isMemberLimitReached ? 'disabled' : 'secondary'}
             onPress={() => setIsAddingMember(true)}
             disabled={isMemberLimitReached}
