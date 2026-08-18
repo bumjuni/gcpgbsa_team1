@@ -6,10 +6,12 @@ import { Button } from "../../components/button/Button"
 import { useMemo } from "react"
 import { useForm } from "../../hooks/useForm"
 import { memberFormSchema, MemberFormValues } from "../../hooks/memberForm.schema"
+import { GenderType } from "../../types/member"
 
 const INITIAL_VALUES: MemberFormValues = {
   name: '',
-  birthYear: '',
+  gender: undefined,
+  birth_year: '',
   phone: '',
   notes: '',
 };
@@ -26,7 +28,7 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
     schema: memberFormSchema,
     onSubmit: async (validatedData) => {
       onComplete(validatedData);
-    },
+    }
   });
 
   // 버튼 활성화 여부만 실시간으로 필요해서 별도 safeParse (useForm 내부 상태는 건드리지 않음)
@@ -55,19 +57,34 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
           <FormField.TextInput
             placeholder='1990'
             keyboardType='numeric'
-            value={values.birthYear}
-            onChangeText={(text) => setFieldValue('birthYear', text)}
+            value={values.birth_year}
+            onChangeText={(text) => setFieldValue('birth_year', text)}
           />
         </FormField>
       </View>
-      <FormField>
-        <FormField.Label label='전화번호' />
-        <FormField.TextInput
-          placeholder='010-0000-0000'
-          value={values.phone}
-          onChangeText={(text) => setFieldValue('phone', text)}
-        />
-      </FormField>
+      <View className="flex-row gap-sm">
+
+        <FormField className="flex-auto">
+          <FormField.Label label='전화번호' />
+          <FormField.TextInput
+            placeholder='010-0000-0000'
+            value={values.phone}
+            onChangeText={(text) => setFieldValue('phone', text)}
+          />
+        </FormField>
+        <FormField className="flex-auto">
+          <FormField.Label label="성별" />
+          <FormField.ChipGroup
+            variant="rounded-square"
+            options={[
+              { label: '남', value: 'MALE' },
+              { label: '여', value: 'FEMALE' },
+            ]}
+            value={values.gender as string}
+            onChange={(val) => setFieldValue('gender', val as GenderType)}
+          />
+        </FormField>
+      </View>
       <FormField>
         <FormField.Label label='비고' />
         <FormField.TextInput

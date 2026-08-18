@@ -26,7 +26,7 @@ export const ConfirmModal = ({
       <TouchableWithoutFeedback onPress={onCancel}>
         <View className="flex-1 bg-ink/60 justify-center items-center px-xl">
           <TouchableWithoutFeedback>
-            <View className="w-full bg-surface-canvas rounded-xl p-lg items-center shadow-xl">
+            <View className="w-full bg-canvas rounded-xl p-lg items-center shadow-xl">
               <Text className="text-xl font-bold text-ink mb-xs text-center">
                 {title}
               </Text>

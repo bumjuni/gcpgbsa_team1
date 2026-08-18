@@ -1,8 +1,10 @@
 import React, { useState, useTransition } from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { ScreenLayout } from '../components/ScreenLayout';
-import { FormField } from '../components/form/FormField';
-import { Button } from '../components/button/Button';
+import { ScreenLayout } from '../../components/ScreenLayout';
+import { FormField } from '../../components/form/FormField';
+import { Button } from '../../components/button/Button';
+import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
+import { LessonPlanSetKey } from '../../types/lessonPlan';
 
 interface LessonSetItemFormState {
   name: string;
@@ -20,30 +22,26 @@ const DISTANCE_MAX = 400;
 const DISTANCE_STEP = 25;
 
 export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
-  const {
-    sectionTitle = '메인 세트',
-    itemIndex = 0,
-    name = '',
-    description = '',
-    count = COUNT_MIN,
-    intervalDistance = DISTANCE_MIN,
-  } = route?.params ?? {};
+  const { setKey: rawSetKey, itemIndex = 0 } = route?.params ?? {};
+  const setKey = (rawSetKey ?? 'main_set') as LessonPlanSetKey; // type 에러 방지용 코드..
 
-  const [formData, setFormData] = useState<LessonSetItemFormState>({
-    name,
-    description,
-    count,
-    intervalDistance,
-  });
-  const [, startTransition] = useTransition();
+  const item = useLessonPlanStore((s) => s.lessonPlan?.program[setKey]?.[itemIndex]);
+  const updateItem = useLessonPlanStore((s) => s.updateItem);
+
+  const [formData, setFormData] = useState<LessonSetItemFormState>(() => ({
+    name: item?.title ?? '',
+    description: item?.detail ?? '',
+    count: item?.set ?? COUNT_MIN,
+    intervalDistance: item?.distance_m ?? DISTANCE_MIN,
+  }));
+
+  if (!item) return null;
 
   const handleFieldChange = <K extends keyof LessonSetItemFormState>(
     key: K,
     value: LessonSetItemFormState[K]
   ) => {
-    startTransition(() => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    });
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleDecreaseCount = () => {
@@ -71,10 +69,16 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
   const totalDistance = formData.count * formData.intervalDistance;
 
   const handleSave = () => {
-    navigation?.navigate('LessonPlanConfirm', {
-      editedItem: { sectionTitle, itemIndex, ...formData },
-    });
-  };
+    updateItem(setKey, itemIndex, {
+        ...item,
+        title: formData.name,
+        detail: formData.description,
+        set: formData.count,
+        distance_m: formData.intervalDistance,
+      });
+      navigation?.goBack();
+    };
+
 
   return (
     <ScreenLayout
@@ -84,7 +88,7 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
     >
       <View className="pt-md pb-xl">
         <Text className="text-label text-primary font-medium mb-sm">
-          {sectionTitle} · 항목 {itemIndex + 1}
+          {setKey} · 항목 {itemIndex + 1}
         </Text>
         <View className="h-px bg-hairline mb-md" />
 

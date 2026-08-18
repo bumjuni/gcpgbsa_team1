@@ -11,7 +11,7 @@ from langchain_community.vectorstores import Chroma
 from langchain_core.prompts import ChatPromptTemplate
 from dotenv import load_dotenv
 
-from drill_picker import pick_drills, format_drills   # [신규] 드릴 라이브러리 조회
+from .drill_picker import pick_drills, format_drills   # [신규] 드릴 라이브러리 조회
 
 warnings.filterwarnings("ignore", category=UserWarning)
 

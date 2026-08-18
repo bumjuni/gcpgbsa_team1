@@ -39,6 +39,7 @@ class Program(Base):
         server_default=ProgramStatusEnum.DRAFT.value,  # 기본값: DRAFT
     )
     duration_min: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    total_distance_m: Mapped[int] = mapped_column(SmallInteger, nullable=False)
     equipment: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
@@ -57,6 +58,30 @@ class Program(Base):
     program_items: Mapped[List["ProgramItem"]] = relationship(
         "ProgramItem", back_populates="program"
     )
+
+    @property
+    def pre_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.PRE_SET and item.deleted_at is None
+        ]
+
+    @property
+    def main_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.MAIN_SET and item.deleted_at is None
+        ]
+
+    @property
+    def post_set(self):
+        return [
+            item
+            for item in self.program_items
+            if item.phase == ProgramPhaseEnum.POST_SET and item.deleted_at is None
+        ]
 
 
 class ProgramItem(Base):
