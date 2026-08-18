@@ -4,7 +4,7 @@ import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { useClassStore } from '../../stores/useClassStore';
-import { formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
+import { filterPassedLessonPlans, formatDateToYMD, formatNextClassLabel, getNextClassDate, groupProgramHistoryByWeek, ProgramHistoryItem } from '../../utils/classSchedule';
 import { useLessonPlanStore } from '../../stores/useLessonPlanStore';
 import { calculateTotalDistance, toLessonPlanSets } from '../../utils/lessonPlan';
 import { lessonPlanApi } from '../../api/lessonPlan';
@@ -27,10 +27,11 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const fetchPrograms = async () => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
+        const pastPrograms = filterPassedLessonPlans(history, currentClass.start_time);
         const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
-        setProgramHistory(history);
+        setProgramHistory(pastPrograms);
         nextProgram && setLessonPlan(nextProgram);
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
