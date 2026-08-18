@@ -14,7 +14,7 @@ const ReadOnlyBox = ({ value }: { value: string }) => (
 );
 
 export const ClassDetailsMemberDetailScreen = ({ navigation, route }: any) => {
-  const { studentId, enrollmentMemo } = route?.params ?? {};
+  const { studentId, enrollment } = route?.params ?? {};
   const [student, setStudent] = useState<EnrollmentStudent>();
 
   const fetchStudentDetail = async () => {
@@ -36,7 +36,7 @@ export const ClassDetailsMemberDetailScreen = ({ navigation, route }: any) => {
 
 
   const handleEdit = () => {
-    navigation?.navigate('ClassDetailsMemberEdit', {student, enrollmentMemo});
+    navigation?.navigate('ClassDetailsMemberEdit', {student, enrollment});
   };
 
   if (!student) return null;
@@ -94,7 +94,7 @@ export const ClassDetailsMemberDetailScreen = ({ navigation, route }: any) => {
 
         <FormField className="mb-0">
           <FormField.Label label="비고" />
-          <ReadOnlyBox value={enrollmentMemo} />
+          <ReadOnlyBox value={enrollment.memo} />
         </FormField>
       </Card>
     </ScreenLayout>

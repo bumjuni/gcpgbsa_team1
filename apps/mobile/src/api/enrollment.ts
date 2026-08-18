@@ -13,6 +13,7 @@ export interface EnrollmentCreate {
 }
 
 export interface EnrollmentStudent {
+  id: number;
   name: string;
   gender?: GenderType;
   phone?: string;
@@ -37,6 +38,18 @@ export const enrollmentApi = {
   createEnrollment: async (data: EnrollmentCreate) => {
     const response = await apiClient.post<EnrollmentResponse>('/enrollment', data);
     console.log(response)
+    return response.data;
+  },
+
+  deleteEnrollment: async (enrollmentId: number) => {
+    const response = await apiClient.delete(`/enrollment/${enrollmentId}`);
+    console.log(response);
+    return response.data;
+  },
+
+  updateEnrollment: async (enrollmentId: number, data: EnrollmentDetail => {
+    const response = await apiClient.patch(`/enrollment/${enrollmentId}`, data);
+    console.log(response);
     return response.data;
   },
 };

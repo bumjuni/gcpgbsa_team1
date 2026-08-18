@@ -7,4 +7,10 @@ export const studentApi = {
     console.log(response)
     return response.data;
   },
+
+  updateStudent: async (studentId: number, data: EnrollmentStudent) => {
+    const response = await apiClient.patch(`/student/${studentId}`, data);
+    console.log(response);
+    return response.data;
+  },
 };
