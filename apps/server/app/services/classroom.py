@@ -36,7 +36,7 @@ class ClassroomService:
         class_ids = [sc.id for sc in swim_classes_orm]
 
         today_map = await self.crud.get_today_program_status_map(class_ids, today)
-        next_map = await self.crud.get_next_program_status_map(class_ids)
+        next_map = await self.crud.get_next_program_status_map(class_ids, today)
 
         return [
             SwimClassResponse.model_validate(sc).model_copy(
