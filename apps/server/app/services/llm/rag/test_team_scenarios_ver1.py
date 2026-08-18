@@ -14,7 +14,7 @@ import logging
 logging.getLogger().setLevel(logging.ERROR)
 
 import json
-from teamprogram_ver1 import generate_curriculum
+from .teamprogram_ver1 import generate_curriculum
 
 # =====================================================================
 # 시나리오 배터리 — 레벨×카테고리×장비×previous_session 조합으로 최대한

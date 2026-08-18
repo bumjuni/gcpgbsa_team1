@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
-from rag_service_ver3 import generate_curriculum
+from .rag_service_ver3 import generate_curriculum
 
 sample_request = {
     "class_name": "청소년 중급반",

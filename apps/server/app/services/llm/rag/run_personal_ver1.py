@@ -9,7 +9,7 @@ import logging
 logging.getLogger().setLevel(logging.ERROR)
 
 import json
-from personar_ver1 import generate_personal_session
+from .personar_ver1 import generate_personal_session
 
 SAMPLE_REQUEST = {
     "profile": {
