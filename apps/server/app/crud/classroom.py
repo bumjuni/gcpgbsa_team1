@@ -95,11 +95,19 @@ class ClassroomCrud:
     ) -> dict[int, ProgramStatusEnum]:
         if not class_ids:
             return {}
+        now_time = datetime.now().time()
+
         stmt = select(Program.class_id, Program.status).where(
             Program.class_id.in_(class_ids),
             Program.date == today,
+            Program.start_time >= now_time,
             Program.deleted_at.is_(None),
         )
+        # stmt = select(Program.class_id, Program.status).where(
+        #     Program.class_id.in_(class_ids),
+        #     Program.date == today,
+        #     Program.deleted_at.is_(None),
+        # )
         result = await self.db.execute(stmt)
         return {row.class_id: row.status for row in result.all()}
 
