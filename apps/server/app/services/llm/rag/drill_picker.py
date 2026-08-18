@@ -26,6 +26,17 @@ EQUIP_DETECT = {
     "paddle":    ["패들", "paddle"],
     "pullbuoy":  ["풀부이", "부이", "buoy"],
 }
+# 레벨별 기본 영법 진행 순서. ★ 강제 아님 — request_text/goal_text에 특정 영법이
+# 명시되면 그게 항상 우선한다(STROKE_DETECT). 아무 언급이 없을 때만 이 기본값을
+# 적용한다 — 그렇지 않으면 유아·신규 세션에 평영/접영 드릴이 아무 제약 없이
+# 섞여 나올 수 있다(레벨 필드만으로는 "아직 안 배운 영법"까지 걸러지지 않음).
+LEVEL_STROKE_PROGRESSION = {
+    "BEGINNER":     ["any"],                                                     # 신규: 특정 영법 없음, 물적응 위주
+    "ELEMENTARY":   ["any", "freestyle", "backstroke"],                          # 초급: 자유형·배영
+    "INTERMEDIATE": ["any", "freestyle", "backstroke", "breaststroke"],          # 중급: +평영
+    "ADVANCED":     ["any", "freestyle", "backstroke", "breaststroke", "butterfly"],  # 상급: +접영
+    "MASTER":       ["any", "freestyle", "backstroke", "breaststroke", "butterfly"],  # 마스터즈: 4영법
+}
 # 요청 키워드 → 드릴 본문에서 찾을 영어 단어
 FOCUS_TERMS = {
     "자세": ["position", "alignment", "technique", "posture"],
@@ -59,10 +70,17 @@ def pick_drills(level, age_group, request_text="", goal_text="",
     cand = [d for d in DRILLS
             if level in d["level"] and age_group in d["age_group"]]
 
-    # 2) 영법 필터 ─ 요청에 영법이 있으면 그것만 (없으면 전부)
+    # 2) 영법 필터 ─ 요청에 영법이 명시되면 그것만(강사 지정이 항상 우선).
+    #    명시가 없으면 레벨별 기본 진행 순서(LEVEL_STROKE_PROGRESSION)를 적용해,
+    #    아직 배우지 않았을 영법(예: 신규 단계의 평영·접영)이 기본적으로 섞여
+    #    나오지 않게 한다.
     if strokes:
         cand = [d for d in cand
                 if any(s in d["stroke"] for s in strokes) or "any" in d["stroke"]]
+    else:
+        default_strokes = LEVEL_STROKE_PROGRESSION.get(
+            level, ["any", "freestyle", "backstroke"])
+        cand = [d for d in cand if any(s in d["stroke"] for s in default_strokes)]
 
     # 3) 스킬 드릴 ─ 명시 요청이 없으면 제외
     if skills:
