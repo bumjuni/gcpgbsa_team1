@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useTransition } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
@@ -37,7 +37,6 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [formData, setFormData] = useState<NewMemberFormState>(INITIAL_FORM_STATE);
-  const [, startTransition] = useTransition();
 
   const [enrollment, setEnrollments] = useState<EnrollmentResponse[]>([]);
 
@@ -73,9 +72,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   };
 
   const handleFieldChange = <K extends keyof NewMemberFormState>(key: K, value: string) => {
-    startTransition(() => {
       setFormData((prev) => ({ ...prev, [key]: value }));
-    });
   };
 
   const handleSubmitNewMember = async () => {

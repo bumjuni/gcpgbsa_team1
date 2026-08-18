@@ -32,12 +32,9 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
     notes: enrollment.memo ?? "",
   });
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [, startTransition] = useTransition();
 
   const handleFieldChange = <K extends keyof MemberEditFormState>(key: K, value: string) => {
-    startTransition(() => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    });
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const currentYear = new Date().getFullYear();

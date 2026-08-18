@@ -1,6 +1,6 @@
 // LessonPlanCreateScreen.tsx
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
@@ -29,7 +29,6 @@ const initialFormState: LessonPlanFormState = Object.freeze({
 export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
   const [formData, setFormData] = useState<LessonPlanFormState>(initialFormState);
-  const [, startTransition] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const currentClass = useClassStore((s) => s.currentClass);
@@ -37,14 +36,11 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
   const handleRequestChange = (value: string) => {
     // maxLength로도 막지만, 붙여넣기 등으로 초과 입력되는 경우를 대비해 이중 방어
     const truncated = value.slice(0, REQUEST_MAX_LENGTH);
-    startTransition(() => {
       setFormData((prev) => ({ ...prev, request: truncated }));
-    });
   };
 
   // 장비 토글: 'NONE'을 켜면 나머지 전체 해제, 다른 장비를 켜면 'NONE' 자동 해제 (양방향 배타)
   const toggleEquipment = (item: EquipmentValue) => {
-    startTransition(() => {
       setFormData((prev) => {
         const isSelected = prev.equipment.includes(item);
 
@@ -59,7 +55,6 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
         return { ...prev, equipment: nextEquipment };
       });
-    });
   };
 
   const handleSubmit = async () => {
@@ -103,6 +98,8 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
   if (isGenerating) {
     return <LessonPlanGeneratingView />;
   }
+
+  if (!currentClass) return null;
 
   return (
     <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성하기" onPress={handleSubmit} />}>
