@@ -5,15 +5,15 @@ import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
-import { enrollmentApi, EnrollmentResponse, EnrollmentStudent } from '../../api/enrollment';
+import { enrollmentApi, EnrollmentResponse } from '../../api/enrollment';
 import { useFocusEffect } from '@react-navigation/native';
-import { GenderType, MemberFormState } from '../../types/member';
+import { GenderType } from '../../types/member';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
 const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포트'];
 
-const MAX_MEMBERS = 10;
+const MAX_MEMBERS = 50;
 
 interface NewMemberFormState {
   name: string;
@@ -107,7 +107,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
    };
 
 
-  const isMemberLimitReached = MEMBERS.length >= MAX_MEMBERS;
+  const isMemberLimitReached = enrollment.length >= MAX_MEMBERS;
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
     setTabRowWidth(e.nativeEvent.layout.width);

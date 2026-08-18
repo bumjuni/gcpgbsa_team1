@@ -23,6 +23,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (!currentClass) return;
+    setLessonPlan(null); // 반/날짜 전환 시 이전 값 제거 — race 방지를 위해 fetch 시작 전에 클리어
 
     const fetchPrograms = async () => {
       try {
@@ -35,8 +36,6 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
 
         if (nextProgram) {
           const programTime = new Date(`${nextProgram.date}T${currentClass.start_time}`);
-
-          // 프로그램 시간이 현재 시간보다 이후(더 뒤)인 경우에만 state 변경
           if (programTime > new Date()) {
             setLessonPlan(nextProgram);
           }
