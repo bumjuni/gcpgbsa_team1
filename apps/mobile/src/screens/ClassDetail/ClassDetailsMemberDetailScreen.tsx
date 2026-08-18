@@ -10,27 +10,10 @@ const ReadOnlyBox = ({ value }: { value: string }) => (
   </View>
 );
 
-export const ClassDetailsMemberDetailScreen = ({ navigation, route }: any) => {
-  const {
-    classId,
-    memberId,
-    name = '김수영',
-    birthYear = '2018',
-    phone = '010-1234-5678',
-    gender = 'M',
-    notes = '물을 무서워해요',
-  } = route?.params ?? {};
+export const ClassDetailsMemberDetailScreen = ({ navigation }: any) => {
 
   const handleEdit = () => {
-    navigation?.navigate('ClassDetailsMemberEdit', {
-      classId,
-      memberId,
-      name,
-      birthYear,
-      phone,
-      gender,
-      notes,
-    });
+    navigation?.navigate('ClassDetailsMemberEdit');
   };
 
   return (

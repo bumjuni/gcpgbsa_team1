@@ -95,22 +95,23 @@ class ClassroomCrud:
     ) -> dict[int, ProgramStatusEnum]:
         if not class_ids:
             return {}
+
         now_time = datetime.now().time()
 
-        stmt = select(Program.class_id, Program.status).where(
-            Program.class_id.in_(class_ids),
-            Program.date == today,
-            Program.start_time >= now_time,
-            Program.deleted_at.is_(None),
+        stmt = (
+            select(Program.class_id, Program.status)
+            .join(Program.swim_class) # SwimClass와 조인
+            .where(
+                Program.class_id.in_(class_ids),
+                Program.date == today,
+                SwimClass.start_time >= now_time, # SwimClass의 start_time으로 조건 비교
+                Program.deleted_at.is_(None),
+                SwimClass.deleted_at.is_(None), # SwimClass의 삭제 여부도 함께 확인
+            )
         )
-        # stmt = select(Program.class_id, Program.status).where(
-        #     Program.class_id.in_(class_ids),
-        #     Program.date == today,
-        #     Program.deleted_at.is_(None),
-        # )
+
         result = await self.db.execute(stmt)
         return {row.class_id: row.status for row in result.all()}
-
 
     async def update_swim_class(
         self, swim_class_id: int, update_data: dict
