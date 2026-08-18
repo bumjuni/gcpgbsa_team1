@@ -98,11 +98,10 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
               {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
                   key={`${section.key}-${index}`}
-                  title={item.title}
+                  title={`${item.set} X ${item.distance_m}m  ${item.title}`}
                   description={item.detail}
                   rightElement={
-                    <View className="items-end flex-col justify-between">
-                      <Text className="text-label text-ink-tertiary">{item.set} X {item.distance_m}m</Text>
+                    <View className="justify-start">
                       <Pressable onPress={() => handleEditItem(section.key, index)} hitSlop={8}>
                         <Text className="text-caption text-primary font-medium">수정</Text>
                       </Pressable>

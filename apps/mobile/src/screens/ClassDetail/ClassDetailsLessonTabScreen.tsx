@@ -32,7 +32,15 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
         setProgramHistory(pastPrograms);
-        nextProgram && setLessonPlan(nextProgram);
+
+        if (nextProgram) {
+          const programTime = new Date(`${nextProgram.date}T${currentClass.start_time}`);
+
+          // 프로그램 시간이 현재 시간보다 이후(더 뒤)인 경우에만 state 변경
+          if (programTime > new Date()) {
+            setLessonPlan(nextProgram);
+          }
+        }
       } catch (error) {
         console.error('수업 기록 조회 실패:', error);
       }
