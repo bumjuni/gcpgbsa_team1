@@ -91,7 +91,18 @@ async def check_program_item(
 ) -> int:
     return await service.check_program_item(program_item_id)
 
-
+@router.patch(
+    "/{program_id}/complete",
+    response_model=ProgramResponse,
+    status_code=status.HTTP_200_OK,
+    summary="루틴 프로그램 종료",
+)
+async def complete_program(
+    program_id: int,
+    schema: ProgramConfirm,
+    service: ProgramService = Depends(get_program_service),
+) -> ProgramResponse:
+    return await service.complete_program(program_id, schema)
 
 # # @router.post(
 # #     "/items",
