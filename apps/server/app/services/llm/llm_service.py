@@ -50,16 +50,16 @@ def build_request_body(swim_class, equipment: str, request: str) -> dict:
     )
 
     return {
-        "class_name": swim_class.name,
-        "days_of_week": days_str,
-        "start_time": swim_class.start_time.strftime("%H:%M"),
+        "class_name": str(swim_class.name),
+        "days_of_week": str(days_str),
+        "start_time": str(swim_class.start_time.strftime("%H:%M")),
         "duration_min": duration_min,
-        "age_group": swim_class.age_group,
-        "level": swim_class.level,
-        "goal": swim_class.goals,
-        "goal_etc": swim_class.goal_etc or "",
-        "equipment": equipment or "",
-        "request": request or "",
+        "age_group": str(swim_class.age_group),
+        "level": str(swim_class.level),
+        "goal": str(swim_class.goals),
+        "goal_etc": str(swim_class.goal_etc or ""),
+        "equipment": str(equipment) or "",
+        "request": str(request) or "",
     }
 
 
