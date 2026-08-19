@@ -8,7 +8,7 @@ import logging
 logging.getLogger().setLevel(logging.ERROR)
 
 import json
-from .teamprogram_ver1 import generate_curriculum
+from teamprogram_ver1_1 import generate_curriculum
 
 SAMPLE_REQUEST = {
     "class_name": "청소년 중급반",
