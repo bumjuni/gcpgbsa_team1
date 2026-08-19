@@ -1,4 +1,10 @@
 {
-  "name": "gcp_gbsa_1",
-  "displayName": "gcp_gbsa_1"
+  "expo": {
+    "name": "gcp_gbsa_1",
+    "slug": "gcp-gbsa-1",
+    "entryPoint": "./index.js",
+    "web": {
+      "bundler": "metro"
+    }
+  }
 }
