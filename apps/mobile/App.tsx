@@ -37,7 +37,7 @@ export default function App() {
     >
       {/* 2. 중앙 모바일 프레임 컨테이너: 너비 최대 430px 제한, 그림자(Shadow) 및 테두리 효과 적용 */}
       <View
-        className="w-full max-w-[430px] flex-1 bg-white"
+        className="w-full max-w-[440px] flex-1 bg-white px-[10px]"
         style={
           Platform.OS === 'web'
             ? ({
