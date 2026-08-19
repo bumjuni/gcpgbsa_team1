@@ -4,6 +4,7 @@ import { CardItemProps } from "./Card.types";
 export const CardItem: React.FC<CardItemProps> = ({
   title,
   description,
+  children,
   leftElement,
   rightElement,
   onPress,
@@ -26,6 +27,7 @@ export const CardItem: React.FC<CardItemProps> = ({
           {description && (
             <Text className="text-caption text-ink-secondary mt-xs">{description}</Text>
           )}
+          {children}
         </View>
       </View>
       {rightElement}

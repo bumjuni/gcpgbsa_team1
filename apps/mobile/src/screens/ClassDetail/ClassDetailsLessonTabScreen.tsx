@@ -172,7 +172,11 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
                       onPress={() => handleLessonHistoryPress(lesson.date)}
                       isLast={index === week.lessons.length - 1}
                       rightElement={<Text className="text-ink-tertiary">›</Text>}
-                    />
+                    >
+                      {lesson.status === 'CONFIRMED' && (
+                        <Text className="text-caption font-medium text-status-warning mt-xs">• 종료 필요</Text>
+                      )}
+                    </Card.Item>
                   ))}
                 </Card>
             </View>

@@ -211,6 +211,7 @@ export interface WeekGroup {
     id: number;
     date: string;
     label: string; // e.g. "8월 6일 (목) 오후 7:00"
+    status: string;
   }[];
 }
 
@@ -288,6 +289,7 @@ export function groupProgramHistoryByWeek(
       id: program.program_id,
       date: program.date,
       label: formatDateLabel(program.date, startTime),
+      status: program.status,
     });
   }
 
