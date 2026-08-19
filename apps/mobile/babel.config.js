@@ -2,17 +2,11 @@ module.exports = function (api) {
   api.cache(true);
   return {
     presets: [
-      'module:@react-native/babel-preset',
-      'nativewind/babel', // Moved here
+      ['babel-preset-expo', { jsxImportSource: 'nativewind' }],
+      'nativewind/babel',
     ],
     plugins: [
-      // Remove 'nativewind/babel' from here if present
+      'react-native-reanimated/plugin', // 항상 맨 아래 배치
     ],
   };
 };
-
-
-// module.exports = {
-//   presets: ['module:@react-native/babel-preset'],
-//   plugins: ['nativewind/babel']
-// };
