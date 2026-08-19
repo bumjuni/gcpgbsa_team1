@@ -10,7 +10,7 @@ from models.enums import AgeGroupEnum, GenderEnum, LevelEnum
 from crud.report import WeeklyReportCrud
 from crud.program import ProgramCrud
 from crud.enrollment import EnrollmentCrud
-from schemas.report import WeeklyReportResponse
+from schemas.report import RatingRequest, RatingResponse, SessionFocusItem, WeeklyReportResponse
 
 
 # level(강도)별 MET 대표값 - SRS §3-2 강도 구간(저/중/고강도)을 실제 LevelEnum 5단계에 매핑한 가정치
@@ -188,7 +188,11 @@ class ReportService:
         programs = await self.program_crud.get_completed_by_class_and_week(
             class_id, report.week_start, report.week_end
         )
-        session_focus_list = [p.ai_summary_line for p in programs if p.ai_summary_line]
+        session_focus_list = [
+            SessionFocusItem(date=p.date, note=p.ai_summary_line)
+            for p in programs
+            if p.ai_summary_line
+        ]
 
         return WeeklyReportResponse(
             week_start=report.week_start,
@@ -196,8 +200,31 @@ class ReportService:
             week_distance_m=item.week_distance_m,
             week_duration_min=item.week_duration_min,
             week_calorie_kcal=item.week_calorie_kcal,
+            cumulative_distance_m=item.cumulative_distance_m,
             session_focus_list=session_focus_list,
             apply_tip=item.apply_tip,
             key_points=item.key_points,
-            rating=None,  # report_feedback 제출 플로우는 이번 작업 범위 밖
+            rating=None,  # GET 시점엔 기존 rating을 함께 조회하지 않음 (제출 전용 플로우)
         )
+
+    async def submit_rating(
+        self, class_id: int, student_id: int, any_date: date, schema: RatingRequest
+    ) -> RatingResponse:
+        """이미 생성된 주간 리포트의 학생 항목에 별점을 등록/수정한다."""
+        week_start, _ = _week_bounds(any_date)
+        report = await self.crud.get_by_class_and_week(class_id, week_start)
+        if report is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="해당 주의 리포트를 찾을 수 없습니다.",
+            )
+
+        item = next((i for i in report.items if i.student_id == student_id), None)
+        if item is None:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Student {student_id}의 주간 리포트 항목을 찾을 수 없습니다.",
+            )
+
+        feedback = await self.crud.upsert_feedback(item.id, schema.rating)
+        return RatingResponse(rating=feedback.rating)

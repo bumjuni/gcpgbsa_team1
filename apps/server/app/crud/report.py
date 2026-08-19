@@ -5,7 +5,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from models.report import WeeklyReport, WeeklyReportItem
+from models.report import ReportFeedback, WeeklyReport, WeeklyReportItem
 
 
 class WeeklyReportCrud:
@@ -48,3 +48,29 @@ class WeeklyReportCrud:
             )
         )
         return result.scalar_one_or_none()
+
+    async def upsert_feedback(
+        self, weekly_report_item_id: int, rating: int
+    ) -> ReportFeedback:
+        """weekly_report_item에 대한 별점을 등록하거나(없으면), 이미 있으면 갱신한다."""
+        result = await self.db.execute(
+            select(ReportFeedback).where(
+                ReportFeedback.weekly_report_item_id == weekly_report_item_id
+            )
+        )
+        feedback = result.scalar_one_or_none()
+
+        if feedback is not None:
+            feedback.rating = rating
+            feedback.submitted_at = datetime.now()
+        else:
+            feedback = ReportFeedback(
+                weekly_report_item_id=weekly_report_item_id,
+                rating=rating,
+                submitted_at=datetime.now(),
+            )
+            self.db.add(feedback)
+
+        await self.db.commit()
+        await self.db.refresh(feedback)
+        return feedback
