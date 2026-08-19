@@ -23,7 +23,7 @@ const MEMBERS: ReportMember[] = [
 
 const STAR_COUNT = 5;
 
-export const ClassDetailsReportHistoryScreen = ({ route }: any) => {
+export const ClassDetailsReportHistoryScreen = ({ navigation, route }: any) => {
   const {
     weekLabel = '7월 2주차',
     range = '7/13~7/19',
@@ -35,11 +35,21 @@ export const ClassDetailsReportHistoryScreen = ({ route }: any) => {
   const filledStars = Math.round(averageRating);
 
   // TODO: 리포트 실제 내용을 보여주는 미리보기 화면 미제작 — 목업 받으면 연결 필요
-  const handlePreviewPress = () => {};
+  const handlePreviewPress = () => {
+    navigation?.navigate('WebReports');
+  };
 
   return (
     <ScreenLayout title={`${weekLabel} 리포트`} showBackButton>
       <View className="pt-md pb-xl">
+        {/*베타테스트 제외 기능 안내*/}
+        <Card variant="notice" className="bg-status-danger-subtle flex-row items-center justify-between px-md py-md mb-lg">
+          <View>
+            <Text className="text-body-strong text-status-danger mb-xxs">ⓘ 베타테스트에서는 제외된 기능이예요.</Text>
+            <Text className="text-caption text-ink-secondary">     화면은 이해를 돕기 위한 샘플 데이터예요.</Text>
+          </View>
+        </Card>
+
         <Card onPress={handlePreviewPress} className="flex-row items-center justify-between px-md py-md mb-lg">
           <View>
             <Text className="text-body-strong text-ink mb-xxs">보낸 리포트 확인하기</Text>
