@@ -1,17 +1,26 @@
-# llm 서비스 — 신규 파일 안내 (2026-08-17 기준)
+# llm 서비스 — 신규 파일 안내 (2026-08-19 기준)
 
 > 이 문서는 `feat/be/rag-service` 브랜치에서 최근 세션들에 새로 생긴 파일들을
 > 한눈에 파악할 수 있도록 정리한 스냅샷입니다. **파일을 삭제하거나 옮기지
 > 않았습니다** — 아래 표는 지금 이 디렉터리에 있는 그대로의 위치를 설명만
 > 합니다. (하위 폴더로 옮기지 않은 이유: 이 디렉터리의 스크립트들은 서로
-> `from teamprogram_ver1 import ...` 식으로 같은 폴더에 있다는 전제로
+> `from teamprogram_ver1_1 import ...` 식으로 같은 폴더에 있다는 전제로
 > import하고 있어서, 물리적으로 옮기면 import가 깨집니다.)
+
+> ★ 2026-08-19: 강사가 `team_program_examples.md`의 4개 예시 실행 결과를 검토한
+> 뒤 준 피드백 6가지(강도별 Main-Set 드릴 혼합, 초급 배영 오태깅 수정, 상급
+> 레이스페이스 허용 등)를 반영하면서 `teamprogram_ver1.py`를 덮어쓰지 않고
+> **`teamprogram_ver1_1.py`를 새로 만들어 그쪽이 활성 파일이 되도록** 했습니다.
+> `teamprogram_ver1.py`는 git 커밋 `0482a84` 시점 원본 그대로 보존되며(⑥ 레거시
+> 참고), `personar_ver1.py`/`personal_chat_ver1.py` 등 실제로 동작하는 모든
+> import는 `teamprogram_ver1_1`을 가리키도록 이번에 함께 변경했습니다.
 
 ## 아키텍처 한눈에 보기 (3계층)
 
 ```
-teamprogram_ver1.py   — 공통 코어(카테고리 A~E, 8존 분류, 게이팅, 인터벌 세트 계산)
+teamprogram_ver1_1.py — 공통 코어(카테고리 A~E, 8존 분류, 게이팅, 인터벌 세트 계산)
                          + 팀(강사) 전용 엔트리포인트 generate_curriculum()
+                         (teamprogram_ver1.py 계승 — 강도별 Main-Set 드릴 혼합 등 추가)
         │  (공통 코어 표·함수를 라이브러리처럼 import)
         ▼
 personar_ver1.py       — ACSM 안전 스크리닝 + 개인 강도 계산 + 다중 세션 주기화
@@ -22,7 +31,7 @@ personal_chat_ver1.py — 의도 분류·슬롯 채우기·잡담 RAG 그라운�
                          채팅 오케스트레이션 레이어 (페르소나 "그로우디")
 ```
 
-`personar_ver1.py`/`personal_chat_ver1.py`는 `teamprogram_ver1.generate_curriculum()`을
+`personar_ver1.py`/`personal_chat_ver1.py`는 `teamprogram_ver1_1.generate_curriculum()`을
 호출하지 않습니다 — 그 안에 정의된 공통 표·함수(zone/category 로직)만 가져다 쓰고,
 각자 독립된 엔트리포인트(`generate_personal_session()`)를 갖습니다.
 
@@ -39,7 +48,7 @@ personal_chat_ver1.py — 의도 분류·슬롯 채우기·잡담 RAG 그라운�
 
 | 파일 | 설명 | 실행법 |
 |---|---|---|
-| `teamprogram_ver1.py` | 팀(강사) 커리큘럼 생성 핵심 로직. `generate_curriculum(request_body) -> dict`가 엔트리포인트이며, §1 공통 코어(존/카테고리 분류)도 이 파일에 있음. `rag_service_ver4.py`의 후속 버전(출력 스키마 100% 동일). | 아래 두 스크립트로 실행 |
+| `teamprogram_ver1_1.py` | **현재 활성 파일.** 팀(강사) 커리큘럼 생성 핵심 로직. `generate_curriculum(request_body) -> dict`가 엔트리포인트이며, §1 공통 코어(존/카테고리 분류)도 이 파일에 있음. `teamprogram_ver1.py`의 후속 버전 — 강도별 Main-Set 드릴 혼합, 상급 레이스페이스 허용 등 강사 피드백 6가지 반영(자세한 변경 내역은 파일 상단 주석 참고). | 아래 두 스크립트로 실행 |
 | `run_team_ver1.py` | `generate_curriculum()` 단발 실행용 대화형 스크립트. JSON을 붙여넣거나 Enter만 치면 내장 샘플로 실행. | `python3 run_team_ver1.py` |
 | `test_team_scenarios_ver1.py` | 시나리오 5종(preschool/speed/speed_repeat/technique/equip_periodization) 배치 실행 — 실제 Gemini 호출. | `python3 test_team_scenarios_ver1.py --list` (목록만) / 이름 지정 실행 |
 
@@ -57,27 +66,29 @@ personal_chat_ver1.py — 의도 분류·슬롯 채우기·잡담 RAG 그라운�
 
 | 파일 | 설명 |
 |---|---|
-| `team_program_logic.html` | 팀 프로그램 생성(`teamprogram_ver1.py`) 전체 파이프라인을 처음부터 끝까지 설명하는 단독 HTML 문서. 브라우저로 열어서 보면 됨(서버 실행 불필요). |
+| `team_program_logic.html` | 팀 프로그램 생성(`teamprogram_ver1.py`) 전체 파이프라인을 처음부터 끝까지 설명하는 단독 HTML 문서. 브라우저로 열어서 보면 됨(서버 실행 불필요). ★ `teamprogram_ver1_1.py`의 강도별 Main-Set 드릴 혼합 등 신규 로직은 아직 반영 안 됨(작성 시점 기준 `teamprogram_ver1.py`만 설명). |
 | `personal_chat_logic.html` | 개인모드 챗봇(온보딩/슬롯채우기/RAG 그라운딩, `personal_chat_ver1.py`+`personar_ver1.py`) 전체 파이프라인을 설명하는 단독 HTML 문서. 마찬가지로 서버 실행 불필요. |
 
 ## ④ 로컬 개발 서버 / 실시간 테스트 도구
 
 | 파일 | 설명 | 실행법 |
 |---|---|---|
-| `personal_chat_dev_server.py` | `personal_chat_ver1.py`의 CHAT 의도 파이프라인(키워드 게이트→RAG 검색→그라운딩→응답)만 실시간으로 테스트하는 로컬 FastAPI 서버. 로직을 재구현하지 않고 실제 함수를 그대로 호출함. | `cd apps/server/app/services/llm && ../../../venv/bin/python3 personal_chat_dev_server.py` 후 `http://127.0.0.1:8765` 접속 |
-| `personal_chat_dev_page.html` | 위 서버가 서빙하는 테스트 페이지. CHAT 파이프라인 구조 다이어그램 + 실시간 테스트 결과(매치 키워드, RAG 후보 점수, 최종 응답)를 시각화. `team_program_logic.html`/`personal_chat_logic.html`과 달리 이건 실제 라이브 테스트용이고, 서버가 켜져 있어야 동작함. | (위 서버 실행 후 브라우저로 접속) |
+| `personal_chat_dev_server.py` | `personal_chat_ver1.py`를 실시간으로 테스트하는 로컬 FastAPI 서버. 로직을 재구현하지 않고 실제 함수를 그대로 호출함(`chat_reply`, `handle_turn` 등). 페이지 2개를 서빙: `/`(CHAT 의도 파이프라인만, 키워드 게이트→RAG 검색→그라운딩→응답)과 `/chat`(가상 프로필로 세션을 시작해 실제 대화하며 의도 분류 라우팅 GENERATE_SESSION/FEEDBACK/CHAT 전체를 테스트). | `cd apps/server/app/services/llm && ../../../venv/bin/python3 personal_chat_dev_server.py` 후 `http://127.0.0.1:8765`(CHAT 전용) 또는 `http://127.0.0.1:8765/chat`(전체 대화) 접속 |
+| `personal_chat_dev_page.html` | 위 서버의 `/` 페이지. CHAT 파이프라인 구조 다이어그램 + 실시간 테스트 결과(매치 키워드, RAG 후보 점수, 최종 응답)를 시각화. | (위 서버 실행 후 브라우저로 접속) |
+| `personal_chat_full_dev_page.html` | 위 서버의 `/chat` 페이지. 가상 회원 프로필 폼(+고급 JSON) → 실제 채팅 UI(라우팅 배지 표시) → 최근 생성 세션의 `last_result` 원본 JSON 패널. `team_program_logic.html`/`personal_chat_logic.html`과 달리 이 셋 다 실제 라이브 테스트용이고, 서버가 켜져 있어야 동작함. | (위 서버 실행 후 브라우저로 접속) |
 
 ## ⑤ 공용 설계 문서
 
 | 파일 | 설명 |
 |---|---|
-| `programlogic.md` | "PROGRAM_LOGIC v2" — 팀/개인 모드 분리 설계안(승인 전 초안). §1 공통 코어, §2 팀 설계, §3 개인 설계(신규), §5에 제안된 파일 구조(`zone_logic_common.py` 등)가 있지만 **실제로는 그 구조대로 분리되지 않고 `teamprogram_ver1.py` 안에 공통 코어가 그대로 남아 있음** — 문서와 실제 파일 구조가 다르다는 점 참고. |
+| `programlogic.md` | "PROGRAM_LOGIC v2" — 팀/개인 모드 분리 설계안(승인 전 초안). §1 공통 코어, §2 팀 설계, §3 개인 설계(신규), §5에 제안된 파일 구조(`zone_logic_common.py` 등)가 있지만 **실제로는 그 구조대로 분리되지 않고 `teamprogram_ver1_1.py` 안에 공통 코어가 그대로 남아 있음** — 문서와 실제 파일 구조가 다르다는 점 참고. |
 
 ## ⑥ 레거시 참고용 — 이번 작업과 무관
 
 | 파일 | 설명 |
 |---|---|
-| `run_once.py` | `generate_curriculum`을 **`rag_service_ver4.py`에서** import — `teamprogram_ver1.py`가 아님. 파일명만 범용적일 뿐 구버전 대상 스크립트. |
+| `teamprogram_ver1.py` | `teamprogram_ver1_1.py`로 대체되기 전 원본. git 커밋 `0482a84` 시점 내용 그대로 보존(그 이후 어떤 수정도 없음) — 강사 피드백 6가지 반영 전 상태를 그대로 비교하고 싶을 때 참고용. 이제 이 파일을 import하는 곳은 없음(전부 `teamprogram_ver1_1`로 전환됨). |
+| `run_once.py` | `generate_curriculum`을 **`rag_service_ver4.py`에서** import — `teamprogram_ver1_1.py`가 아님. 파일명만 범용적일 뿐 구버전 대상 스크립트. |
 | `test_generate_curriculum.py` | `generate_curriculum`을 **`rag_service_ver3.py`에서** import — 마찬가지로 이번 팀 프로그램 작업과 무관한 더 오래된 버전 대상 스크립트. |
 
 `drill_picker.py`는 이번 세션에서 수정하지 않았습니다(직전 세션에 `LEVEL_STROKE_PROGRESSION` 등이 이미 반영됨) — git에는 수정(M) 상태로 표시되지만 새 파일은 아닙니다.

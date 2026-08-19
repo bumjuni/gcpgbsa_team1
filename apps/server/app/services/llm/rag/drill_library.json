@@ -7567,7 +7567,7 @@
     "name_en": "TURBULENCE",
     "name_ko": "",
     "stroke": [
-      "any"
+      "backstroke"
     ],
     "skill": "kick_streamline",
     "is_skill_drill": false,
@@ -8129,7 +8129,7 @@
     "name_en": "CROSS TO WALL",
     "name_ko": "",
     "stroke": [
-      "any"
+      "backstroke"
     ],
     "skill": "turn",
     "is_skill_drill": true,

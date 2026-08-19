@@ -14,7 +14,7 @@ warnings.filterwarnings("ignore")
 import logging
 logging.getLogger().setLevel(logging.ERROR)
 
-from teamprogram_ver1 import pdf_db
+from teamprogram_ver1_1 import pdf_db
 
 # ★ 필요하면 자유롭게 추가/교체 — 실제 회원들이 쓸 법한 문장으로 채울수록 좋다.
 SWIM_TECHNIQUE_SAMPLES = [
