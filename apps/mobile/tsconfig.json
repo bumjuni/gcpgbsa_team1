@@ -3,7 +3,12 @@
   "compilerOptions": {
     "types": [
       "jest"
-    ]
+    ],
+    "lib": [
+      "esnext",
+      "dom",
+      "dom.iterable"
+    ],
   },
   "include": [
     "**/*.ts",
