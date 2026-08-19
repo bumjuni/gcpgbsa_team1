@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
 export type CardVariant = 'default' | 'warning' | 'notice' | 'muted';
 
@@ -20,6 +20,7 @@ export interface CardHeaderProps {
 export interface CardItemProps {
   title: string;
   description?: string;
+  children?: React.ReactNode;
   leftElement?: React.ReactNode;
   rightElement?: React.ReactNode;
   onPress?: () => void;

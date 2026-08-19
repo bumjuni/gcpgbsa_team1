@@ -23,20 +23,19 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (!currentClass) return;
+    setLessonPlan(null); // 반/날짜 전환 시 이전 값 제거 — race 방지를 위해 fetch 시작 전에 클리어
 
     const fetchPrograms = async () => {
       try {
         const history = await lessonPlanApi.getLessonPlanHistory(currentClass.id);
-        const pastPrograms = filterPassedLessonPlans(history, currentClass.start_time);
-        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.today_program_status);
+        const pastPrograms = filterPassedLessonPlans(history, currentClass.end_time);
+        const nextClassDate = getNextClassDate(currentClass.days_of_week, currentClass.start_time, currentClass.end_time, currentClass.today_program_status);
         const nextProgram = await lessonPlanApi.getLessonPlanDate(currentClass.id, formatDateToYMD(nextClassDate?.date as Date));
 
         setProgramHistory(pastPrograms);
 
         if (nextProgram) {
-          const programTime = new Date(`${nextProgram.date}T${currentClass.start_time}`);
-
-          // 프로그램 시간이 현재 시간보다 이후(더 뒤)인 경우에만 state 변경
+          const programTime = new Date(`${nextProgram.date}T${currentClass.end_time}`);
           if (programTime > new Date()) {
             setLessonPlan(nextProgram);
           }
@@ -64,6 +63,7 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
     const nextLesson = formatNextClassLabel(
       currentClass?.days_of_week,
       currentClass?.start_time,
+      currentClass?.end_time,
       currentClass?.today_program_status)
 
     if (nextLesson.startsWith('다'))
@@ -172,7 +172,11 @@ export const ClassDetailsLessonTabScreen = ({ navigation }: any) => {
                       onPress={() => handleLessonHistoryPress(lesson.date)}
                       isLast={index === week.lessons.length - 1}
                       rightElement={<Text className="text-ink-tertiary">›</Text>}
-                    />
+                    >
+                      {lesson.status === 'CONFIRMED' && (
+                        <Text className="text-caption font-medium text-status-warning mt-xs">• 종료 필요</Text>
+                      )}
+                    </Card.Item>
                   ))}
                 </Card>
             </View>

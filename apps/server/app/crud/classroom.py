@@ -1,5 +1,6 @@
 from datetime import datetime, date
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, update
@@ -62,7 +63,7 @@ class ClassroomCrud:
         return swim_class
 
     async def get_next_program_status_map(
-        self, class_ids: list[int]
+        self, class_ids: list[int], today:date
     ) -> dict[int, ProgramStatusEnum]:
         """반별로 완료되지 않은 program row 중 date가 가장 이른 것 1개의 status.
         lazy 생성 원칙상 반당 미완료 row는 보통 1개뿐이지만,
@@ -81,6 +82,7 @@ class ClassroomCrud:
             .where(
                 Program.class_id.in_(class_ids),
                 Program.status != ProgramStatusEnum.COMPLETED,
+                Program.date >= today,
                 Program.deleted_at.is_(None),
             )
             .subquery()
@@ -96,7 +98,7 @@ class ClassroomCrud:
         if not class_ids:
             return {}
 
-        now_time = datetime.now().time()
+        now_time = datetime.now(ZoneInfo("Asia/Seoul")).time()
 
         stmt = (
             select(Program.class_id, Program.status)

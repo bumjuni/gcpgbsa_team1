@@ -4,7 +4,7 @@ import { LessonPlanItem, LessonPlanResponse, LessonPlanSetKey } from "../types/l
 
 interface LessonPlanStore {
   lessonPlan: LessonPlanResponse | null;
-  setLessonPlan: (lessonPlan: LessonPlanResponse) => void;
+  setLessonPlan: (lessonPlan: LessonPlanResponse | null) => void;
   updateItem: (
     setKey: LessonPlanSetKey,
     itemIndex: number,

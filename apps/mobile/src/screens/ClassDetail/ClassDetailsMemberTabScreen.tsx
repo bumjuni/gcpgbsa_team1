@@ -1,19 +1,19 @@
-import React, { useCallback, useState, useTransition } from 'react';
+import React, { useCallback, useState } from 'react';
 import { View, Text, Pressable, LayoutChangeEvent } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
 import { Card } from '../../components/card/Card';
 import { FormField } from '../../components/form/FormField';
 import { useClassStore } from '../../stores/useClassStore';
-import { enrollmentApi, EnrollmentResponse, EnrollmentStudent } from '../../api/enrollment';
+import { enrollmentApi, EnrollmentResponse } from '../../api/enrollment';
 import { useFocusEffect } from '@react-navigation/native';
-import { GenderType, MemberFormState } from '../../types/member';
+import { GenderType } from '../../types/member';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
 const TABS: ClassDetailsTab[] = ['수업진행', '반정보', '명단', '리포트'];
 
-const MAX_MEMBERS = 10;
+const MAX_MEMBERS = 50;
 
 interface NewMemberFormState {
   name: string;
@@ -37,7 +37,6 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [isAddingMember, setIsAddingMember] = useState(false);
   const [formData, setFormData] = useState<NewMemberFormState>(INITIAL_FORM_STATE);
-  const [, startTransition] = useTransition();
 
   const [enrollment, setEnrollments] = useState<EnrollmentResponse[]>([]);
 
@@ -73,9 +72,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   };
 
   const handleFieldChange = <K extends keyof NewMemberFormState>(key: K, value: string) => {
-    startTransition(() => {
       setFormData((prev) => ({ ...prev, [key]: value }));
-    });
   };
 
   const handleSubmitNewMember = async () => {
@@ -107,7 +104,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
    };
 
 
-  const isMemberLimitReached = MEMBERS.length >= MAX_MEMBERS;
+  const isMemberLimitReached = enrollment.length >= MAX_MEMBERS;
 
   const handleTabRowLayout = (e: LayoutChangeEvent) => {
     setTabRowWidth(e.nativeEvent.layout.width);

@@ -26,7 +26,7 @@ class ProgramItem(BaseModel):
     is_checked: bool = Field(default=False)
     distance_m: int
     duration_min: int = Field(..., ge=1)  # LLM의 duration_time -> duration_min으로 매핑
-    detail: str = Field(..., max_length=100)
+    detail: str = Field(..., max_length=200)
 
     class Config:
         from_attributes = True
