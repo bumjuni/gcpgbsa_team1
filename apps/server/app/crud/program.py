@@ -136,6 +136,23 @@ class ProgramCrud:
         await self.db.refresh(item)
         return item
 
+    async def get_completed_by_class_and_week(
+        self, class_id: int, week_start: date, week_end: date
+    ) -> list[Program]:
+        """COMPLETED 상태 프로그램을 class_id + 주간 범위(월~일)로 조회한다."""
+        result = await self.db.execute(
+            select(Program)
+            .where(
+                Program.class_id == class_id,
+                Program.status == ProgramStatusEnum.COMPLETED,
+                Program.date >= week_start,
+                Program.date <= week_end,
+                Program.deleted_at.is_(None),
+            )
+            .order_by(Program.date.asc())
+        )
+        return result.scalars().all()
+
     async def update_program(
         self, program_id: int, update_data: dict
     ) -> Optional[Program]:

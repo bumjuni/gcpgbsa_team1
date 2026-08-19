@@ -14,6 +14,7 @@ from core.database import Base
 
 if TYPE_CHECKING:
     from .enrollment import Enrollment
+    from .report import WeeklyReportItem
 
 class Student(Base):
     __tablename__ = "student"
@@ -36,4 +37,7 @@ class Student(Base):
 
     enrollments: Mapped[List["Enrollment"]] = relationship(
         "Enrollment", back_populates="student"
+    )
+    weekly_report_items: Mapped[List["WeeklyReportItem"]] = relationship(
+        "WeeklyReportItem", back_populates="student"
     )

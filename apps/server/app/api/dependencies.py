@@ -1,10 +1,16 @@
 from fastapi import Depends
 
-from services import ClassroomService, EnrollmentService, ProgramService, StudentService
+from services import ClassroomService, EnrollmentService, ProgramService, StudentService, ReportService
 from services.llm.llm_service import LLMService
-from crud import ClassroomCrud, StudentCrud, EnrollmentCrud, ProgramCrud
+from crud import ClassroomCrud, StudentCrud, EnrollmentCrud, ProgramCrud, WeeklyReportCrud
 
-from services.dependencies import get_classroom_crud, get_enrollment_crud, get_student_crud, get_program_crud
+from services.dependencies import (
+    get_classroom_crud,
+    get_enrollment_crud,
+    get_student_crud,
+    get_program_crud,
+    get_report_crud,
+)
 
 
 def get_classroom_service(
@@ -33,3 +39,10 @@ def get_program_service(
     llm_service: LLMService = Depends(get_llm_service),
 ) -> ProgramService:
     return ProgramService(crud, llm_service)
+
+def get_report_service(
+    crud: WeeklyReportCrud = Depends(get_report_crud),
+    program_crud: ProgramCrud = Depends(get_program_crud),
+    enrollment_crud: EnrollmentCrud = Depends(get_enrollment_crud),
+) -> ReportService:
+    return ReportService(crud, program_crud, enrollment_crud)

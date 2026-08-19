@@ -15,6 +15,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from core.database import Base
 from .enrollment import Enrollment
 from .program import Program
+from .report import WeeklyReport
 from .enums import LevelEnum, AgeGroupEnum
 
 
@@ -49,4 +50,7 @@ class SwimClass(Base):
     )
     enrollments: Mapped[List["Enrollment"]] = relationship(
         "Enrollment", back_populates="swim_class"
+    )
+    weekly_reports: Mapped[List["WeeklyReport"]] = relationship(
+        "WeeklyReport", back_populates="swim_class"
     )

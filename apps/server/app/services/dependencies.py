@@ -5,6 +5,7 @@ from crud.enrollment import EnrollmentCrud
 from crud.student import StudentCrud
 from crud.classroom import ClassroomCrud
 from crud.program import ProgramCrud
+from crud.report import WeeklyReportCrud
 
 def get_enrollment_crud(db: AsyncSession = Depends(get_db)) -> EnrollmentCrud:
     return EnrollmentCrud(db)
@@ -17,3 +18,6 @@ def get_classroom_crud(db: AsyncSession = Depends(get_db)) -> ClassroomCrud:
 
 def get_program_crud(db: AsyncSession = Depends(get_db)) -> ProgramCrud:
     return ProgramCrud(db)
+
+def get_report_crud(db: AsyncSession = Depends(get_db)) -> WeeklyReportCrud:
+    return WeeklyReportCrud(db)

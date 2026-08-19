@@ -32,3 +32,8 @@ class ProgramPhaseEnum(str, enum.Enum):
 class GenderEnum(str, enum.Enum):
     FEMALE = "FEMALE"
     MALE = "MALE"
+
+
+class WeeklyReportStatusEnum(str, enum.Enum):
+    PENDING = "PENDING"     # 발송 대기
+    SENT = "SENT"            # 발송 완료
