@@ -116,6 +116,14 @@ export const ClassDetailsReportTabScreen = ({ navigation }: any) => {
       </View>
 
       <View className="pb-xl">
+        {/*베타테스트 제외 기능 안내*/}
+        <Card variant="notice" className="bg-status-danger-subtle flex-row items-center justify-between px-md py-md mb-lg">
+          <View>
+            <Text className="text-body-strong text-status-danger mb-xxs">ⓘ 베타테스트에서는 제외된 기능이예요.</Text>
+            <Text className="text-caption text-ink-secondary">     화면은 이해를 돕기 위한 샘플 데이터예요.</Text>
+          </View>
+        </Card>
+
         <View className="flex-row items-start bg-primary-subtle rounded-md px-md py-sm mb-lg">
           <Text className="text-primary mr-xs">ⓘ</Text>
           <Text className="flex-1 text-caption text-primary">
