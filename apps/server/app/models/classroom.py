@@ -5,6 +5,7 @@ from sqlalchemy import (
     Boolean,
     DateTime,
     Enum,
+    ForeignKey,
     Integer,
     SmallInteger,
     String,
@@ -22,6 +23,9 @@ class SwimClass(Base):
     __tablename__ = "swim_class"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    instructor_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("instructor.id"), nullable=False
+    )
     name: Mapped[str] = mapped_column(String(100), nullable=False)
     student_count: Mapped[int] = mapped_column(
         SmallInteger, nullable=False, server_default="0"

@@ -7,8 +7,8 @@ from sqlalchemy import select
 
 from models import SwimClass
 from models.enums import ProgramStatusEnum
-from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary
-from models import Program
+from schemas.program import ProgramConfirm, ProgramCreate, ProgramFeedbackCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary
+from models import Program, ProgramItem
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
 
@@ -18,18 +18,21 @@ class ProgramService:
         self.crud = crud
         self.llm_service = llm_service
 
-    async def _get_swim_class(self, class_id: int) -> SwimClass:
+    async def _get_swim_class(self, class_id: int, instructor_id: int) -> SwimClass:
         result = await self.crud.db.execute(
-            select(SwimClass).where(SwimClass.id == class_id)
+            select(SwimClass).where(
+                SwimClass.id == class_id,
+                SwimClass.instructor_id == instructor_id,
+            )
         )
         swim_class = result.scalar_one_or_none()
         if swim_class is None:
             raise ValueError(f"SwimClass를 찾을 수 없습니다: {class_id}")
         return swim_class
 
-    async def create_program(self, schema: ProgramCreate) -> ProgramResponse:
-        # 1. DB에서 반 정보 조회 (ProgramService의 책임)
-        swim_class = await self._get_swim_class(schema.class_id)
+    async def create_program(self, schema: ProgramCreate, instructor_id: int) -> ProgramResponse:
+        # 1. DB에서 반 정보 조회 (ProgramService의 책임, 본인 소유만)
+        swim_class = await self._get_swim_class(schema.class_id, instructor_id)
 
         # 1-1. 같은 class_id+date에 기존 Program row가 있는지 확인
         # (lazy 생성 등으로 이미 만들어져 있을 수 있음 - uq_program_class_date 유니크 제약)
@@ -116,10 +119,13 @@ class ProgramService:
         # 5. 응답 조립 (LLM 응답 그대로 재사용 - DB 재조회 불필요)
         return response
 
-    async def confirm_program(self, program_id: int, schema: ProgramConfirm) -> ProgramResponse:
+    async def confirm_program(self, program_id: int, schema: ProgramConfirm, instructor_id: int) -> ProgramResponse:
         program = await self.crud.db.get(Program, program_id)
         if program is None:
             raise ValueError(f"Program을 찾을 수 없습니다: {program_id}")
+
+        # 소속 반이 본인 소유인지 확인
+        await self._get_swim_class(program.class_id, instructor_id)
 
         existing_items = await self.crud.get_program_items(program.id)
         existing_ids = {item.id for item in existing_items}
@@ -183,7 +189,8 @@ class ProgramService:
             program=program_plan,
         )
 
-    async def get_program_history(self, class_id: int) -> list[ProgramHistoryItem]:
+    async def get_program_history(self, class_id: int, instructor_id: int) -> list[ProgramHistoryItem]:
+        await self._get_swim_class(class_id, instructor_id)
         programs = await self.crud.get_non_draft_programs_by_class(class_id)
         return [
             ProgramHistoryItem(program_id=p.id, status=p.status, date=p.date)
@@ -191,7 +198,8 @@ class ProgramService:
         ]
 
 
-    async def get_program_by_date(self, class_id: int, date: date) -> Optional[ProgramResponse]:
+    async def get_program_by_date(self, class_id: int, date: date, instructor_id: int) -> Optional[ProgramResponse]:
+        await self._get_swim_class(class_id, instructor_id)
         program = await self.crud.get_by_class_and_date(class_id, date)
         print("get_program_by_date: ", program)
 
@@ -213,13 +221,38 @@ class ProgramService:
             program=ProgramSchema.model_validate(program),
         )
 
-    async def check_program_item(self, program_item_id: int) -> int:
-        checked_program_item = await self.crud.check_program_item(program_item_id)
-
-        if not checked_program_item:
+    async def submit_feedback(
+        self, program_id: int, schema: ProgramFeedbackCreate, instructor_id: int
+    ) -> None:
+        program = await self.crud.db.get(Program, program_id)
+        if program is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"SwimClass with ID {program_item_id} not found.",
+                detail=f"Program을 찾을 수 없습니다: {program_id}",
             )
 
+        # 소속 반이 본인 소유인지 확인
+        await self._get_swim_class(program.class_id, instructor_id)
+
+        await self.crud.add_feedback(program_id, schema.rating, schema.memo)
+
+    async def check_program_item(self, program_item_id: int, instructor_id: int) -> int:
+        item = await self.crud.db.get(ProgramItem, program_item_id)
+        if not item:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"ProgramItem with ID {program_item_id} not found.",
+            )
+
+        program = await self.crud.db.get(Program, item.program_id)
+        if not program:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"ProgramItem with ID {program_item_id} not found.",
+            )
+
+        # 소속 반이 본인 소유인지 확인
+        await self._get_swim_class(program.class_id, instructor_id)
+
+        checked_program_item = await self.crud.check_program_item(program_item_id)
         return checked_program_item.id

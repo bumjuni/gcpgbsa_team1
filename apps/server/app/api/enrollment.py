@@ -1,7 +1,8 @@
 from typing import List
 from fastapi import APIRouter, Depends, status
 
-from api.dependencies import get_enrollment_service
+from api.dependencies import get_enrollment_service, get_current_instructor
+from models.instructor import Instructor
 from schemas.enrollment import (
     EnrollmentCreate,
     EnrollmentUpdate,
@@ -21,8 +22,9 @@ router = APIRouter(prefix="/enrollment", tags=["Enrollment"])
 async def create_enrollment(
     schema: EnrollmentCreate,
     service: EnrollmentService = Depends(get_enrollment_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> EnrollmentResponse:
-    return await service.create_enrollment(schema)
+    return await service.create_enrollment(schema, instructor.id)
 
 
 @router.delete(
@@ -33,8 +35,9 @@ async def create_enrollment(
 async def delete_enrollment(
     enrollment_id: int,
     service: EnrollmentService = Depends(get_enrollment_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ):
-    return await service.delete_enrollment(enrollment_id)
+    return await service.delete_enrollment(enrollment_id, instructor.id)
 
 
 @router.patch(
@@ -47,8 +50,9 @@ async def update_enrollment(
     enrollment_id: int,
     schema: EnrollmentUpdate,
     service: EnrollmentService = Depends(get_enrollment_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> EnrollmentResponse:
-    return await service.update_enrollment(enrollment_id, schema)
+    return await service.update_enrollment(enrollment_id, schema, instructor.id)
 
 
 @router.get(
@@ -60,5 +64,6 @@ async def update_enrollment(
 async def get_enrollments_by_class(
     class_id: int,
     service: EnrollmentService = Depends(get_enrollment_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> List[EnrollmentResponse]:
-    return await service.get_enrollments_by_class(class_id)
+    return await service.get_enrollments_by_class(class_id, instructor.id)

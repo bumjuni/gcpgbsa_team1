@@ -27,8 +27,8 @@ class ClassroomService:
     #         )
     #     return [SwimClassResponse.model_validate(item) for item in swim_classes_orm]
 
-    async def get_swim_class(self) -> list[SwimClassResponse]:
-        swim_classes_orm = await self.crud.get_classes()
+    async def get_swim_class(self, instructor_id: int) -> list[SwimClassResponse]:
+        swim_classes_orm = await self.crud.get_classes(instructor_id)
         if not swim_classes_orm:
             raise HTTPException(status_code=404, detail="SwimClasses not found.")
 
@@ -49,9 +49,10 @@ class ClassroomService:
         ]
 
 
-    async def get_swim_class_detail(self, swim_class_id: int) -> SwimClassDetailResponse:
+    async def get_swim_class_detail(self, swim_class_id: int, instructor_id: int) -> SwimClassDetailResponse:
         swim_class_orm = await self.crud.get_class_detail(
            swim_class_id=swim_class_id,
+           instructor_id=instructor_id,
         )
         if not swim_class_orm:
             raise HTTPException(
@@ -61,11 +62,13 @@ class ClassroomService:
         return SwimClassResponse.model_validate(swim_class_orm)
 
 
-    async def create_swim_class(self, schema: SwimClassCreate) -> SwimClass:
-        return await self.crud.create(class_data=schema.model_dump())
+    async def create_swim_class(self, schema: SwimClassCreate, instructor_id: int) -> SwimClass:
+        class_data = schema.model_dump()
+        class_data["instructor_id"] = instructor_id
+        return await self.crud.create(class_data=class_data)
 
-    async def delete_swim_class(self, swim_class_id: int) -> SwimClass:
-        deleted_class = await self.crud.delete(swim_class_id=swim_class_id)
+    async def delete_swim_class(self, swim_class_id: int, instructor_id: int) -> SwimClass:
+        deleted_class = await self.crud.delete(swim_class_id=swim_class_id, instructor_id=instructor_id)
 
         if not deleted_class:
             raise HTTPException(
@@ -76,10 +79,10 @@ class ClassroomService:
 
 
     async def update_swim_class(
-        self, swim_class_id: int, schema: SwimClassUpdate
+        self, swim_class_id: int, schema: SwimClassUpdate, instructor_id: int
     ) -> SwimClassResponse:
         update_data = schema.model_dump(exclude_unset=True)  # 온 필드만 반영
-        updated_class = await self.crud.update_swim_class(swim_class_id, update_data)
+        updated_class = await self.crud.update_swim_class(swim_class_id, update_data, instructor_id)
 
         if not updated_class:
             raise HTTPException(

@@ -3,10 +3,12 @@ from datetime import date, datetime_CAPI
 from fastapi import APIRouter, Depends, status
 from typing import Optional
 
-from api.dependencies import get_program_service
+from api.dependencies import get_program_service, get_current_instructor
+from models.instructor import Instructor
 from schemas.program import (
     ProgramConfirm,
     ProgramCreate,
+    ProgramFeedbackCreate,
     ProgramHistoryItem,
     ProgramResponse,
 )
@@ -24,8 +26,9 @@ router = APIRouter(prefix="/program", tags=["Program"])
 async def create_program(
     schema: ProgramCreate,
     service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> ProgramResponse:
-    return await service.create_program(schema)
+    return await service.create_program(schema, instructor.id)
 
 
 # @router.delete(
@@ -50,8 +53,9 @@ async def confirm_program(
     program_id: int,
     schema: ProgramConfirm,
     service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> ProgramResponse:
-    return await service.confirm_program(program_id, schema)
+    return await service.confirm_program(program_id, schema, instructor.id)
 
 @router.get(
     "/{swim_class_id}/history",
@@ -62,8 +66,9 @@ async def confirm_program(
 async def get_program_history(
     swim_class_id: int,
     service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> list[ProgramHistoryItem]:
-    return await service.get_program_history(swim_class_id)
+    return await service.get_program_history(swim_class_id, instructor.id)
 
 @router.get(
     "/{swim_class_id}/{date}",
@@ -75,8 +80,24 @@ async def get_program_by_date(
     swim_class_id: int,
     date: date,
     service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> ProgramResponse:
-    return await service.get_program_by_date(swim_class_id, date)
+    return await service.get_program_by_date(swim_class_id, date, instructor.id)
+
+
+@router.post(
+    "/{program_id}/feedback",
+    status_code=status.HTTP_201_CREATED,
+    summary="수업안 피드백(별점/메모) 등록",
+)
+async def submit_program_feedback(
+    program_id: int,
+    schema: ProgramFeedbackCreate,
+    service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
+):
+    await service.submit_feedback(program_id, schema, instructor.id)
+    return {"program_id": program_id}
 
 
 @router.patch(
@@ -88,8 +109,9 @@ async def get_program_by_date(
 async def check_program_item(
     program_item_id: int,
     service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> int:
-    return await service.check_program_item(program_item_id)
+    return await service.check_program_item(program_item_id, instructor.id)
 
 
 

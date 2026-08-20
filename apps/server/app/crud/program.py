@@ -136,6 +136,20 @@ class ProgramCrud:
         await self.db.refresh(item)
         return item
 
+    async def add_feedback(
+        self, program_id: int, rating: int, memo: Optional[str]
+    ) -> Optional[Program]:
+        """수업안 피드백(별점/메모) 저장"""
+        program = await self.db.get(Program, program_id)
+        if program is None:
+            return None
+
+        program.feedback_rating = rating
+        program.feedback_memo = memo
+        await self.db.commit()
+        await self.db.refresh(program)
+        return program
+
     async def update_program(
         self, program_id: int, update_data: dict
     ) -> Optional[Program]:

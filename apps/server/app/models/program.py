@@ -53,6 +53,8 @@ class Program(Base):
     deleted_at: Mapped[Optional[datetime]] = mapped_column(
         DateTime(timezone=True), nullable=True
     )
+    feedback_rating: Mapped[Optional[int]] = mapped_column(SmallInteger, nullable=True)
+    feedback_memo: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
 
     swim_class: Mapped["SwimClass"] = relationship("SwimClass", back_populates="programs")
     program_items: Mapped[List["ProgramItem"]] = relationship(
