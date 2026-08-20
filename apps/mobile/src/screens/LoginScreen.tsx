@@ -15,6 +15,7 @@ const discovery = {
 };
 
 export const LoginScreen = ({ navigation }: any) => {
+  console.log('현재 카카오 Client ID:', KAKAO_CONFIG.CLIENT_ID);
   const setAuth = useAuthStore((s) => s.setAuth);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
