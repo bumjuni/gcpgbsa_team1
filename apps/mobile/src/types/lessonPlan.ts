@@ -8,7 +8,7 @@ export interface LessonPlanItem {
   set: number;
   is_checked: boolean;
   distance_m: number;
-  duration_time: number;
+  duration_min: number;
   detail: string;
 }
 

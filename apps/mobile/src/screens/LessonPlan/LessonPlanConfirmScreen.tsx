@@ -98,7 +98,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
               {section.items.map((item: LessonPlanItem, index: number) => (
                 <Card.Item
                   key={`${section.key}-${index}`}
-                  title={`${item.set} X ${item.distance_m}m  ${item.title}`}
+                  title={`${item.set} X ${item.distance_m}m · ${item.duration_min}분  ${item.title}`}
                   description={item.detail}
                   rightElement={
                     <View className="justify-start">

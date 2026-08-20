@@ -83,7 +83,7 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
                   return (
                     <Card.Item
                       key={`${section.key}-${index}`}
-                      title={item.title}
+                      title={`${item.title} · ${item.duration_min}분`}
                       description={item.detail}
                       isLast={index === section.items.length - 1}
                       onPress={() => toggleItem(section.key, index)}
