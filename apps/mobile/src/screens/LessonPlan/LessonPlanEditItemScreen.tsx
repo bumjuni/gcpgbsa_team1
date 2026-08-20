@@ -1,4 +1,4 @@
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { FormField } from '../../components/form/FormField';
@@ -25,7 +25,7 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
   const { setKey: rawSetKey, itemIndex = 0 } = route?.params ?? {};
   const setKey = (rawSetKey ?? 'main_set') as LessonPlanSetKey; // type 에러 방지용 코드..
 
-  const item = useLessonPlanStore((s) => s.lessonPlan?.lesson_plan[setKey]?.[itemIndex]);
+  const item = useLessonPlanStore((s) => s.lessonPlan?.program[setKey]?.[itemIndex]);
   const updateItem = useLessonPlanStore((s) => s.updateItem);
 
   const [formData, setFormData] = useState<LessonSetItemFormState>(() => ({
@@ -35,17 +35,13 @@ export const LessonPlanEditItemScreen = ({ navigation, route }: any) => {
     intervalDistance: item?.distance_m ?? DISTANCE_MIN,
   }));
 
-  const [, startTransition] = useTransition();
-
   if (!item) return null;
 
   const handleFieldChange = <K extends keyof LessonSetItemFormState>(
     key: K,
     value: LessonSetItemFormState[K]
   ) => {
-    startTransition(() => {
-      setFormData((prev) => ({ ...prev, [key]: value }));
-    });
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   const handleDecreaseCount = () => {

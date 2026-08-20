@@ -64,6 +64,7 @@ class ProgramService:
                 update_data={
                     "duration_min": swim_class_duration_min,
                     "equipment": schema.equipment,
+                    "total_distance_m": session_summary.total_distance_m,
                 },
             )
             await self.crud.delete_program_items(program.id)
@@ -73,6 +74,7 @@ class ProgramService:
                     "class_id": schema.class_id,
                     "date": schema.date,
                     "duration_min": swim_class_duration_min,
+                    "total_distance_m": session_summary.total_distance_m,
                     "equipment": schema.equipment,
                     "status": ProgramStatusEnum.DRAFT,
                 }
@@ -191,7 +193,7 @@ class ProgramService:
 
     async def get_program_by_date(self, class_id: int, date: date) -> Optional[ProgramResponse]:
         program = await self.crud.get_by_class_and_date(class_id, date)
-        print(program)
+        print("get_program_by_date: ", program)
 
         if program is None:
             return None
@@ -200,12 +202,13 @@ class ProgramService:
             id=program.id,
             class_id=program.class_id,
             date=program.date,
+            status=program.status,
             equipment=program.equipment,
             request="",
             created_at=program.created_at,
             session_summary=SessionSummary(
                 total_min=program.duration_min,
-                total_distance_m=program.duration_min,
+                total_distance_m=program.total_distance_m,
             ),
             program=ProgramSchema.model_validate(program),
         )

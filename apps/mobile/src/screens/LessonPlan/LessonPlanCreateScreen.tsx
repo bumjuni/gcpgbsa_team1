@@ -1,6 +1,6 @@
 // LessonPlanCreateScreen.tsx
 
-import React, { useState, useTransition } from 'react';
+import React, { useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../../components/ScreenLayout';
 import { Button } from '../../components/button/Button';
@@ -11,7 +11,7 @@ import { useClassStore } from '../../stores/useClassStore';
 import { formatDateToYMD, getNextClassDate } from '../../utils/classSchedule';
 import { EquipmentValue } from '../../types/lessonPlan';
 import { EQUIPMENT_OPTIONS } from '../../constants/lessonPlanLabels';
-
+import { LEVEL_MAP } from '../../utils/classSchedule';
 
 
 const REQUEST_MAX_LENGTH = 200;
@@ -29,7 +29,6 @@ const initialFormState: LessonPlanFormState = Object.freeze({
 export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
   const [formData, setFormData] = useState<LessonPlanFormState>(initialFormState);
-  const [, startTransition] = useTransition();
   const [isGenerating, setIsGenerating] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const currentClass = useClassStore((s) => s.currentClass);
@@ -37,14 +36,11 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
   const handleRequestChange = (value: string) => {
     // maxLength로도 막지만, 붙여넣기 등으로 초과 입력되는 경우를 대비해 이중 방어
     const truncated = value.slice(0, REQUEST_MAX_LENGTH);
-    startTransition(() => {
       setFormData((prev) => ({ ...prev, request: truncated }));
-    });
   };
 
   // 장비 토글: 'NONE'을 켜면 나머지 전체 해제, 다른 장비를 켜면 'NONE' 자동 해제 (양방향 배타)
   const toggleEquipment = (item: EquipmentValue) => {
-    startTransition(() => {
       setFormData((prev) => {
         const isSelected = prev.equipment.includes(item);
 
@@ -59,7 +55,6 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
         return { ...prev, equipment: nextEquipment };
       });
-    });
   };
 
   const handleSubmit = async () => {
@@ -73,7 +68,7 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
 
     // LessonPlanCreate 스키마에 맞춘 페이로드.
     // class_name/days_of_week/start_time 등 반 상세 정보는 서버가 DB에서 직접 조립한다.
-    const nextClass = getNextClassDate(currentClass.days_of_week, currentClass?.start_time, null);
+    const nextClass = getNextClassDate(currentClass.days_of_week, currentClass?.start_time, currentClass?.end_time, null);
 
     if (!nextClass) {
       setErrorMessage('다음 수업일을 계산할 수 없어요.');
@@ -104,6 +99,8 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
     return <LessonPlanGeneratingView />;
   }
 
+  if (!currentClass) return null;
+
   return (
     <ScreenLayout title="수업안 만들기" showBackButton footer={<Button label="수업안 생성하기" onPress={handleSubmit} />}>
       <View className="pt-md pb-xl">
@@ -115,7 +112,7 @@ export const LessonPlanCreateScreen = ({ navigation }: any) => {
             </Text>
           </View>
           <Text className="text-caption text-ink-secondary mt-1">
-            인원 {currentClass?.student_count || 0}명 · {currentClass?.level}
+            인원 {currentClass?.student_count || 0}명 · {LEVEL_MAP[currentClass?.level]}
           </Text>
         </Card>
 

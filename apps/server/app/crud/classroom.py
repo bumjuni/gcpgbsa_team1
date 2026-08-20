@@ -1,10 +1,9 @@
-from optparse import Option
-
 from datetime import datetime, date
 from typing import Optional
+from zoneinfo import ZoneInfo
 
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 
 from models.classroom import SwimClass, Program
 from models.enums import ProgramStatusEnum
@@ -64,7 +63,7 @@ class ClassroomCrud:
         return swim_class
 
     async def get_next_program_status_map(
-        self, class_ids: list[int]
+        self, class_ids: list[int], today:date
     ) -> dict[int, ProgramStatusEnum]:
         """반별로 완료되지 않은 program row 중 date가 가장 이른 것 1개의 status.
         lazy 생성 원칙상 반당 미완료 row는 보통 1개뿐이지만,
@@ -83,6 +82,7 @@ class ClassroomCrud:
             .where(
                 Program.class_id.in_(class_ids),
                 Program.status != ProgramStatusEnum.COMPLETED,
+                Program.date >= today,
                 Program.deleted_at.is_(None),
             )
             .subquery()
@@ -97,14 +97,23 @@ class ClassroomCrud:
     ) -> dict[int, ProgramStatusEnum]:
         if not class_ids:
             return {}
-        stmt = select(Program.class_id, Program.status).where(
-            Program.class_id.in_(class_ids),
-            Program.date == today,
-            Program.deleted_at.is_(None),
+
+        now_time = datetime.now(ZoneInfo("Asia/Seoul")).time()
+
+        stmt = (
+            select(Program.class_id, Program.status)
+            .join(Program.swim_class) # SwimClass와 조인
+            .where(
+                Program.class_id.in_(class_ids),
+                Program.date == today,
+                SwimClass.start_time >= now_time, # SwimClass의 start_time으로 조건 비교
+                Program.deleted_at.is_(None),
+                SwimClass.deleted_at.is_(None), # SwimClass의 삭제 여부도 함께 확인
+            )
         )
+
         result = await self.db.execute(stmt)
         return {row.class_id: row.status for row in result.all()}
-
 
     async def update_swim_class(
         self, swim_class_id: int, update_data: dict
@@ -124,3 +133,39 @@ class ClassroomCrud:
         await self.db.commit()
         await self.db.refresh(swim_class)
         return swim_class
+
+    async def increment_student_count(self, class_id: int) -> SwimClass | None:
+        stmt = (
+            update(SwimClass)
+            .where(SwimClass.id == class_id)
+            .values(student_count=SwimClass.student_count + 1)
+        )
+        result = await self.db.execute(stmt)
+
+        if result.rowcount == 0:
+            return None
+
+        # 같은 트랜잭션 내에서 갱신된 row를 다시 조회
+        select_stmt = select(SwimClass).where(SwimClass.id == class_id)
+        select_result = await self.db.execute(select_stmt)
+        return select_result.scalar_one_or_none()
+
+    async def decrement_student_count(self, class_id: int) -> Optional[SwimClass]:
+            stmt = (
+                update(SwimClass)
+                .where(
+                    SwimClass.id == class_id,
+                    SwimClass.student_count > 0  # 음수(0 미만)가 되지 않도록 안전 처리
+                )
+                .values(student_count=SwimClass.student_count - 1)
+            )
+            result = await self.db.execute(stmt)
+
+            if result.rowcount == 0:
+                # class_id가 없거나 이미 student_count가 0인 경우
+                return None
+
+            # 같은 트랜잭션 내에서 갱신된 row를 다시 조회
+            select_stmt = select(SwimClass).where(SwimClass.id == class_id)
+            select_result = await self.db.execute(select_stmt)
+            return select_result.scalar_one_or_none()

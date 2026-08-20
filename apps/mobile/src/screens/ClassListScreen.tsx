@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
@@ -17,6 +17,7 @@ import {
   formatNextClassLabel,
 } from '../utils/classSchedule';
 import { useClassStore } from '../stores/useClassStore';
+import { useFocusEffect } from '@react-navigation/native';
 
 export const ClassListScreen = ({ navigation }: any) => {
   const [classes, setClasses] = useState<SwimClass[]>([]);
@@ -24,25 +25,28 @@ export const ClassListScreen = ({ navigation }: any) => {
   const { setClass } = useClassStore();
 
   const fetchClasses = async () => {
-    try {
-      const data = await classroomApi.getClasses();
-      setClasses(data);
-    } catch (err: any) {
-      console.error(err);
-    }
-  };
+      try {
+        const data = await classroomApi.getClasses();
+        setClasses(data);
+      } catch (err: any) {
+        console.error(err);
+      }
+    };
 
-  useEffect(() => {
-    fetchClasses();
-  }, []);
+    // 2. useEffect 대신 useFocusEffect와 useCallback 사용
+    useFocusEffect(
+      useCallback(() => {
+        fetchClasses();
+      }, [])
+    );
 
-  const handleClassPress = (classId: number) => {
-    const currentClass = classes.find((c) => c.id === classId);
-    if (!currentClass) return;
+    const handleClassPress = (classId: number) => {
+      const currentClass = classes.find((c) => c.id === classId);
+      if (!currentClass) return;
 
-    setClass(currentClass);
-    navigation?.navigate('ClassDetailsLessonTab');
-  };
+      setClass(currentClass);
+      navigation?.navigate('ClassDetailsLessonTab');
+    };
 
   const todayClasses = useMemo(
     () => classes.filter((item) => isToday(item.days_of_week, now)),
@@ -55,7 +59,7 @@ export const ClassListScreen = ({ navigation }: any) => {
   );
 
   const renderStudentCount = (item: SwimClass) =>
-    `${item.student_count ?? '0'}/${item.capacity}명`;
+    `${item.student_count ?? '0'}명`;
 
   return (
     <ScreenLayout
@@ -132,6 +136,7 @@ export const ClassListScreen = ({ navigation }: any) => {
                     {formatNextClassLabel(
                       item.days_of_week,
                       item.start_time,
+                      item.end_time,
                       item.today_program_status,
                       now
                     )}

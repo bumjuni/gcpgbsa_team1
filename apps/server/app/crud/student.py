@@ -23,7 +23,7 @@ class StudentCrud:
         return student
 
     async def find_exact_match(
-        self, name: str, phone: str, birth_year: int
+        self, student: Student
     ) -> Optional[Student]:
         """
         name+phone+birth_year 셋 다 정확히 일치하는 '활성'(소프트 삭제 안 된) 학생을 찾는다.
@@ -32,9 +32,10 @@ class StudentCrud:
         result = await self.db.execute(
             select(Student)
             .where(
-                Student.name == name,
-                Student.phone == phone,
-                Student.birth_year == birth_year,
+                Student.name == student.name,
+                Student.gender == student.gender,
+                Student.phone == student.phone,
+                Student.birth_year == student.birth_year,
                 Student.deleted_at.is_(None),
             )
             .order_by(Student.created_at.desc())

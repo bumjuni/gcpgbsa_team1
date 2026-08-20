@@ -25,7 +25,7 @@ async def get_swim_classes(
 
 @router.get(
     "/{swim_class_id}",
-    response_model=list[SwimClassResponse],
+    response_model=SwimClassResponse,
     status_code=status.HTTP_200_OK,
     summary="단일 강습 클래스 상세정보 조회",
 )

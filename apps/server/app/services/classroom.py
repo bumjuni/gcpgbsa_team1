@@ -36,7 +36,7 @@ class ClassroomService:
         class_ids = [sc.id for sc in swim_classes_orm]
 
         today_map = await self.crud.get_today_program_status_map(class_ids, today)
-        next_map = await self.crud.get_next_program_status_map(class_ids)
+        next_map = await self.crud.get_next_program_status_map(class_ids, today)
 
         return [
             SwimClassResponse.model_validate(sc).model_copy(
@@ -88,3 +88,25 @@ class ClassroomService:
             )
 
         return SwimClassResponse.model_validate(updated_class)
+
+    async def increment_student_count(self, swim_class_id: int) -> None:
+        updated_class = await self.crud.increment_student_count(swim_class_id)
+
+        if not updated_class:
+            raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"SwimClass with ID {swim_class_id} not found.",
+                )
+
+        return SwimClassResponse.model_validate(updated_class)
+
+    async def decrement_student_count(self, swim_class_id: int) -> SwimClassResponse:
+            updated_class = await self.crud.decrement_student_count(swim_class_id)
+
+            if not updated_class:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"SwimClass with ID {swim_class_id} not found.",
+                )
+
+            return SwimClassResponse.model_validate(updated_class)

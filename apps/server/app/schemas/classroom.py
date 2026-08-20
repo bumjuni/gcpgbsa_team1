@@ -16,7 +16,6 @@ class SwimClassCreate(BaseModel):
     start_time: time
     end_time: time
     days_of_week: str
-    is_active: bool = True
 
 # schemas/classroom.py
 class SwimClassResponse(ORMBaseModel):

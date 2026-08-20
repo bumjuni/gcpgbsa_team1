@@ -21,8 +21,9 @@ def get_student_service(
 def get_enrollment_service(
     crud: EnrollmentCrud = Depends(get_enrollment_crud),
     student_service: StudentService = Depends(get_student_service),
+    classroom_service: ClassroomService = Depends(get_classroom_service),
 ) -> EnrollmentService:
-    return EnrollmentService(crud, student_service)
+    return EnrollmentService(crud, student_service, classroom_service)
 
 def get_llm_service() -> LLMService:
     return LLMService()
