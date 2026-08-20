@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, status
 
-from api.dependencies import get_classroom_service
+from api.dependencies import get_classroom_service, get_current_instructor
+from models.instructor import Instructor
 from schemas.classroom import (
     SwimClassCreate,
     SwimClassDetailResponse,
@@ -19,8 +20,9 @@ router = APIRouter(prefix="/classroom", tags=["Classroom"])
 )
 async def get_swim_classes(
     service: ClassroomService = Depends(get_classroom_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> list[SwimClassResponse]:
-    return await service.get_swim_class()
+    return await service.get_swim_class(instructor.id)
 
 
 @router.get(
@@ -32,8 +34,9 @@ async def get_swim_classes(
 async def get_swim_class_detail(
     swim_class_id: int,
     service: ClassroomService = Depends(get_classroom_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> SwimClassDetailResponse:
-    return await service.get_swim_class_detail(swim_class_id)
+    return await service.get_swim_class_detail(swim_class_id, instructor.id)
 
 
 @router.post(
@@ -45,8 +48,9 @@ async def get_swim_class_detail(
 async def create_swim_class(
     schema: SwimClassCreate,
     service: ClassroomService = Depends(get_classroom_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> SwimClassDetailResponse:
-    return await service.create_swim_class(schema)
+    return await service.create_swim_class(schema, instructor.id)
 
 @router.delete(
     "/{swim_class_id}",
@@ -55,8 +59,10 @@ async def create_swim_class(
 )
 async def delete_swim_class(
     swim_class_id: int,
-    service: ClassroomService = Depends(get_classroom_service)):
-    deleted_class = await service.delete_swim_class(swim_class_id)
+    service: ClassroomService = Depends(get_classroom_service),
+    instructor: Instructor = Depends(get_current_instructor),
+):
+    deleted_class = await service.delete_swim_class(swim_class_id, instructor.id)
     return {"id": deleted_class.id}
 
 @router.patch(
@@ -69,5 +75,6 @@ async def update_swim_class(
     swim_class_id: int,
     schema: SwimClassUpdate,
     service: ClassroomService = Depends(get_classroom_service),
+    instructor: Instructor = Depends(get_current_instructor),
 ) -> SwimClassResponse:
-    return await service.update_swim_class(swim_class_id, schema)
+    return await service.update_swim_class(swim_class_id, schema, instructor.id)

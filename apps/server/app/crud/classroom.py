@@ -14,23 +14,25 @@ class ClassroomCrud:
         self.db = db
 
 
-    async def get_classes(self) -> Optional[list[SwimClass]]:
+    async def get_classes(self, instructor_id: int) -> Optional[list[SwimClass]]:
             """
-            클래스 목록 조회 (Soft Delete 된 데이터는 제외)
+            클래스 목록 조회 (Soft Delete 된 데이터는 제외, 본인 소유만)
             """
             query = select(SwimClass).where(
+                SwimClass.instructor_id == instructor_id,
                 SwimClass.deleted_at.is_(None)
             )
             result = await self.db.execute(query)
             return result.scalars().all()
 
 
-    async def get_class_detail(self, swim_class_id: int) -> Optional[SwimClass]:
+    async def get_class_detail(self, swim_class_id: int, instructor_id: int) -> Optional[SwimClass]:
             """
-            단건 클래스 조회 (Soft Delete 된 데이터는 제외)
+            단건 클래스 조회 (Soft Delete 된 데이터는 제외, 본인 소유만)
             """
             query = select(SwimClass).where(
                 SwimClass.id == swim_class_id,
+                SwimClass.instructor_id == instructor_id,
                 SwimClass.deleted_at.is_(None)
             )
             result = await self.db.execute(query)
@@ -50,9 +52,9 @@ class ClassroomCrud:
         return swim_class
 
 
-    async def delete(self, swim_class_id: int) -> Optional[SwimClass]:
-        """강습 소프트 삭제"""
-        swim_class = await self.db.get(SwimClass, swim_class_id)
+    async def delete(self, swim_class_id: int, instructor_id: int) -> Optional[SwimClass]:
+        """강습 소프트 삭제 (본인 소유만)"""
+        swim_class = await self.get_class_detail(swim_class_id, instructor_id)
         if swim_class is None:
             return None
 
@@ -116,10 +118,11 @@ class ClassroomCrud:
         return {row.class_id: row.status for row in result.all()}
 
     async def update_swim_class(
-        self, swim_class_id: int, update_data: dict
+        self, swim_class_id: int, update_data: dict, instructor_id: int
     ) -> Optional[SwimClass]:
         stmt = select(SwimClass).where(
             SwimClass.id == swim_class_id,
+            SwimClass.instructor_id == instructor_id,
             SwimClass.deleted_at.is_(None),
         )
         result = await self.db.execute(stmt)
