@@ -1,14 +1,19 @@
 import { Platform } from 'react-native';
 
 const getBaseUrl = (): string => {
+  const configuredUrl = process.env.EXPO_PUBLIC_SERVER_URL;
+  if (configuredUrl) {
+    // 스킴이 빠져있으면 http://를 붙여 정규화 (예: "1.2.3.4:8080" -> "http://1.2.3.4:8080")
+    return /^https?:\/\//.test(configuredUrl) ? configuredUrl : `http://${configuredUrl}`;
+  }
+
   if (__DEV__) {
     // Android 에뮬레이터 localhost -> 10.0.2.2
     return Platform.OS === 'android'
       ? 'http://10.0.2.2:8000'
       : 'http://localhost:8000';
   }
-  // TODO: 클라우드 인스턴스 생성 후 .env에서 IP주소 수정
-  return 'https://api.yourdomain.com';
+  return '';
 };
 
 export const API_CONFIG = {

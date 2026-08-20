@@ -59,8 +59,10 @@ class AuthService:
                 ) from e
 
         if resp.status_code != 200:
+            print(f"[kakao token exchange failed] status={resp.status_code} body={resp.text}")
             raise HTTPException(
-                status.HTTP_401_UNAUTHORIZED, "Invalid Kakao authorization code"
+                status.HTTP_401_UNAUTHORIZED,
+                f"Invalid Kakao authorization code: {resp.text}",
             )
         return resp.json()["access_token"]
 
