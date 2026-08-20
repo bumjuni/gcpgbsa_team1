@@ -1,4 +1,4 @@
-import { LessonPlanCreatePayload, LessonPlanResponse, LessonPlanStatusPayload } from '../types/lessonPlan';
+import { LessonPlanCreatePayload, LessonPlanFeedbackPayload, LessonPlanResponse, LessonPlanStatusPayload } from '../types/lessonPlan';
 import { ProgramHistoryItem } from '../utils/classSchedule';
 import { apiClient } from './client';
 
@@ -39,6 +39,12 @@ export const lessonPlanApi = {
     console.log(payload)
     const response = await apiClient.patch<LessonPlanResponse>(`/program/${programId}/complete`, payload);
     console.log(response);
+    return response.data;
+  },
+
+  // 수업안 피드백(별점/메모) 등록
+  submitLessonPlanFeedback: async (programId: number, payload: LessonPlanFeedbackPayload) => {
+    const response = await apiClient.post(`/program/${programId}/feedback`, payload);
     return response.data;
   },
 

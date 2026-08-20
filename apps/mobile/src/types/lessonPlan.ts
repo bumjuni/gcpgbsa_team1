@@ -53,3 +53,8 @@ export interface LessonPlanStatusPayload {
   status: LessonPlanStatus;
   program: LessonPlanSession;
 }
+
+export interface LessonPlanFeedbackPayload {
+  rating: number;
+  memo?: string;
+}

@@ -12,6 +12,7 @@ import { LevelGuideScreen } from '../screens/LevelGuideScreen';
 import { LessonPlanCreateScreen } from '../screens/LessonPlan/LessonPlanCreateScreen';
 import { LessonPlanConfirmScreen } from '../screens/LessonPlan/LessonPlanConfirmScreen';
 import { LessonPlanCompleteScreen } from '../screens/LessonPlan/LessonPlanCompleteScreen';
+import { LessonPlanFeedbackScreen } from '../screens/LessonPlan/LessonPlanFeedbackScreen';
 import { LessonPlanEditItemScreen } from '../screens/LessonPlan/LessonPlanEditItemScreen';
 import { ClassDetailsLessonTabScreen } from '../screens/ClassDetail/ClassDetailsLessonTabScreen';
 import { ClassDetailsLessonHistoryScreen } from '../screens/ClassDetail/ClassDetailsLessonHistoryScreen';
@@ -47,6 +48,7 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanCreate" component={LessonPlanCreateScreen} />
       <Stack.Screen name="LessonPlanConfirm" component={LessonPlanConfirmScreen} />
       <Stack.Screen name="LessonPlanComplete" component={LessonPlanCompleteScreen} />
+      <Stack.Screen name="LessonPlanFeedback" component={LessonPlanFeedbackScreen} />
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
       <Stack.Screen name="ClassDetailsLessonTab" component={ClassDetailsLessonTabScreen} />
       <Stack.Screen name="ClassDetailsLessonHistory" component={ClassDetailsLessonHistoryScreen} />

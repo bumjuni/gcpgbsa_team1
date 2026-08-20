@@ -57,6 +57,11 @@ class ProgramResponse(ProgramCreate):
         from_attributes = True
 
 
+class ProgramFeedbackCreate(BaseModel):
+    rating: int = Field(..., ge=1, le=5)
+    memo: Optional[str] = Field(None, max_length=500)
+
+
 class ProgramHistoryItem(BaseModel):
     program_id: int
     status: ProgramStatusEnum
