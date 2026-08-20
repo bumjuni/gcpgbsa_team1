@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text } from 'react-native';
+import { Alert, View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
@@ -30,7 +30,13 @@ export const LoginScreen = ({ navigation }: any) => {
   );
 
   useEffect(() => {
-    if (response?.type !== 'success' || !response.params.code) return;
+    if (!response) return;
+
+    if (response.type === 'error') {
+      Alert.alert('카카오 로그인 실패', response.params.error_description ?? response.error?.description ?? '알 수 없는 오류가 발생했습니다.');
+      return;
+    }
+    if (response.type !== 'success' || !response.params.code) return;
 
     (async () => {
       setIsSubmitting(true);
@@ -38,9 +44,10 @@ export const LoginScreen = ({ navigation }: any) => {
         const tokenResponse = await authApi.kakaoLogin(response.params.code, redirectUri);
         await setAuth(tokenResponse.access_token, tokenResponse.instructor);
         navigation.reset({ index: 0, routes: [{ name: 'ClassList' }] });
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
-        // TODO: 로그인 실패 시 사용자에게 에러 안내 (토스트/스낵바) 추가 필요
+        const message = err?.response?.data?.detail ?? err?.message ?? '알 수 없는 오류가 발생했습니다.';
+        Alert.alert('로그인 실패', String(message));
       } finally {
         setIsSubmitting(false);
       }

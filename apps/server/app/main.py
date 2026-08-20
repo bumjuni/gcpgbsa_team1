@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from core.database import engine
 from api import classroom, enrollment, program, auth
@@ -15,6 +16,15 @@ async def lifespan(app: FastAPI):
     yield  # 이 시점부터 서버가 정상적으로 요청을 받습니다.
 
 app = FastAPI(lifespan=lifespan)
+
+# 모바일 웹 빌드(Expo web)에서 오는 cross-origin 요청 허용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8081", "http://127.0.0.1:8081"],
+    allow_origin_regex=r"https://.*\.(vercel|netlify)\.app",
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(classroom.router)
 app.include_router(enrollment.router)
