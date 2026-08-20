@@ -20,7 +20,7 @@ from datetime import date
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage, AIMessage
 
-from teamprogram_ver1_1 import GCP_PROJECT_ID, pdf_db
+from teamprogram_ver1_2 import GCP_PROJECT_ID, pdf_db
 from personar_ver1 import generate_personal_session, llm as _json_llm
 from drill_picker import STROKE_DETECT, SKILL_DETECT, FOCUS_TERMS
 

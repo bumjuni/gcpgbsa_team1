@@ -1,7 +1,7 @@
 # personar_ver1.py — 개인(챗봇) 모드
 # 근거: programlogic.md §3 (개인 설계)
 #
-# teamprogram_ver1_1.py의 §1 공통 코어(존 분류·게이팅·인터벌 세트 계산·Vertex/pdf_db
+# teamprogram_ver1_2.py의 §1 공통 코어(존 분류·게이팅·인터벌 세트 계산·Vertex/pdf_db
 # 인프라)를 그대로 import해서 재사용한다 — 이 파일에는 개인 모드에만 필요한 로직
 # (ACSM 스크리닝, 개인 강도 계산, 다중 세션 주기화, 피드백 루프)만 둔다.
 # 팀 모드 파일을 건드리지 않고도 이 파일만 수정할 수 있도록 하기 위함(programlogic.md §5).
@@ -18,7 +18,7 @@
 import json
 import time
 
-from teamprogram_ver1_1 import (
+from teamprogram_ver1_2 import (
     pdf_db, llm,
     ZONE_PARAMS, CATEGORY_INFO, LEVEL_CATEGORY_GATING, PRE_POST_ZONE,
     LEVEL_ALIAS, AGE_ALIAS,
@@ -419,7 +419,11 @@ def generate_personal_session(request_body: dict) -> dict:
     plan_phase = "RECOVERY" if is_deload else ("SP_BUILD" if recommended_category in ("C", "E") else "EN_BASE")
 
     # 5) 이론 자료 검색
-    theory_query = f"{request_text} {goal_text}".strip() or "수영 지도 기술"
+    # ★ team 모드 RC10과 동일 — 검색어가 강사/회원 입력(request/goal)만 쓰면
+    # 입력이 비어있을 때 매번 "수영 지도 기술"이라는 너무 일반적인 검색이 되고,
+    # 채워져 있어도 이번 세션의 실제 존/카테고리와 무관할 수 있다.
+    zone_focus = " ".join(zone_plan[c].get("name_ko", "") for c in categories)
+    theory_query = f"{zone_focus} {request_text} {goal_text}".strip() or "수영 지도 기술"
     raw = pdf_db.similarity_search(theory_query, k=8)
     seen, theory = set(), []
     for d in raw:

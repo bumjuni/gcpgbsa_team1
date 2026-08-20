@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""teamprogram_ver1_1.generate_curriculum() 수동 테스트 스크립트.
+"""teamprogram_ver1_2.generate_curriculum() 수동 테스트 스크립트.
 JSON을 붙여넣으면 그걸로, 그냥 Enter만 치면 기본 샘플로 실행한다."""
 import warnings
 warnings.filterwarnings("ignore")
@@ -8,7 +8,7 @@ import logging
 logging.getLogger().setLevel(logging.ERROR)
 
 import json
-from teamprogram_ver1_1 import generate_curriculum
+from teamprogram_ver1_2 import generate_curriculum
 
 SAMPLE_REQUEST = {
     "class_name": "청소년 중급반",
