@@ -1,10 +1,7 @@
 from pydantic import BaseModel
-
 from schemas.base import ORMBaseModel
 
 
-# 필드별 상세 검증(길이/형식/중복 등)은 정확한 한글 에러 문구를 위해
-# 스키마가 아닌 services/auth.py에서 수행한다.
 class SignupRequest(BaseModel):
     name: str
     email: str
@@ -22,6 +19,10 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
 class InstructorResponse(ORMBaseModel):
     id: int
     email: str
@@ -32,5 +33,6 @@ class InstructorResponse(ORMBaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
+    refresh_token: str  # <--- 추가됨
     token_type: str = "bearer"
     instructor: InstructorResponse

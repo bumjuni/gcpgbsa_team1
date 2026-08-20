@@ -2,9 +2,9 @@ import re
 
 from fastapi import HTTPException, status
 
-from core.security import create_access_token, hash_password, verify_password
+from core.security import create_access_token, hash_password, verify_password, decode_refresh_token, create_refresh_token
 from crud.instructor import InstructorCrud
-from schemas.auth import InstructorResponse, LoginRequest, SignupRequest, TokenResponse
+from schemas.auth import InstructorResponse, LoginRequest, RefreshTokenRequest, SignupRequest, TokenResponse
 
 EMAIL_PATTERN = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
 PHONE_PATTERN = re.compile(r"^010-\d{4}-\d{4}$")
@@ -68,8 +68,11 @@ class AuthService:
         )
 
         access_token = create_access_token(subject=str(instructor.id))
+        refresh_token = create_refresh_token(subject=str(instructor.id))
+
         return TokenResponse(
             access_token=access_token,
+            refresh_token=refresh_token,
             instructor=InstructorResponse.model_validate(instructor),
         )
 
@@ -82,7 +85,40 @@ class AuthService:
             )
 
         access_token = create_access_token(subject=str(instructor.id))
+        refresh_token = create_refresh_token(subject=str(instructor.id))
+
         return TokenResponse(
             access_token=access_token,
+            refresh_token=refresh_token,
+            instructor=InstructorResponse.model_validate(instructor),
+        )
+
+    async def refresh_token(self, schema: RefreshTokenRequest) -> TokenResponse:
+        # 1. Refresh Token 검증 및 subject(instructor_id) 추출
+        instructor_id_str = decode_refresh_token(schema.refresh_token)
+
+        try:
+            instructor_id = int(instructor_id_str)
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token",
+            )
+
+        # 2. DB에서 강사 존재 여부 및 탈퇴 여부 확인
+        instructor = await self.crud.get_by_id(instructor_id)
+        if not instructor:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token",
+            )
+
+        # 3. 새로운 Access Token 및 Refresh Token 생성
+        new_access_token = create_access_token(subject=str(instructor.id))
+        new_refresh_token = create_refresh_token(subject=str(instructor.id))
+
+        return TokenResponse(
+            access_token=new_access_token,
+            refresh_token=new_refresh_token,
             instructor=InstructorResponse.model_validate(instructor),
         )
