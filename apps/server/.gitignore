@@ -13,6 +13,7 @@ google-cloud-sdk/
 # 환경 변수
 .env
 .env.dev
+.env.example
 
 # rag_db
 *.sqlite3

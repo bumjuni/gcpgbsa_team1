@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from contextlib import asynccontextmanager
 from core.database import engine
-from api import classroom, enrollment, program
+from api import classroom, enrollment, program, auth
 from models import Base
 
 # DB 생성
@@ -19,6 +19,7 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(classroom.router)
 app.include_router(enrollment.router)
 app.include_router(program.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():

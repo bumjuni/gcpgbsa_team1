@@ -15,3 +15,7 @@ export const API_CONFIG = {
   BASE_URL: getBaseUrl(),
   TIMEOUT: 10000, // 10초
 } as const;
+
+export const KAKAO_CONFIG = {
+  CLIENT_ID: process.env.EXPO_PUBLIC_KAKAO_CLIENT_ID ?? '',
+} as const;

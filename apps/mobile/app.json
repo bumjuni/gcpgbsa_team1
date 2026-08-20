@@ -2,9 +2,13 @@
   "expo": {
     "name": "gcp_gbsa_1",
     "slug": "gcp-gbsa-1",
+    "scheme": "growdy",
     "entryPoint": "./index.js",
     "web": {
       "bundler": "metro"
-    }
+    },
+    "plugins": [
+      "expo-web-browser"
+    ]
   }
 }
