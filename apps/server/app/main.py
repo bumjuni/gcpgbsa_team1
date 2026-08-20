@@ -1,7 +1,8 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from core.database import engine
-from api import classroom, enrollment, program
+from api import classroom, enrollment, program, auth
 from models import Base
 
 # DB 생성
@@ -16,9 +17,19 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+# 모바일 웹 빌드(Expo web)에서 오는 cross-origin 요청 허용
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8081", "http://127.0.0.1:8081"],
+    allow_origin_regex=r"https://.*\.(vercel|netlify)\.app",
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(classroom.router)
 app.include_router(enrollment.router)
 app.include_router(program.router)
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():

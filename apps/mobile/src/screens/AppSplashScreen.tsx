@@ -1,15 +1,24 @@
 import React, { useEffect } from 'react';
 import { View, Text, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useAuthStore } from '../stores/useAuthStore';
 
 export const AppSplashScreen = ({ navigation }: any) => {
+  const hydrate = useAuthStore((s) => s.hydrate);
+  const isHydrating = useAuthStore((s) => s.isHydrating);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+
   useEffect(() => {
-    // TODO: 임시 타이머. 실제 초기화 로직(인증 상태 확인 등) 완료 시점으로 교체 필요
-    const timer = setTimeout(() => {
-      navigation?.navigate('ClassList');
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [navigation]);
+    hydrate();
+  }, [hydrate]);
+
+  useEffect(() => {
+    if (isHydrating) return;
+    navigation?.reset({
+      index: 0,
+      routes: [{ name: isAuthenticated ? 'ClassList' : 'Login' }],
+    });
+  }, [isHydrating, isAuthenticated, navigation]);
 
   return (
     <SafeAreaView className="flex-1 bg-primary items-center justify-center">

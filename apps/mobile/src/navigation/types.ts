@@ -1,5 +1,6 @@
 export type NavStackParamList = {
   AppSplash: undefined;
+  Login: undefined;
   ClassList: undefined;
   ClassRegister: undefined;
   ClassMember: undefined;
