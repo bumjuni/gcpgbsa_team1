@@ -20,7 +20,7 @@ from datetime import date
 from langchain_google_vertexai import ChatVertexAI
 from langchain_core.messages import HumanMessage, AIMessage
 
-from teamprogram_ver1 import GCP_PROJECT_ID, pdf_db
+from teamprogram_ver1_2 import GCP_PROJECT_ID, pdf_db
 from personar_ver1 import generate_personal_session, llm as _json_llm
 from drill_picker import STROKE_DETECT, SKILL_DETECT, FOCUS_TERMS
 
@@ -318,19 +318,96 @@ def _generate_and_reply(request_text: str, profile_path, profile: dict,
     return reply, result, last_feedback
 
 
+def handle_turn(user_message: str, state: dict, profile: dict, profile_path: str = None) -> tuple:
+    """run_chat()의 while 루프 본문을 상태를 명시적으로 주고받는 형태로 뽑아낸
+    것 — 순수 추출이며 라우팅 로직 자체는 바뀌지 않았다. HTTP 핸들러처럼
+    input()/print()에 묶이지 않은 곳에서도 매 턴 처리를 그대로 재사용할 수
+    있게 하기 위함(예: personal_chat_dev_server.py의 /api/chat/message).
+
+    state 키: history_messages, history_text_log, session_history,
+              last_feedback, last_result, pending_session_request.
+    반환: (reply, state, branch). branch는 "SLOT_QUESTION"|"GENERATE_SESSION"|
+    "FEEDBACK"|"CHAT" 중 하나 — 어느 경로를 탔는지 관찰하려는 용도로 새로
+    추가된 값이고, run_chat()은 이 값을 쓰지 않는다(호출부 동작은 그대로)."""
+    history_messages = state["history_messages"]
+    history_text_log = state["history_text_log"]
+    session_history = state["session_history"]
+    last_feedback = state["last_feedback"]
+    last_result = state["last_result"]
+    pending_session_request = state["pending_session_request"]
+
+    recent_text = "\n".join(history_text_log[-MAX_HISTORY_TURNS:])
+
+    if pending_session_request is not None:
+        # 직전 턴에 슬롯을 되물었으므로, 이번 입력은 새로 의도 분류하지 않고
+        # 곧장 "슬롯 답변"으로 취급한다 — 원래 메시지 + 이미 채운 슬롯 +
+        # 이번에 채운 슬롯을 합쳐 request 문자열 하나로 만들어 넘긴다.
+        answer = find_missing_slots(user_message, recent_text)
+        merged_filled = {**pending_session_request["filled"], **answer["filled"]}
+        combined_request = _compose_request_text(
+            pending_session_request["original_message"], merged_filled)
+        reply, last_result, last_feedback = _generate_and_reply(
+            combined_request, profile_path, profile, session_history, last_feedback)
+        pending_session_request = None
+        branch = "GENERATE_SESSION"
+
+    else:
+        intent = classify_intent(user_message, recent_text)
+
+        if intent == "GENERATE_SESSION":
+            slots = find_missing_slots(user_message, recent_text)
+            if slots["missing"]:
+                pending_session_request = {
+                    "original_message": user_message,
+                    "filled": slots["filled"],
+                }
+                reply = _build_missing_slots_question(slots["missing"])
+                branch = "SLOT_QUESTION"
+            else:
+                combined_request = _compose_request_text(user_message, slots["filled"])
+                reply, last_result, last_feedback = _generate_and_reply(
+                    combined_request, profile_path, profile, session_history, last_feedback)
+                branch = "GENERATE_SESSION"
+
+        elif intent == "FEEDBACK":
+            parsed = extract_feedback(user_message)
+            last_feedback = parsed
+            reply = (f"기록했습니다 (완료: {parsed['completed']}, 체감 RPE: {parsed['rpe_actual']}). "
+                    "다음 세션 생성 시 반영할게요.")
+            branch = "FEEDBACK"
+
+        else:  # CHAT
+            reply = chat_reply(user_message, history_messages, profile)
+            branch = "CHAT"
+
+    history_messages.append(HumanMessage(content=user_message))
+    history_messages.append(AIMessage(content=reply if isinstance(reply, str) else json.dumps(reply, ensure_ascii=False)))
+    history_text_log.append(f"회원: {user_message}")
+    history_text_log.append(f"코치: {reply if isinstance(reply, str) else '(세션 생성됨)'}")
+
+    state.update(
+        history_messages=history_messages, history_text_log=history_text_log,
+        session_history=session_history, last_feedback=last_feedback,
+        last_result=last_result, pending_session_request=pending_session_request,
+    )
+    return reply, state, branch
+
+
 def run_chat(profile: dict, profile_path: str = None):
     print("개인 모드 채팅을 시작합니다. 'exit' 입력 시 종료.")
     print("예: '오늘 스피드 위주로 훈련 만들어줘' / '오늘 훈련 다 했어요, rpe 8이었어요' / 그 외 자유 대화\n")
 
-    history_messages = []       # chat_llm용 (HumanMessage/AIMessage)
-    history_text_log = []       # classify_intent용 짧은 텍스트 로그
-    session_history = []        # generate_personal_session의 session_history 입력
-    last_feedback = None
-    last_result = None
-    # GENERATE_SESSION인데 슬롯(영법/초점/컨디션)이 덜 채워졌을 때, 되물은 뒤
-    # "다음 턴은 슬롯 답변"이라는 걸 기억해두는 상태. {"original_message":...,
-    # "filled":...} 또는 None(대기 중인 질문 없음).
-    pending_session_request = None
+    state = {
+        "history_messages": [],       # chat_llm용 (HumanMessage/AIMessage)
+        "history_text_log": [],       # classify_intent용 짧은 텍스트 로그
+        "session_history": [],        # generate_personal_session의 session_history 입력
+        "last_feedback": None,
+        "last_result": None,
+        # GENERATE_SESSION인데 슬롯(영법/초점/컨디션)이 덜 채워졌을 때, 되물은 뒤
+        # "다음 턴은 슬롯 답변"이라는 걸 기억해두는 상태. {"original_message":...,
+        # "filled":...} 또는 None(대기 중인 질문 없음).
+        "pending_session_request": None,
+    }
 
     while True:
         try:
@@ -341,54 +418,12 @@ def run_chat(profile: dict, profile_path: str = None):
             continue
         if user_message.lower() == "exit":
             break
-        if user_message.lower() == "json" and last_result is not None:
-            print(json.dumps(last_result, ensure_ascii=False, indent=2))
+        if user_message.lower() == "json" and state["last_result"] is not None:
+            print(json.dumps(state["last_result"], ensure_ascii=False, indent=2))
             continue
 
-        recent_text = "\n".join(history_text_log[-MAX_HISTORY_TURNS:])
-
-        if pending_session_request is not None:
-            # 직전 턴에 슬롯을 되물었으므로, 이번 입력은 새로 의도 분류하지 않고
-            # 곧장 "슬롯 답변"으로 취급한다 — 원래 메시지 + 이미 채운 슬롯 +
-            # 이번에 채운 슬롯을 합쳐 request 문자열 하나로 만들어 넘긴다.
-            answer = find_missing_slots(user_message, recent_text)
-            merged_filled = {**pending_session_request["filled"], **answer["filled"]}
-            combined_request = _compose_request_text(
-                pending_session_request["original_message"], merged_filled)
-            reply, last_result, last_feedback = _generate_and_reply(
-                combined_request, profile_path, profile, session_history, last_feedback)
-            pending_session_request = None
-
-        else:
-            intent = classify_intent(user_message, recent_text)
-
-            if intent == "GENERATE_SESSION":
-                slots = find_missing_slots(user_message, recent_text)
-                if slots["missing"]:
-                    pending_session_request = {
-                        "original_message": user_message,
-                        "filled": slots["filled"],
-                    }
-                    reply = _build_missing_slots_question(slots["missing"])
-                else:
-                    combined_request = _compose_request_text(user_message, slots["filled"])
-                    reply, last_result, last_feedback = _generate_and_reply(
-                        combined_request, profile_path, profile, session_history, last_feedback)
-
-            elif intent == "FEEDBACK":
-                parsed = extract_feedback(user_message)
-                last_feedback = parsed
-                reply = (f"기록했습니다 (완료: {parsed['completed']}, 체감 RPE: {parsed['rpe_actual']}). "
-                        "다음 세션 생성 시 반영할게요.")
-
-            else:  # CHAT
-                reply = chat_reply(user_message, history_messages, profile)
-
+        reply, state, _branch = handle_turn(user_message, state, profile, profile_path)
         print(f"코치> {reply}\n")
-        history_messages.append(HumanMessage(content=user_message))
-        history_messages.append(AIMessage(content=reply if isinstance(reply, str) else json.dumps(reply, ensure_ascii=False)))
-        history_text_log.append(f"회원: {user_message}")
-        history_text_log.append(f"코치: {reply if isinstance(reply, str) else '(세션 생성됨)'}")
 
 
 if __name__ == "__main__":

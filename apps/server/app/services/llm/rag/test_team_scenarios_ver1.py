@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""teamprogram_ver1.generate_curriculum()을 여러 시나리오로 한 번에 돌려서
+"""teamprogram_ver1_2.generate_curriculum()을 여러 시나리오로 한 번에 돌려서
 비교하기 쉬운 형태로 출력하는 배치 러너 (실제 Gemini 호출 — gcloud 인증 필요).
 
 사용법:
@@ -14,7 +14,9 @@ import logging
 logging.getLogger().setLevel(logging.ERROR)
 
 import json
-from .teamprogram_ver1 import generate_curriculum
+
+from teamprogram_ver1_2 import generate_curriculum
+
 
 # =====================================================================
 # 시나리오 배터리 — 레벨×카테고리×장비×previous_session 조합으로 최대한
