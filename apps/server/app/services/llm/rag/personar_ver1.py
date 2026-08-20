@@ -1,7 +1,7 @@
 # personar_ver1.py — 개인(챗봇) 모드
 # 근거: programlogic.md §3 (개인 설계)
 #
-# teamprogram_ver1.py의 §1 공통 코어(존 분류·게이팅·인터벌 세트 계산·Vertex/pdf_db
+# teamprogram_ver1_2.py의 §1 공통 코어(존 분류·게이팅·인터벌 세트 계산·Vertex/pdf_db
 # 인프라)를 그대로 import해서 재사용한다 — 이 파일에는 개인 모드에만 필요한 로직
 # (ACSM 스크리닝, 개인 강도 계산, 다중 세션 주기화, 피드백 루프)만 둔다.
 # 팀 모드 파일을 건드리지 않고도 이 파일만 수정할 수 있도록 하기 위함(programlogic.md §5).
@@ -18,7 +18,7 @@
 import json
 import time
 
-from teamprogram_ver1 import (
+from teamprogram_ver1_2 import (
     pdf_db, llm,
     ZONE_PARAMS, CATEGORY_INFO, LEVEL_CATEGORY_GATING, PRE_POST_ZONE,
     LEVEL_ALIAS, AGE_ALIAS,
@@ -109,7 +109,7 @@ def _step_zone(category: str, level: str, zone_key: str, steps: int):
 
 def apply_periodization(session_history, target_event_date, category: str, level: str,
                         today: str = None):
-    """§3-5. previous_session 1단계 상승 제한은 teamprogram_ver1의
+    """§3-5. previous_session 1단계 상승 제한은 teamprogram_ver1_1의
     get_zone_params(...previous_session=...)가 이미 처리한다 — 여기서는 그 위에
     (a) N회마다 디로드 세션 삽입 (b) 대회 임박 시 고강도 카테고리 우대만 얹는다.
     반환: (recommended_category, is_deload: bool)"""
@@ -224,7 +224,7 @@ Pre-Set {warmup_min}분 / Main-Set {main_min}분 / Post-Set {cooldown_min}분입
 
 
 # =====================================================================
-# 5. 헬퍼 — 프로필 해석 / 드릴 풀 구성 (teamprogram_ver1과 동일한 사전 차단 철학)
+# 5. 헬퍼 — 프로필 해석 / 드릴 풀 구성 (teamprogram_ver1_1과 동일한 사전 차단 철학)
 # =====================================================================
 def _age_group_from_age(age):
     if age is None:
@@ -382,7 +382,7 @@ def generate_personal_session(request_body: dict) -> dict:
         intensity_by_cat[cat] = calc_personal_intensity(threshold_pace, zone_key, rpe_calibration) \
             if zone_key else {"target_pace_sec": None, "rpe_target": None}
 
-    # 4) 드릴 풀 구성 (사전 차단 — teamprogram_ver1과 동일한 철학)
+    # 4) 드릴 풀 구성 (사전 차단 — teamprogram_ver1_1과 동일한 철학)
     need_main_drills = any(zone_plan[c]["content_type"] == "drill" for c in categories)
     pre_post_drill_list, main_drill_list, drills = _build_drill_pools(
         level, age_group, request_text, goal_text, equipment_text, need_main_drills)
@@ -419,7 +419,11 @@ def generate_personal_session(request_body: dict) -> dict:
     plan_phase = "RECOVERY" if is_deload else ("SP_BUILD" if recommended_category in ("C", "E") else "EN_BASE")
 
     # 5) 이론 자료 검색
-    theory_query = f"{request_text} {goal_text}".strip() or "수영 지도 기술"
+    # ★ team 모드 RC10과 동일 — 검색어가 강사/회원 입력(request/goal)만 쓰면
+    # 입력이 비어있을 때 매번 "수영 지도 기술"이라는 너무 일반적인 검색이 되고,
+    # 채워져 있어도 이번 세션의 실제 존/카테고리와 무관할 수 있다.
+    zone_focus = " ".join(zone_plan[c].get("name_ko", "") for c in categories)
+    theory_query = f"{zone_focus} {request_text} {goal_text}".strip() or "수영 지도 기술"
     raw = pdf_db.similarity_search(theory_query, k=8)
     seen, theory = set(), []
     for d in raw:
