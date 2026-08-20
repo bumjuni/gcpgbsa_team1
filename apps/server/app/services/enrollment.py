@@ -24,7 +24,10 @@ class EnrollmentService:
         self.student_service = student_service
         self.classroom_service = classroom_service
 
-    async def create_enrollment(self, schema: EnrollmentCreate) -> EnrollmentResponse:
+    async def create_enrollment(self, schema: EnrollmentCreate, instructor_id: int) -> EnrollmentResponse:
+        # 0. 대상 반이 본인 소유인지 확인 (없거나 소유가 아니면 404)
+        await self.classroom_service.get_swim_class_detail(schema.class_id, instructor_id)
+
         # 1. 학생 매칭/생성 (StudentService의 책임)
         student = await self.student_service.find_or_create_student(
             StudentSchema(
@@ -55,7 +58,7 @@ class EnrollmentService:
         )
 
     async def update_enrollment(
-        self, enrollment_id: int, schema: EnrollmentUpdate
+        self, enrollment_id: int, schema: EnrollmentUpdate, instructor_id: int
     ) -> EnrollmentResponse:
         # 1. 수정할 수강 정보 조회
         enrollment = await self.crud.get_by_id(enrollment_id)
@@ -64,6 +67,9 @@ class EnrollmentService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="수강 신청 정보를 찾을 수 없습니다.",
             )
+
+        # 1-1. 소속 반이 본인 소유인지 확인
+        await self.classroom_service.get_swim_class_detail(enrollment.class_id, instructor_id)
 
         # 2. 수강 정보 업데이트
         updated_enrollment = await self.crud.update(enrollment, schema)
@@ -74,7 +80,7 @@ class EnrollmentService:
             enrollment=EnrollmentSchema.model_validate(updated_enrollment),
         )
 
-    async def delete_enrollment(self, enrollment_id: int) -> bool:
+    async def delete_enrollment(self, enrollment_id: int, instructor_id: int) -> bool:
         # 1. 수강 정보 존재 여부 확인
         enrollment = await self.crud.get_by_id(enrollment_id)
         if not enrollment:
@@ -82,6 +88,9 @@ class EnrollmentService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="수강 신청 정보를 찾을 수 없습니다.",
             )
+
+        # 1-1. 소속 반이 본인 소유인지 확인
+        await self.classroom_service.get_swim_class_detail(enrollment.class_id, instructor_id)
 
         # 2. swim_class의 student_count 감소
         await self.classroom_service.decrement_student_count(enrollment.class_id)
@@ -91,8 +100,11 @@ class EnrollmentService:
         return True
 
     async def get_enrollments_by_class(
-        self, class_id: int
+        self, class_id: int, instructor_id: int
     ) -> List[EnrollmentResponse]:
+        # 0. 대상 반이 본인 소유인지 확인
+        await self.classroom_service.get_swim_class_detail(class_id, instructor_id)
+
         # 특정 클래스의 전체 수강 목록 조회
         enrollments = await self.crud.get_by_class_id(class_id)
         return [

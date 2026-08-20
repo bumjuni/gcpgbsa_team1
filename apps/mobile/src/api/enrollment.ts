@@ -36,7 +36,7 @@ export interface EnrollmentResponse {
 
 export const enrollmentApi = {
   createEnrollment: async (data: EnrollmentCreate) => {
-    const response = await apiClient.post<EnrollmentResponse>('/enrollment', data);
+    const response = await apiClient.post<EnrollmentResponse>('/enrollment/', data);
     console.log(response)
     return response.data;
   },

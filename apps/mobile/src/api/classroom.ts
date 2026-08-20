@@ -4,7 +4,7 @@ import { SwimClass } from "../types/classroom";
 export const classroomApi = {
   // 강습 목록 조회
   getClasses: async () => {
-    const response = await apiClient.get<SwimClass[]>(`/classroom`);
+    const response = await apiClient.get<SwimClass[]>(`/classroom/`);
     console.log(response);
     return response.data;
   },
@@ -18,7 +18,7 @@ export const classroomApi = {
 
   // 새로운 강습반 등록
   createClass: async (classData: SwimClass) => {
-      const response = await apiClient.post<SwimClass>('/classroom', classData);
+      const response = await apiClient.post<SwimClass>('/classroom/', classData);
       console.log(response);
       return response.data;
   },

@@ -3,6 +3,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavStackParamList } from './types';
 
 import { AppSplashScreen } from '../screens/AppSplashScreen';
+import { LoginScreen } from '../screens/LoginScreen';
+import { SignupScreen } from '../screens/SignupScreen';
 import { ClassListScreen } from '../screens/ClassListScreen';
 import { ClassRegisterScreen } from '../screens/ClassRegisterScreen';
 import { ClassMemberScreen } from '../screens/ClassMemberScreen/ClassMemberScreen';
@@ -37,6 +39,8 @@ export const AppNavigator = () => {
       }}
     >
       <Stack.Screen name="AppSplash" component={AppSplashScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="ClassList" component={ClassListScreen} />
       <Stack.Screen name="ClassRegister" component={ClassRegisterScreen} />
       <Stack.Screen name="ClassMember" component={ClassMemberScreen} />

@@ -5,7 +5,7 @@ import { apiClient } from './client';
 export const lessonPlanApi = {
   // 수업안(루틴 프로그램) 생성
   createLessonPlan: async (payload: LessonPlanCreatePayload) => {
-    const response = await apiClient.post<LessonPlanResponse>('/program', payload);
+    const response = await apiClient.post<LessonPlanResponse>('/program/', payload);
     console.log(response);
     return response.data;
   },
