@@ -1,8 +1,24 @@
 {
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/classroom/:path*",
+      "destination": "http://34.22.89.252/classroom/:path*"
+    },
+    {
+      "source": "/auth/:path*",
+      "destination": "http://34.22.89.252/auth/:path*"
+    },
+    {
+      "source": "/program/:path*",
+      "destination": "http://34.22.89.252/program/:path*"
+    },
+    {
+      "source": "/student/:path*",
+      "destination": "http://34.22.89.252/student/:path*"
+    },
+    {
+      "source": "/enrollment/:path*",
+      "destination": "http://34.22.89.252/enrollment/:path*"
     }
   ]
 }
