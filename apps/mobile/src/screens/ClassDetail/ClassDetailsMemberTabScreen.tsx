@@ -69,7 +69,9 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
   };
 
   const handleMemberPress = (studentId: number) => {
-    navigation?.navigate('ClassDetailsMemberDetail', { studentId: studentId, enrollment });
+    const target = enrollment.find((e) => e.student.id === studentId);
+    if (!target) return;
+    navigation?.navigate('ClassDetailsMemberDetail', { studentId, enrollment: target.enrollment });
   };
 
   const handleFieldChange = <K extends keyof NewMemberFormState>(key: K, value: string) => {

@@ -1208,6 +1208,10 @@ def generate_curriculum(request_body: dict) -> dict:
     print("[teamprogram_ver1] 커리큘럼 생성 요청 시작")
 
     level = str(request_body.get("level", "ELEMENTARY"))
+    level = str(request_body.get("level", "ELEMENTARY"))
+    age_group = str(request_body.get("age_group", "ADULT"))
+    print(f" │  [DEBUG] raw level={request_body.get('level')!r} → resolved={LEVEL_ALIAS.get(level, 'ELEMENTARY(fallback)')!r}")
+
     age_group = str(request_body.get("age_group", "ADULT"))
     duration_min = int(request_body.get("duration_min", 50) or 50)
     request_text = str(request_body.get("request", "") or "")

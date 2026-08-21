@@ -53,13 +53,14 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
 
   const handleSave = async () => {
     try {
-      let enrollmentResult;
+      let enrollmentResult: EnrollmentDetail | undefined;
       if (enrollment.memo !== formData.notes) {
         const payload: EnrollmentDetail = {
           ...enrollment,
           memo: formData.notes
         }
-        enrollmentResult = await enrollmentApi.updateEnrollment(enrollment.id, payload);
+        const response = await enrollmentApi.updateEnrollment(enrollment.id, payload);
+        enrollmentResult = response.enrollment;
       }
 
       const isStudentChanged =

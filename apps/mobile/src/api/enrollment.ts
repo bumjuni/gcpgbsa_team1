@@ -48,7 +48,7 @@ export const enrollmentApi = {
   },
 
   updateEnrollment: async (enrollmentId: number, data: EnrollmentDetail) => {
-    const response = await apiClient.patch(`/enrollment/${enrollmentId}`, data);
+    const response = await apiClient.patch<EnrollmentResponse>(`/enrollment/${enrollmentId}`, data);
     console.log(response);
     return response.data;
   },
