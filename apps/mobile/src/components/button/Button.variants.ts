@@ -1,7 +1,7 @@
 import { ButtonVariant } from "./Button";
 
 export const BUTTON_CONTAINER_STYLES: Record<ButtonVariant, string> = {
-  primary: 'bg-primary',
+  primary: 'bg-primary active:bg-primary-pressed',
   secondary: 'bg-secondary border-[1px] border-primary',
   disabled: 'bg-canvas-muted border-[1px] border-hairline-border-strong',
   text: '',

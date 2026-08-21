@@ -57,6 +57,22 @@ async def confirm_program(
 ) -> ProgramResponse:
     return await service.confirm_program(program_id, schema, instructor.id)
 
+
+@router.patch(
+    "/{program_id}/complete",
+    response_model=ProgramResponse,
+    status_code=status.HTTP_200_OK,
+    summary="루틴 프로그램 확정",
+)
+async def complete_program(
+    program_id: int,
+    schema: ProgramConfirm,
+    service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
+) -> ProgramResponse:
+    return await service.complete_program(program_id, schema, instructor.id)
+
+
 @router.get(
     "/{swim_class_id}/history",
     response_model=list[ProgramHistoryItem],

@@ -1,4 +1,7 @@
 import os
+
+APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../app"))
+
 from dotenv import load_dotenv
 from logging.config import fileConfig
 
@@ -6,6 +9,10 @@ from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
 from alembic import context
+from app.core.database import Base
+
+# 모델들을 파이썬 메모리에 전부 로드
+import app.models
 from app.core.database import Base
 
 load_dotenv()

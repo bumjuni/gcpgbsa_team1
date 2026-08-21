@@ -189,6 +189,39 @@ class ProgramService:
             program=program_plan,
         )
 
+    async def complete_program(self, program_id: int, schema: ProgramConfirm, instructor_id: int) -> ProgramResponse:
+        program = await self.crud.db.get(Program, program_id)
+        if program is None:
+            raise ValueError(f"Program을 찾을 수 없습니다: {program_id}")
+
+        # 소속 반이 본인 소유인지 확인
+        await self._get_swim_class(program.class_id, instructor_id)
+
+        program = await self.crud.confirm_program(
+            program_id=program.id,
+            status=ProgramStatusEnum.COMPLETED,
+        )
+
+        updated_items = await self.crud.get_program_items(program.id)
+        program_plan = ProgramSchema(
+            pre_set=[i for i in updated_items if i.phase == "PRE_SET"],
+            main_set=[i for i in updated_items if i.phase == "MAIN_SET"],
+            post_set=[i for i in updated_items if i.phase == "POST_SET"],
+        )
+
+        return ProgramResponse(
+            id=program.id,
+            class_id=program.class_id,
+            date=program.date,
+            equipment=program.equipment,
+            request="",
+            created_at=program.created_at,
+            session_summary=SessionSummary(
+                total_min=program.duration_min,
+                total_distance_m=sum(i.set * i.distance_m for i in updated_items),
+            ),
+            program=program_plan,
+        )
     async def get_program_history(self, class_id: int, instructor_id: int) -> list[ProgramHistoryItem]:
         await self._get_swim_class(class_id, instructor_id)
         programs = await self.crud.get_non_draft_programs_by_class(class_id)

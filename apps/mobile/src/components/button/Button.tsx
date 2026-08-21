@@ -26,7 +26,7 @@ export const Button = ({
       onPress={onPress}
       disabled={disabled || loading}
       className={`${BUTTON_CONTAINER_STYLES[variant]} ${className}
-        w-full py-4 rounded-md items-center justify-center active:bg-primary-pressed`}
+        w-full py-4 rounded-md items-center justify-center`}
       {...props}
     >
       {loading ? (

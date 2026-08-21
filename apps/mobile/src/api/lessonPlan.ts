@@ -1,4 +1,4 @@
-import { LessonPlanCreatePayload, LessonPlanResponse, LessonPlanStatusPayload } from '../types/lessonPlan';
+import { LessonPlanCreatePayload, LessonPlanFeedbackPayload, LessonPlanResponse, LessonPlanStatusPayload } from '../types/lessonPlan';
 import { ProgramHistoryItem } from '../utils/classSchedule';
 import { apiClient } from './client';
 
