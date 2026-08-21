@@ -35,9 +35,9 @@ WORKDIR /app
 
 # main.py가 `from core.database import engine`처럼 app/ 기준 평면 임포트를 쓰므로
 # apps/server/app/* 를 이미지의 /app 루트로 그대로 복사한다 (app/ 하위 폴더 자체는 안 만듦).
-# COPY app/ ./
-COPY app ./app
+COPY app/ ./
 ENV PYTHONPATH=/app
+RUN chown -R appuser:appuser /app
 
 USER appuser
 
@@ -45,5 +45,5 @@ USER appuser
 ENV PORT=8080
 EXPOSE 8080
 
-# CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
-CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
+# CMD ["sh", "-c", "exec uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]

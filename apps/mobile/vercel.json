@@ -1,24 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/classroom/:path*",
-      "destination": "http://34.22.89.252:8000/classroom/:path*"
-    },
-    {
-      "source": "/auth/:path*",
-      "destination": "http://34.22.89.252:8000/auth/:path*"
-    },
-    {
-      "source": "/program/:path*",
-      "destination": "http://34.22.89.252:8000/program/:path*"
-    },
-    {
-      "source": "/student/:path*",
-      "destination": "http://34.22.89.252:8000/student/:path*"
-    },
-    {
-      "source": "/enrollment/:path*",
-      "destination": "http://34.22.89.252:8000/enrollment/:path*"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
