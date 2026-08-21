@@ -14,10 +14,17 @@ export const AppSplashScreen = ({ navigation }: any) => {
 
   useEffect(() => {
     if (isHydrating) return;
-    navigation?.reset({
-      index: 0,
-      routes: [{ name: isAuthenticated ? 'ClassList' : 'Login' }],
-    });
+
+    // 2초(2000ms) 지연 후 화면 전환
+    const timer = setTimeout(() => {
+      navigation?.reset({
+        index: 0,
+        routes: [{ name: isAuthenticated ? 'ClassList' : 'Login' }],
+      });
+    }, 2000);
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => clearTimeout(timer);
   }, [isHydrating, isAuthenticated, navigation]);
 
   return (

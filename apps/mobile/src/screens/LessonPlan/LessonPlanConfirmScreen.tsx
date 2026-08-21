@@ -32,7 +32,7 @@ export const LessonPlanConfirmScreen = ({ navigation, route }: any) => {
   const sections = toLessonPlanSets(lessonPlan.program);
 
   const handleRetry = () => {
-    navigation?.goBack();
+    navigation?.navigate('LessonPlanCreate');
   };
 
   const handleConfirm = async () => {
