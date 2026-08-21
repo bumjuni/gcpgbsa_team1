@@ -136,7 +136,7 @@ export const ClassListScreen = ({ navigation }: any) => {
           <View>
             <Text className="text-title-md text-ink mb-sm">전체 반</Text>
             {classes.map((item: SwimClass) => {
-              const planBadge = getLessonPlanBadge(item.next_program_status);
+              const planBadge = getLessonPlanBadge(item.next_program_status, item.today_program_status);
               return (
                 <Card
                   key={item.id}

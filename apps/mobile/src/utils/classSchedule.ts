@@ -139,9 +139,15 @@ export const getTodayBadge = (
 };
 
 
-/** next_program_status -> 전체 반 카드 뱃지 (섹션② 4종) */
+/**
+ * next_program_status -> 전체 반 카드 뱃지 (섹션② 4종)
+ * next_program_status는 미완료 program만 대상으로 하므로, 오늘 수업안이 이미
+ * COMPLETED까지 진행된 경우엔 다음 program이 없어 null로 온다 — 이 경우
+ * "수업안 없음"이 아니라 today_program_status를 참고해 "수업안 확정됨"으로 표시한다.
+ */
 export const getLessonPlanBadge = (
-  nextProgramStatus: ProgramStatusType | null
+  nextProgramStatus: ProgramStatusType | null,
+  todayProgramStatus?: ProgramStatusType | null
 ): { text: string; variant: 'primary' | 'present' | 'muted' } => {
   switch (nextProgramStatus) {
     case 'CONFIRMED':
@@ -150,10 +156,10 @@ export const getLessonPlanBadge = (
       return { text: '수업 진행중', variant: 'primary' };
     case 'DRAFT':
       return { text: '수업안 준비중', variant: 'primary' };
-    case 'COMPLETED':
-      console.warn('Unexpected completed in next_program_status');
-      return { text: '수업안 없음', variant: 'muted' };
     default:
+      if (todayProgramStatus === 'COMPLETED') {
+        return { text: '수업안 확정됨', variant: 'present' };
+      }
       return { text: '수업안 없음', variant: 'muted' };
   }
 };
@@ -189,6 +195,8 @@ export const getTodayClassPlanText = (
       return '수업 진행중';
     case 'DRAFT':
       return '수업안 준비중';
+    case 'COMPLETED':
+      return '수업안 확정됨';
     default:
       return '수업안을 아직 안 만들었어요';
   }

@@ -1,6 +1,5 @@
 from datetime import datetime, date
 from typing import Optional
-from zoneinfo import ZoneInfo
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, update
@@ -100,17 +99,12 @@ class ClassroomCrud:
         if not class_ids:
             return {}
 
-        now_time = datetime.now(ZoneInfo("Asia/Seoul")).time()
-
         stmt = (
             select(Program.class_id, Program.status)
-            .join(Program.swim_class) # SwimClass와 조인
             .where(
                 Program.class_id.in_(class_ids),
                 Program.date == today,
-                SwimClass.start_time >= now_time, # SwimClass의 start_time으로 조건 비교
                 Program.deleted_at.is_(None),
-                SwimClass.deleted_at.is_(None), # SwimClass의 삭제 여부도 함께 확인
             )
         )
 
