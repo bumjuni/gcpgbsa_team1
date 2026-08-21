@@ -38,7 +38,9 @@ export const ClassDetailsReportSendScreen = ({ navigation, route }: any) => {
   };
 
   // TODO: 리포트 실제 내용을 보여주는 미리보기 화면 미제작 — 목업 받으면 연결 필요
-  const handlePreviewPress = () => {};
+  const handlePreviewPress = () => {
+    navigation?.navigate('WebReports');
+};
 
   const handleSend = () => {
     setIsSending(true);

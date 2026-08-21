@@ -7,6 +7,7 @@ import { FormField } from '../../components/form/FormField';
 import { ConfirmModal } from '../../components/ConfirmModal';
 import { enrollmentApi, EnrollmentDetail, EnrollmentStudent } from '../../api/enrollment';
 import { studentApi } from '../../api/student';
+import { useClassStore } from '../../stores/useClassStore';
 
 interface MemberEditFormState {
   name: string;
@@ -23,6 +24,7 @@ interface RouteParams {
 
 export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
   const { student, enrollment } = route?.params ?? {} as RouteParams;
+  const { currentClass, updateClass } = useClassStore();
 
   const [formData, setFormData] = useState<MemberEditFormState>({
     name: student.name,
@@ -89,9 +91,12 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
     }
   };
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = async () => {
     setIsDeleteModalOpen(false);
-    enrollmentApi.deleteEnrollment(enrollment.id);
+    await enrollmentApi.deleteEnrollment(enrollment.id);
+    if (currentClass) {
+      updateClass({ student_count: Math.max((currentClass.student_count ?? 1) - 1, 0) });
+    }
     navigation?.navigate('ClassDetailsMemberTab');
   };
 

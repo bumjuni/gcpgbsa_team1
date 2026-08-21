@@ -33,7 +33,7 @@ const INITIAL_FORM_STATE: NewMemberFormState = {
 };
 
 export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
-  const { currentClass } = useClassStore();
+  const { currentClass, updateClass } = useClassStore();
   const [tabRowWidth, setTabRowWidth] = useState(0);
   const [activeTabLayout, setActiveTabLayout] = useState({ x: 0, width: 0 });
   const [isAddingMember, setIsAddingMember] = useState(false);
@@ -98,6 +98,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
          ...prev,
          response,
        ]);
+       updateClass({ student_count: (currentClass.student_count ?? 0) + 1 });
      } catch (err) {
        console.error(`${formData.name} 회원 등록 실패`, err);
      } finally {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { ScreenLayout } from '../components/ScreenLayout';
 
 interface WeeklyLesson {
   dateLabel: string;
@@ -47,8 +48,10 @@ export const WebReportsScreen = ({ route }: any) => {
   const [rating, setRating] = useState(0);
 
   return (
-    <SafeAreaView className="flex-1 bg-canvas" edges={['top', 'bottom', 'left', 'right']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <ScreenLayout title="" showBackButton >
+     {/*<SafeAreaView className="flex-1 bg-canvas" edges={['top', 'bottom', 'left', 'right']}>*/}
+
+    < ScrollView showsVerticalScrollIndicator = { false} >
         <View className="bg-primary-pressed px-lg pt-lg pb-xl">
           <View className="flex-row items-start justify-between mb-lg">
             <View>
@@ -154,6 +157,8 @@ export const WebReportsScreen = ({ route }: any) => {
           <Text className="text-caption-strong text-primary text-center mt-xl">Growdy</Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+      {/*</SafeAreaView>*/ }
+
+      </ScreenLayout>
   );
 };
