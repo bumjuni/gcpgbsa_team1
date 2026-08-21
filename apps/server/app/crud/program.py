@@ -155,3 +155,18 @@ class ProgramCrud:
             select(Program).where(Program.id == program_id)
         )
         return result.scalar_one_or_none()
+
+
+    async def add_feedback(
+            self, program_id: int, rating: int, memo: Optional[str]
+        ) -> Optional[Program]:
+            """수업안 피드백(별점/메모) 저장"""
+            program = await self.db.get(Program, program_id)
+            if program is None:
+                return None
+
+            program.feedback_rating = rating
+            program.feedback_memo = memo
+            await self.db.commit()
+            await self.db.refresh(program)
+            return program

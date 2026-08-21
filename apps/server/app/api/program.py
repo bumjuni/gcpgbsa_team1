@@ -10,6 +10,7 @@ from schemas.program import (
     ProgramCreate,
     ProgramHistoryItem,
     ProgramResponse,
+    ProgramFeedbackCreate
 )
 from services.program import ProgramService
 
@@ -97,29 +98,16 @@ async def check_program_item(
 ) -> int:
     return await service.check_program_item(program_item_id, instructor.id)
 
-
-
-# # @router.post(
-# #     "/items",
-# #     response_model=ProgramItemResponse,
-# #     status_code=status.HTTP_201_CREATED,
-# #     summary="프로그램 세부 아이템 생성",
-# # )
-# # async def create_program_item(
-# #     schema: ProgramItemCreate,
-# #     service: ProgramService = Depends(get_program_service),
-# # ) -> ProgramItemResponse:
-# #     return await service.create_program_item(schema)
-
-
-# @router.delete(
-#     "/items/{program_item_id}",
-#     response_model=ProgramItemResponse,
-#     status_code=status.HTTP_200_OK,
-#     summary="프로그램 세부 아이템 삭제(소프트)",
-# )
-# async def delete_program_item(
-#     program_item_id: int,
-#     service: ProgramService = Depends(get_program_service),
-# ) -> ProgramItemResponse:
-#     return await service.delete_program_item(program_item_id)
+@router.post(
+    "/{program_id}/feedback",
+    status_code=status.HTTP_201_CREATED,
+    summary="수업안 피드백(별점/메모) 등록",
+)
+async def submit_program_feedback(
+    program_id: int,
+    schema: ProgramFeedbackCreate,
+    service: ProgramService = Depends(get_program_service),
+    instructor: Instructor = Depends(get_current_instructor),
+):
+    await service.submit_feedback(program_id, schema, instructor.id)
+    return {"program_id": program_id}

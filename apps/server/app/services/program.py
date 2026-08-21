@@ -7,7 +7,7 @@ from sqlalchemy import select
 
 from models import SwimClass
 from models.enums import ProgramStatusEnum
-from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary
+from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary, ProgramFeedbackCreate
 from models import Program, ProgramItem
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
@@ -220,6 +220,22 @@ class ProgramService:
             ),
             program=ProgramSchema.model_validate(program),
         )
+
+    async def submit_feedback(
+            self, program_id: int, schema: ProgramFeedbackCreate, instructor_id: int
+        ) -> None:
+            program = await self.crud.db.get(Program, program_id)
+            if program is None:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Program을 찾을 수 없습니다: {program_id}",
+                )
+
+            # 소속 반이 본인 소유인지 확인
+            await self._get_swim_class(program.class_id, instructor_id)
+
+            await self.crud.add_feedback(program_id, schema.rating, schema.memo)
+
 
     async def check_program_item(self, program_item_id: int, instructor_id: int) -> int:
         item = await self.crud.db.get(ProgramItem, program_item_id)
