@@ -42,4 +42,9 @@ export const lessonPlanApi = {
     return response.data;
   },
 
+  submitLessonPlanFeedback: async (programId: number, payload: LessonPlanFeedbackPayload) => {
+    const response = await apiClient.post(`/program/${programId}/feedback`, payload);
+    return response.data;
+  },
+
 };

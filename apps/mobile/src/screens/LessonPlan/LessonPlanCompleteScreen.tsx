@@ -46,7 +46,7 @@ export const LessonPlanCompleteScreen = ({ navigation }: any) => {
           program: lessonPlan.program
         });
         setIsFinishModalOpen(false);
-        navigation?.navigate('ClassList');
+        navigation?.navigate('LessonPlanFeedback');
       } catch (error) {
         console.error('수업 종료 실패:', error);
         // TODO: 에러 토스트/알럿

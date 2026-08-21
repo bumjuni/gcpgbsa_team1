@@ -25,6 +25,7 @@ import { ClassDetailsReportTabScreen } from '../screens/ClassDetail/Report/Class
 import { ClassDetailsReportSendScreen } from '../screens/ClassDetail/Report/ClassDetailsReportSendScreen';
 import { ClassDetailsReportHistoryScreen } from '../screens/ClassDetail/Report/ClassDetailsReportHistoryScreen';
 import { WebReportsScreen } from '../screens/WebReportsScreen';
+import { LessonPlanFeedbackScreen } from '../screens/LessonPlan/LessonPlanFeedbackScreen';
 
 const Stack = createNativeStackNavigator<NavStackParamList>();
 
@@ -50,6 +51,7 @@ export const AppNavigator = () => {
       <Stack.Screen name="LessonPlanConfirm" component={LessonPlanConfirmScreen} />
       <Stack.Screen name="LessonPlanComplete" component={LessonPlanCompleteScreen} />
       <Stack.Screen name="LessonPlanEditItem" component={LessonPlanEditItemScreen} />
+      <Stack.Screen name="LessonPlanFeedback" component={LessonPlanFeedbackScreen} />
       <Stack.Screen name="ClassDetailsLessonTab" component={ClassDetailsLessonTabScreen} />
       <Stack.Screen name="ClassDetailsLessonHistory" component={ClassDetailsLessonHistoryScreen} />
       <Stack.Screen name="ClassDetailsInfoTab" component={ClassDetailsInfoTabScreen} />

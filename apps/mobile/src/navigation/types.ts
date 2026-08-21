@@ -11,6 +11,7 @@ export type NavStackParamList = {
   LessonPlanConfirm: undefined;
   LessonPlanComplete: undefined;
   LessonPlanEditItem: undefined;
+  LessonPlanFeedback: undefined;
   ClassListFilled: undefined;
   ClassDetailsLessonTab: undefined;
   ClassDetailsLessonTabScrollTest: undefined;
