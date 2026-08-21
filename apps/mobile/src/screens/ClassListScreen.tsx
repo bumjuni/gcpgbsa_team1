@@ -3,6 +3,7 @@ import { View, Text } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { classroomApi } from '../api/classroom';
+import { authApi } from '../api/auth';
 import { SwimClass } from '../types/classroom';
 import { Card } from '../components/card/Card';
 import { Badge, BadgeVariant } from '../components/badge/Badge';
@@ -17,12 +18,14 @@ import {
   formatNextClassLabel,
 } from '../utils/classSchedule';
 import { useClassStore } from '../stores/useClassStore';
+import { useAuthStore } from '../stores/useAuthStore';
 import { useFocusEffect } from '@react-navigation/native';
 
 export const ClassListScreen = ({ navigation }: any) => {
   const [classes, setClasses] = useState<SwimClass[]>([]);
   const [now] = useState(() => new Date());
-  const { setClass } = useClassStore();
+  const { setClass, clearClass } = useClassStore();
+  const clearAuth = useAuthStore((s) => s.clearAuth);
 
   const fetchClasses = async () => {
       try {
@@ -48,6 +51,18 @@ export const ClassListScreen = ({ navigation }: any) => {
       navigation?.navigate('ClassDetailsLessonTab');
     };
 
+    const handleLogout = async () => {
+      try {
+        await authApi.logout();
+      } catch (err) {
+        console.error(err);
+      } finally {
+        await clearAuth();
+        clearClass();
+        navigation?.reset({ index: 0, routes: [{ name: 'Login' }] });
+      }
+    };
+
   const todayClasses = useMemo(
     () => classes.filter((item) => isToday(item.days_of_week, now)),
     [classes, now]
@@ -64,7 +79,12 @@ export const ClassListScreen = ({ navigation }: any) => {
   return (
     <ScreenLayout
       title="내 반 목록"
-      footer={<Button label="반 등록하기" onPress={() => navigation?.navigate('ClassRegister')} />}
+      footer={
+        <View>
+          <Button label="반 등록하기" onPress={() => navigation?.navigate('ClassRegister')} />
+          <Button label="로그아웃" variant="text" onPress={handleLogout} className="mt-sm" />
+        </View>
+      }
     >
       {classes.length > 0 ? (
         <>

@@ -124,7 +124,7 @@ export const SignupScreen = ({ navigation }: any) => {
         agree_age: agreeAge,
         agree_marketing: agreeMarketing,
       });
-      await setAuth(result.access_token, result.instructor);
+      await setAuth(result.access_token, result.refresh_token, result.instructor);
       Alert.alert('가입했어요');
       navigation?.reset({ index: 0, routes: [{ name: 'ClassList' }] });
     } catch (err: any) {

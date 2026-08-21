@@ -56,3 +56,14 @@ async def refresh_token(
     service: AuthService = Depends(get_auth_service),
 ) -> TokenResponse:
     return await service.refresh_token(schema)
+
+
+@router.post(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+    summary="로그아웃",
+)
+async def logout(
+    instructor: Instructor = Depends(get_current_instructor),
+) -> dict:
+    return {"message": "로그아웃되었습니다."}

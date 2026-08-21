@@ -31,7 +31,7 @@ export const LoginScreen = ({ navigation }: any) => {
     setIsSubmitting(true);
     try {
       const result = await authApi.login({ email, password });
-      await setAuth(result.access_token, result.instructor);
+      await setAuth(result.access_token, result.refresh_token, result.instructor);
       navigation?.reset({ index: 0, routes: [{ name: 'ClassList' }] });
     } catch (err: any) {
       const message = err?.response?.data?.detail;
