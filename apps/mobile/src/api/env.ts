@@ -1,14 +1,14 @@
 import { Platform } from 'react-native';
 
 const getBaseUrl = (): string => {
-  // if (__DEV__) {
-    // Android 에뮬레이터 localhost -> 10.0.2.2
-  //   return Platform.OS === 'android'
-  //     ? 'http://10.0.2.2:8000'
-  //     : 'http://localhost:8000';
-  // }
-  // TODO: 클라우드 인스턴스 생성 후 .env에서 IP주소 수정
-  return process.env.EXPO_PUBLIC_SERVER_URL;
+  // 웹(Vercel 배포) 환경일 때는 빈 문자열 반환 -> vercel.json 프록시 동작
+  if (Platform.OS === 'web') {
+    return '';
+  }
+
+  // 모바일 앱(iOS/Android) 환경일 때만 실제 서버 주소 사용
+  // return process.env.EXPO_PUBLIC_SERVER_URL || '';
+  return '';
 };
 
 export const API_CONFIG = {
