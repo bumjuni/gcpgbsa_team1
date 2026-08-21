@@ -9,6 +9,7 @@ import { enrollmentApi, EnrollmentResponse } from '../../api/enrollment';
 import { useFocusEffect } from '@react-navigation/native';
 import { GenderType } from '../../types/member';
 import { GENDER_MAP } from '../../utils/classSchedule';
+import { formatPhoneNumber } from '../../utils/phone';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -203,7 +204,9 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
                 <FormField.TextInput
                   placeholder="010-0000-0000"
                   value={formData.phone}
-                  onChangeText={(text) => handleFieldChange('phone', text)}
+                  onChangeText={(text) => handleFieldChange('phone', formatPhoneNumber(text))}
+                  keyboardType="phone-pad"
+                  maxLength={13}
                 />
               </FormField>
               <FormField className="flex-auto">

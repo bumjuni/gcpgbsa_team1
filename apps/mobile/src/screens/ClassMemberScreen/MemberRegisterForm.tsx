@@ -7,6 +7,7 @@ import { useMemo } from "react"
 import { useForm } from "../../hooks/useForm"
 import { memberFormSchema, MemberFormValues } from "../../hooks/memberForm.schema"
 import { GenderType } from "../../types/member"
+import { formatPhoneNumber } from "../../utils/phone"
 
 const INITIAL_VALUES: MemberFormValues = {
   name: '',
@@ -69,7 +70,9 @@ export const MemberRegisterForm = ({ memberIndex, onComplete, onDelete }: Member
           <FormField.TextInput
             placeholder='010-0000-0000'
             value={values.phone}
-            onChangeText={(text) => setFieldValue('phone', text)}
+            onChangeText={(text) => setFieldValue('phone', formatPhoneNumber(text))}
+            keyboardType="phone-pad"
+            maxLength={13}
           />
         </FormField>
         <FormField className="flex-auto">

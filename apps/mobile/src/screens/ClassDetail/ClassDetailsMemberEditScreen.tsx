@@ -8,6 +8,7 @@ import { ConfirmModal } from '../../components/ConfirmModal';
 import { enrollmentApi, EnrollmentDetail, EnrollmentStudent } from '../../api/enrollment';
 import { studentApi } from '../../api/student';
 import { useClassStore } from '../../stores/useClassStore';
+import { formatPhoneNumber } from '../../utils/phone';
 
 interface MemberEditFormState {
   name: string;
@@ -146,7 +147,9 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
               <FormField.TextInput
                 placeholder="010-0000-0000"
                 value={formData.phone}
-                onChangeText={(text) => handleFieldChange('phone', text)}
+                onChangeText={(text) => handleFieldChange('phone', formatPhoneNumber(text))}
+                keyboardType="phone-pad"
+                maxLength={13}
               />
             </FormField>
             <FormField className="flex-auto">

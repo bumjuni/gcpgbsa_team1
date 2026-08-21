@@ -6,6 +6,7 @@ import { FormFieldTextInput } from '../components/form/inputs/TextInput';
 import { FormFieldHelperText } from '../components/form/FormFieldHelperText';
 import { authApi } from '../api/auth';
 import { useAuthStore } from '../stores/useAuthStore';
+import { formatPhoneNumber } from '../utils/phone';
 import {
   DUPLICATE_EMAIL_MESSAGE,
   validateEmail,
@@ -225,11 +226,12 @@ export const SignupScreen = ({ navigation }: any) => {
         <FormFieldTextInput
           value={phone}
           onChangeText={(v) => {
-            setPhone(v);
+            setPhone(formatPhoneNumber(v));
             setErrors((prev) => ({ ...prev, phone: undefined }));
           }}
           placeholder="010-0000-0000"
           keyboardType="phone-pad"
+          maxLength={13}
         />
         {errors.phone && <FormFieldHelperText text={errors.phone} type="error" />}
 
