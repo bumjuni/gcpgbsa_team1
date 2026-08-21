@@ -148,8 +148,8 @@ export const ClassDetailsMemberEditScreen = ({ navigation, route }: any) => {
               <FormField.ChipGroup
                 variant="rounded-square"
                 options={[
-                  { label: '남', value: 'M' },
-                  { label: '여', value: 'F' },
+                  { label: '남', value: 'MALE' },
+                  { label: '여', value: 'FEMALE' },
                 ]}
                 value={formData.gender}
                 onChange={(val) => handleFieldChange('gender', val as string)}

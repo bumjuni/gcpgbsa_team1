@@ -70,8 +70,8 @@ export const ClassDetailsMemberDetailScreen = ({ navigation, route }: any) => {
             <FormField.Label label="성별" />
             <View className="flex-row gap-xs">
               {[
-                { label: '남', value: 'M' },
-                { label: '여', value: 'F' },
+                { label: '남', value: 'MALE' },
+                { label: '여', value: 'FEMALE' },
               ].map((opt) => (
                 <View
                   key={opt.value}

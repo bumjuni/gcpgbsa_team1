@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from core.database import engine
-from api import classroom, enrollment, program, auth
+from api import classroom, enrollment, program, auth, student
 from models import Base
 
 # DB 생성
@@ -34,6 +34,7 @@ app.include_router(classroom.router)
 app.include_router(enrollment.router)
 app.include_router(program.router)
 app.include_router(auth.router)
+app.include_router(student.router)
 
 @app.get("/")
 def read_root():

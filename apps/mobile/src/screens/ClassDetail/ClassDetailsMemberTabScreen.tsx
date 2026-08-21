@@ -8,6 +8,7 @@ import { useClassStore } from '../../stores/useClassStore';
 import { enrollmentApi, EnrollmentResponse } from '../../api/enrollment';
 import { useFocusEffect } from '@react-navigation/native';
 import { GenderType } from '../../types/member';
+import { GENDER_MAP } from '../../utils/classSchedule';
 
 type ClassDetailsTab = '수업진행' | '반정보' | '명단' | '리포트';
 
@@ -163,7 +164,7 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
               <View>
                 <Text className="text-body-strong text-ink">{item.student.name}</Text>
                 <Text className="text-caption text-ink-secondary mt-0.5">
-                  {item.student.gender} · {new Date().getFullYear() - Number(item.student.birth_year)}세
+                  {GENDER_MAP[item.student.gender]} · {new Date().getFullYear() - Number(item.student.birth_year)}세
                 </Text>
               </View>
             </View>
@@ -207,8 +208,8 @@ export const ClassDetailsMemberTabScreen = ({ navigation }: any) => {
                 <FormField.ChipGroup
                   variant="rounded-square"
                   options={[
-                    { label: '남', value: 'M' },
-                    { label: '여', value: 'F' },
+                    { label: '남', value: 'MALE' },
+                    { label: '여', value: 'FEMALE' },
                   ]}
                   value={formData.gender}
                   onChange={(val) => handleFieldChange('gender', val as string)}
