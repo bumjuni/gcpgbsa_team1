@@ -33,8 +33,8 @@ export const AppSplashScreen = ({ navigation }: any) => {
         <View className="w-20 h-20 rounded-2xl bg-canvas items-center justify-center mb-md">
           <Image
             source={require('../assets/growdy-mark.png')}
-            className="w-12 h-12"
-            resizeMode="contain"
+            style={{ width: '100%', height: '100%', borderRadius: '1rem' }}
+            resizeMode="center"
           />
         </View>
         <Text className="text-title-lg text-ink-on-primary mb-xxs">growdy</Text>

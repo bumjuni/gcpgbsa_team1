@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Pressable } from 'react-native';
+import { View, Text, Pressable, Platform } from 'react-native';
 import { Button } from './button/Button';
 import { FormField } from './form/FormField';
 import { ConfirmModal } from './ConfirmModal';
@@ -139,9 +139,9 @@ export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
             <FormField.Select
               value={values.start_time}
               onChange={(val) => setFieldValue('start_time', val as string)}
-            />
+                />
           )}
-        </FormField>
+            </FormField>
         <FormField className="flex-auto">
           <FormField.Label label="종료 시각" required />
           {isReadOnly ? (
@@ -158,6 +158,8 @@ export const ClassInfoForm = ({ mode, navigation }: ClassInfoFormProps) => {
       </View>
       {errors.start_time && <FormField.HelperText type="error" text={errors.start_time} />}
       {errors.end_time && <FormField.HelperText type="error" text={errors.end_time} />}
+      {!isReadOnly && Platform.OS === 'web' && <FormField.HelperText type="guide" text={'웹 환경이라면 시간 선택 시 방향키(↑, ↓)를 이용해주세요'}  className='mt-0 mb-sm'/>}
+
 
       <FormField>
         <FormField.Label label="나이대" required />
