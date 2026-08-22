@@ -5,7 +5,7 @@ import { FormFieldHelperText } from './FormFieldHelperText';
 import { FormFieldTextInput } from './inputs/TextInput';
 import { FormFieldChipGroup } from './inputs/ChipGroup';
 import { FormFieldCardGroup } from './inputs/CardGroup';
-import { FormFieldSelect } from './inputs/Selector.web';
+import { FormFieldSelect } from './inputs/Selector';
 
 interface FormFieldRootProps {
   children: ReactNode;

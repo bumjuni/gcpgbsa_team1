@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { Pressable, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
 import { FormFieldSelectProps } from './types';
 import { formatTime, timeStringToDate } from '../../../utils/timeUtils';
 
@@ -8,7 +8,6 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
   onChange,
 }: FormFieldSelectProps<T>) => {
   const [date, setDate] = useState<Date>(new Date(new Date().setHours(0, 0, 0, 0)));
-  const inputRef = useRef<HTMLInputElement>(null);
 
   // value prop이 "HH:mm" 문자열로 채워지면 내부 date state에 반영
   useEffect(() => {
@@ -24,18 +23,6 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
     return `${hours}:${minutes}`;
   };
 
-  // Pressable 클릭 시 숨겨진 <input type="time"> 피커 띄우기
-  const handlePress = () => {
-    const el = inputRef.current as any;
-    if (el) {
-      if (typeof el.showPicker === 'function') {
-        el.showPicker(); // 최신 브라우저 타임 피커
-      } else if (typeof el.focus === 'function') {
-        el.focus();
-      }
-    }
-  };
-
   // 웹 input 변경 시 호출
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeVal = e.target.value; // "HH:mm"
@@ -48,23 +35,19 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
 
   return (
     <View className="flex-auto relative">
-      <Pressable
-        onPress={handlePress}
+      {/* 표시 전용. 실제 클릭은 아래 input이 직접 받는다 (showPicker()는 Safari에서 신뢰할 수 없어 사용하지 않음) */}
+      <View
+        pointerEvents="none"
         className="border border-hairline-border-strong rounded-md px-md py-sm flex-row align-middle"
       >
-        {date && (
-          <Text className={`text-base ${date ? 'text-ink' : 'text-ink-tertiary'}`}>
-            {formatTime(date)}
-          </Text>
-        )}
+        <Text className="text-base text-ink">{formatTime(date)}</Text>
 
         {/* Chevron Icon */}
         <View className="w-sm h-sm border-r-2 border-b-2 border-ink-tertiary transform rotate-45 mb-1 self-center ml-auto" />
-      </Pressable>
+      </View>
 
-      {/* 웹 전용 보이지 않는 HTML5 Time Input */}
+      {/* 웹 전용 보이지 않는 HTML5 Time Input. 클릭을 직접 받아 브라우저 기본 피커를 연다 */}
       <input
-        ref={inputRef}
         type="time"
         step="300" // 5분 간격 (minuteInterval={5} 대응)
         value={getFormattedTimeString(date)}
@@ -77,7 +60,6 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
           height: '100%',
           opacity: 0,
           cursor: 'pointer',
-          pointerEvents: 'none', // Pressable 클릭 이벤트를 방해하지 않음
         }}
       />
     </View>
