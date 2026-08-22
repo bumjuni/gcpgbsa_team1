@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Alert, Modal, Pressable, Text, TouchableWithoutFeedback, View } from 'react-native';
+import { Alert, Modal, Pressable, ScrollView, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { ScreenLayout } from '../components/ScreenLayout';
 import { Button } from '../components/button/Button';
 import { FormFieldTextInput } from '../components/form/inputs/TextInput';
@@ -17,9 +17,36 @@ import {
 } from '../utils/authValidation';
 import { SignupFieldErrors } from '../types/auth';
 
-// 서비스 이용약관/개인정보 처리방침 내용은 아직 확정되지 않아 임시 문구로 대체함
-const TERMS_PLACEHOLDER = '서비스 이용약관 내용은 준비 중이에요. 확정되는 대로 업데이트할게요.';
-const PRIVACY_PLACEHOLDER = '개인정보 수집·이용 내용은 준비 중이에요. 확정되는 대로 업데이트할게요.';
+const TERMS_PLACEHOLDER = `제1조 (목적)
+이 약관은 [GCPxGBSA AI애플리케이션 혁신 과정](이하 "회사")의 프로젝트 팀이 제공하는 Growdy 베타 서비스(이하 "서비스")의 이용 조건과 절차, 회사와 이용자의 권리·의무를 정합니다.
+
+제2조 (베타 서비스의 성격)
+1. 서비스는 정식 출시 전 테스트 버전으로, 기능이 예고 없이 추가·변경·중단될 수 있어요.
+2. 베타 기간 중 저장된 데이터는 정식 버전 전환 시 유지되지 않을 수 있어요. 회사는 이를 사전에 안내하도록 노력해요.
+3. 예상치 못한 오류가 있을 수 있고, 발견 시 [문의처]로 알려주시면 빠르게 반영할게요.
+
+제3조 (이용자의 의무)
+1. 이메일·비밀번호는 본인이 관리하고, 제3자에게 공유하지 않아요.
+2. 회원(수강생) 정보를 입력하기 전, 본인 또는 법정대리인의 동의를 미리 받아야 해요. 동의 없이 입력한 정보로 발생하는 책임은 입력한 강사 본인에게 있어요.
+3. 실제와 다른 정보로 가입하거나 타인의 정보를 도용하지 않아요.
+
+제4조 (서비스 변경·중단)
+회사는 베타 서비스를 예고 없이 변경하거나 중단할 수 있으며, 중요한 변경은 서비스 내 공지 또는 이메일로 안내해요.
+
+제5조 (지식재산권)
+서비스에서 제공하는 수업안, 드릴 콘텐츠 등에 대한 권리는 회사에 있으며, 이용자는 서비스 이용 목적 범위에서만 이를 사용할 수 있어요.
+
+제6조 (약관 변경)
+약관이 바뀌면 변경 사항을 시행 7일 전부터 서비스 내 공지해요.
+
+제7조 (문의처)
+서비스 관련 문의: [문의 이메일 / 채널]`;
+
+const PRIVACY_PLACEHOLDER = `수집 목적: 회원가입 및 본인 확인, 서비스 제공·운영, 문의 대응
+수집 항목: 이름, 이메일, 비밀번호(암호화 저장), 휴대폰번호
+보유 기간: 회원 탈퇴 시 즉시 파기 (단, 관계 법령에서 정한 정보는 해당 기간 동안 보관)
+
+귀하는 개인정보 수집·이용에 동의하지 않을 권리가 있으며, 동의하지 않을 경우 회원가입이 제한돼요.`;
 
 interface CheckboxRowProps {
   checked: boolean;
@@ -281,9 +308,11 @@ export const SignupScreen = ({ navigation }: any) => {
                 <Text className="text-base font-bold text-ink mb-sm">
                   {viewingTerms === 'terms' ? '서비스 이용약관' : '개인정보 수집·이용'}
                 </Text>
-                <Text className="text-body text-ink-secondary mb-lg">
-                  {viewingTerms === 'terms' ? TERMS_PLACEHOLDER : PRIVACY_PLACEHOLDER}
-                </Text>
+                <ScrollView className="max-h-96 mb-lg">
+                  <Text className="text-body text-ink-secondary">
+                    {viewingTerms === 'terms' ? TERMS_PLACEHOLDER : PRIVACY_PLACEHOLDER}
+                  </Text>
+                </ScrollView>
                 <Button label="닫기" variant="secondary" onPress={() => setViewingTerms(null)} />
               </View>
             </TouchableWithoutFeedback>
