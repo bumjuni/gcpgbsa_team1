@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 
+import time
 from datetime import date, datetime
 from typing import Optional
 
@@ -8,7 +9,7 @@ from sqlalchemy import select
 from models import SwimClass
 from models.enums import ProgramStatusEnum
 from schemas.program import ProgramConfirm, ProgramCreate, ProgramHistoryItem, ProgramResponse, Program as ProgramSchema, SessionSummary, ProgramFeedbackCreate
-from models import Program, ProgramItem
+from models import Program, ProgramItem, ProgramGenerationLog
 from services.llm.llm_service import LLMService
 from crud.program import ProgramCrud
 
@@ -45,11 +46,27 @@ class ProgramService:
             )
 
         # 2. LLM 호출 (LLMService의 책임 - RequestBody 조립 + generate_curriculum 호출)
-        llm_result = await self.llm_service.generate(
-            swim_class=swim_class,
-            equipment=schema.equipment or "",
-            request=schema.request or "",
-        )
+        # 베타테스트 대시보드용 계측: 성공/실패와 소요시간을 program_generation_log에 남긴다.
+        generation_started_at = time.monotonic()
+        try:
+            llm_result = await self.llm_service.generate(
+                swim_class=swim_class,
+                equipment=schema.equipment or "",
+                request=schema.request or "",
+            )
+        except Exception as exc:
+            self.crud.db.add(
+                ProgramGenerationLog(
+                    instructor_id=instructor_id,
+                    class_id=schema.class_id,
+                    duration_ms=int((time.monotonic() - generation_started_at) * 1000),
+                    success=False,
+                    error_message=str(exc)[:500],
+                )
+            )
+            await self.crud.db.commit()
+            raise
+        generation_duration_ms = int((time.monotonic() - generation_started_at) * 1000)
         session_summary = llm_result["session_summary"]
         program_plan: ProgramSchema = llm_result["program"]
 
@@ -82,6 +99,17 @@ class ProgramService:
                     "status": ProgramStatusEnum.DRAFT,
                 }
             )
+
+        self.crud.db.add(
+            ProgramGenerationLog(
+                instructor_id=instructor_id,
+                class_id=schema.class_id,
+                program_id=program.id,
+                duration_ms=generation_duration_ms,
+                success=True,
+            )
+        )
+        await self.crud.db.commit()
 
         # 4. ProgramItem 생성
         phase_groups = {
