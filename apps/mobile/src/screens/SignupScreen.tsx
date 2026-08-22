@@ -178,7 +178,13 @@ export const SignupScreen = ({ navigation }: any) => {
               필수 항목에 동의하면 가입할 수 있어요
             </Text>
           )}
-          <Button label="가입하기" onPress={handleSubmit} disabled={!requiredAgreed || isSubmitting} loading={isSubmitting} />
+          <Button
+            label="가입하기"
+            onPress={handleSubmit}
+            variant={!requiredAgreed ? 'disabled' : 'primary'}
+            disabled={!requiredAgreed || isSubmitting}
+            loading={isSubmitting}
+          />
         </View>
       }
     >
