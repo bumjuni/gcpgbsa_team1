@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { View } from 'react-native';
 import { FormFieldSelectProps } from './types';
 import { formatTime, timeStringToDate } from '../../../utils/timeUtils';
 
@@ -23,43 +23,26 @@ export const FormFieldSelect = React.memo(<T extends string | number | Date>({
     return `${hours}:${minutes}`;
   };
 
-  // 웹 input 변경 시 호출
   const handleTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const timeVal = e.target.value; // "HH:mm"
-    if (timeVal) {
-      const newDate = timeStringToDate(timeVal);
-      setDate(newDate);
-      onChange(formatTime(newDate) as T);
-    }
+    if (!timeVal) return;
+    const newDate = timeStringToDate(timeVal);
+    setDate(newDate);
+    onChange(formatTime(newDate) as T);
   };
 
   return (
-    <View className="flex-auto relative">
-      {/* 표시 전용. 실제 클릭은 아래 input이 직접 받는다 (showPicker()는 Safari에서 신뢰할 수 없어 사용하지 않음) */}
-      <View
-        pointerEvents="none"
-        className="border border-hairline-border-strong rounded-md px-md py-sm flex-row align-middle"
-      >
-        <Text className="text-base text-ink">{formatTime(date)}</Text>
-
-        {/* Chevron Icon */}
-        <View className="w-sm h-sm border-r-2 border-b-2 border-ink-tertiary transform rotate-45 mb-1 self-center ml-auto" />
-      </View>
-
-      {/* 웹 전용 보이지 않는 HTML5 Time Input. 클릭을 직접 받아 브라우저 기본 피커를 연다 */}
+    <View className="flex-auto relative justify-center">
       <input
         type="time"
-        step="300" // 5분 간격 (minuteInterval={5} 대응)
+        step="300" // 5분 간격
         value={getFormattedTimeString(date)}
         onChange={handleTimeChange}
+        className="border border-hairline-border-strong rounded-md px-md py-sm text-base text-ink bg-transparent w-full"
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '100%',
-          opacity: 0,
-          cursor: 'pointer',
+          fontFamily: 'inherit',
+          appearance: 'none',
+          WebkitAppearance: 'none',
         }}
       />
     </View>
